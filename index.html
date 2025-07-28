@@ -78,7 +78,7 @@
                             <p>
                                 The application follows a simple client-server model where the Google Apps Script environment acts as the server. The data flows in a clear, linear sequence.
                             </p>
-                            <ol>
+                            <ol class="space-y-2">
                                 <li><strong>Initial Load</strong> The user opens the Apps Script web app URL. The <code>index.html</code> file is served.</li>
                                 <li><strong>Data Fetching</strong> A JavaScript function on the client, <code>google.script.run</code>, calls a server-side function (e.g., <code>getDashboardData()</code> in `Code.gs`). This is an asynchronous call.</li>
                                 <li><strong>Backend Processing</strong> The <code>getDashboardData()</code> function in <code>Code.gs</code> reads data from the Google Sheet and returns it as a JSON-like object.</li>
