@@ -1,262 +1,235 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Technical Documentation - Weekly Timesheet Dashboard</title>
+    <title>Technical Documentation | Weekly Timesheet Dashboard</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Import Google Icon Font -->
+    
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6; /* gray-100 */
-            color: #374151; /* gray-700 */
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Source Code Pro', 'monospace'],
+                    },
+                }
+            }
         }
-        .container {
-            max-width: 1024px;
-            margin: 2rem auto;
-            padding: 2rem 4rem;
-            background-color: white;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-        }
-        h1, h2, h3, h4 {
-            font-weight: 700;
-            color: #111827; /* gray-900 */
-            letter-spacing: -0.025em;
-        }
-        h1 {
-            font-size: 2.5rem; /* Adjusted size */
-            line-height: 1.1;
-        }
-        h2 {
-            font-size: 1.75rem; /* Adjusted size */
-            border-bottom: 1px solid #e5e7eb; /* gray-200 */
-            padding-bottom: 0.75rem;
-            margin-top: 3rem;
-            margin-bottom: 2rem;
-        }
-        h3 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-top: 2.5rem;
-            margin-bottom: 1rem;
-        }
-        code {
-            font-family: 'Source Code Pro', monospace;
-            background-color: #e5e7eb; /* gray-200 */
-            padding: 0.2rem 0.4rem;
-            border-radius: 0.25rem;
-            font-size: 0.9em;
-        }
-        pre {
-            background-color: #1f2937; /* gray-800 */
-            color: #f3f4f6; /* gray-100 */
-            padding: 1.5rem;
-            border-radius: 0.5rem;
-            overflow-x: auto;
-            margin-top: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        pre code {
-            background-color: transparent;
-            padding: 0;
-        }
-        .prose {
-            line-height: 1.8; /* Increased line height */
-        }
-        .prose p {
-            margin-bottom: 1.25rem;
-        }
-        .prose a {
-            color: #2563eb; /* blue-600 */
-            text-decoration: none;
-            border-bottom: 1px solid #93c5fd;
-        }
-        .prose a:hover {
-            border-bottom-color: #2563eb;
-        }
-        .prose strong {
-            font-weight: 600;
-        }
-        .config-table th, .config-table td {
-            text-align: left;
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid #e5e7eb; /* gray-200 */
-        }
-        .config-table th {
-            background-color: #f9fafb; /* gray-50 */
-        }
-        .flag-label {
-            display: inline-block;
-            padding: 0.2rem 0.6rem;
-            border-radius: 9999px;
-            font-size: 0.85em;
-            font-weight: 600;
-            color: white;
-            font-family: 'Source Code Pro', monospace;
-            white-space: nowrap;
-            vertical-align: middle;
-        }
-        .flag-blue { background-color: #3b82f6; }
-        .flag-purple { background-color: #8b5cf6; }
-        .flag-teal { background-color: #0d9488; }
-        .flag-orange { background-color: #f97316; }
-        .flag-red { background-color: #ef4444; }
-        .flag-green { background-color: #22c55e; }
-    </style>
+    </script>
 </head>
-<body>
-    <div class="container">
-        <header class="mb-12 text-center">
-            <h1 class="font-bold mb-2">Technical Documentation</h1>
-            <p class="text-xl text-gray-500">Weekly Timesheet Anomaly Detection Dashboard</p>
-        </header>
+<body class="bg-gray-50 font-sans text-gray-700 antialiased">
 
-        <main class="prose max-w-none">
-            <!-- Overview Section -->
-            <section id="overview">
-                <h2>1. Overview</h2>
-                <p>
-                    This document outlines the technical details of the <strong>Weekly Timesheet Dashboard</strong>, a single-page web application designed to run within a Google Apps Script environment. The application fetches timesheet data from a Google Sheet, processes it to identify potential anomalies, and displays it in a user-friendly weekly report format.
-                </p>
-                <p>
-                    The frontend is built with vanilla JavaScript, HTML, and is styled with Tailwind CSS. It performs all data processing, analysis, and rendering client-side after receiving the raw data from the Google Apps Script backend.
-                </p>
-            </section>
-
-            <!-- Architecture and Data Flow -->
-            <section id="architecture">
-                <h2>2. Architecture & Data Flow</h2>
-                <p>
-                    The application follows a simple client-server model where the Google Apps Script environment acts as the server. The data flows in a clear, linear sequence.
-                </p>
-                <ol class="list-decimal list-inside space-y-3">
-                    <li><strong>Initial Load</strong> The user opens the Apps Script web app URL. The <code>index.html</code> file is served.</li>
-                    <li><strong>Data Fetching</strong> A JavaScript function on the client, <code>google.script.run</code>, calls a server-side function (e.g., <code>getDashboardData()</code> in `Code.gs`). This is an asynchronous call.</li>
-                    <li><strong>Backend Processing (in Code.gs)</strong> The <code>getDashboardData()</code> function reads the relevant data from the associated Google Sheets and returns it as a single JSON-like object.</li>
-                    <li><strong>Client-Side Handling</strong> The <code>withSuccessHandler(onDataSuccess)</code> callback is triggered on the client. The fetched data is stored in global variables (<code>allRepData</code>, <code>allCenterData</code>).</li>
-                    <li><strong>UI Initialization</strong> The <code>onDataSuccess</code> function hides the loader, populates the filter dropdowns, and triggers the initial report generation.</li>
-                    <li><strong>Report Generation</strong> When the user clicks "Generate Report" (or on initial load), the <code>generateReport</code> function kicks off the main analysis and rendering pipeline.</li>
-                    <li><strong>Analysis & Rendering</strong> The data is filtered, processed by <code>processDataForWeek</code>, and then rendered into HTML by <code>renderWeeklyReport</code>. The final HTML is injected into the DOM.</li>
-                </ol>
-            </section>
-
-            <!-- Configuration -->
-            <section id="configuration">
-                <h2>3. Analysis Configuration</h2>
-                <p>
-                    The core analysis logic is controlled by several constants defined at the top of the <code>&lt;script&gt;</code> tag. These values can be tuned to adjust the sensitivity of the anomaly detection.
-                </p>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-lg config-table my-4">
-                        <thead>
-                            <tr>
-                                <th>Constant Name</th>
-                                <th>Default Value</th>
-                                <th>Description</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><code>HOME_PROXIMITY_METERS</code></td>
-                                <td>200</td>
-                                <td>The radius (in meters) around a rep's home base to be considered "Near Home".</td>
-                            </tr>
-                            <tr>
-                                <td><code>CENTER_PROXIMITY_METERS</code></td>
-                                <td>200</td>
-                                <td>The radius (in meters) around a business center to be considered "At Center".</td>
-                            </tr>
-                            <tr>
-                                <td><code>REPEATED_LOCATION_RADIUS_METERS</code></td>
-                                <td>50</td>
-                                <td>The radius used to group multiple events into a single location cluster.</td>
-                            </tr>
-                            <tr>
-                                <td><code>REPEATED_LOCATION_THRESHOLD</code></td>
-                                <td>5</td>
-                                <td>The minimum number of events in a cluster to be flagged as a "Repeated Location".</td>
-                            </tr>
-                            <tr>
-                                <td><code>SUSPICIOUS_TIME_WINDOW_SECONDS</code></td>
-                                <td>60</td>
-                                <td>The time window (in seconds) to check for suspiciously similar check-in/out times.</td>
-                            </tr>
-                             <tr>
-                                <td><code>SUSPICIOUS_TIME_THRESHOLD</code></td>
-                                <td>3</td>
-                                <td>The minimum number of days with similar times to trigger a "Time Anomaly" flag.</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-
-            <!-- Visual Flags & Legend Section -->
-            <section id="flags">
-                <h2>4. Visual Flags & Legend</h2>
-                <p>
-                    To provide at-a-glance insights, the dashboard uses a system of color-coded flags. These flags appear as a vertical bar next to an event and as icons in the event details. Here is a breakdown of what each color and its corresponding flag represents.
-                </p>
-                <div class="space-y-4 my-6">
-                    <div class="flex items-start space-x-4"><i class="material-icons text-blue-500 mt-1">schedule</i><div class="flex-grow"><b class="text-lg font-semibold text-gray-900">Time Anomaly</b> <span class="flag-label flag-blue">isSuspiciousTime</span><p class="text-gray-600">Indicates that the check-in or out time is suspiciously similar on 3 or more days in the week.</p></div></div>
-                    <div class="flex items-start space-x-4"><i class="material-icons text-purple-600 mt-1">repeat</i><div class="flex-grow"><b class="text-lg font-semibold text-gray-900">Repeated (Home)</b> <span class="flag-label flag-purple">isRepeatedLocationHome</span><p class="text-gray-600">Flags 5+ events clustered in the same location, near the rep's home base.</p></div></div>
-                    <div class="flex items-start space-x-4"><i class="material-icons text-teal-600 mt-1">repeat</i><div class="flex-grow"><b class="text-lg font-semibold text-gray-900">Repeated (Away)</b> <span class="flag-label flag-teal">isRepeatedLocationAway</span><p class="text-gray-600">Flags 5+ events clustered in the same location, away from the rep's home base.</p></div></div>
-                    <div class="flex items-start space-x-4"><i class="material-icons text-orange-500 mt-1">home</i><div class="flex-grow"><b class="text-lg font-semibold text-gray-900">Near Home</b> <span class="flag-label flag-orange">isNearHome</span><p class="text-gray-600">The event occurred within 200m of the rep's home base.</p></div></div>
-                    <div class="flex items-start space-x-4"><i class="material-icons text-red-500 mt-1">warning</i><div class="flex-grow"><b class="text-lg font-semibold text-gray-900">Far From Center</b> <span class="flag-label flag-red">isFarFromCenter</span><p class="text-gray-600">The event is over 200m from the nearest known business center.</p></div></div>
-                    <div class="flex items-start space-x-4"><i class="material-icons text-green-500 mt-1">location_on</i><div class="flex-grow"><b class="text-lg font-semibold text-gray-900">At Center</b> <span class="flag-label flag-green">isAtCenter</span><p class="text-gray-600">The event occurred within 200m of the nearest known business center.</p></div></div>
-                </div>
-            </section>
-
-            <!-- Key Functions -->
-            <section id="functions">
-                <h2>5. Key JavaScript Functions</h2>
-                
-                <h3>Data Entry Point <code>onDataSuccess(dataObject)</code></h3>
-                <p>This is the primary callback function triggered after fetching data from Google Apps Script. It validates the incoming data, stores it in global variables, populates the UI filters, and triggers the initial report generation.</p>
-
-                <h3>UI Orchestrator <code>generateReport()</code></h3>
-                <p>This function orchestrates the creation of the report. It reads the current filter values, determines which reps to process, and iterates through them, calling the processing and rendering functions for each.</p>
-
-                <h3>Core Analysis Engine <code>processDataForWeek(...)</code></h3>
-                <p>This is the heart of the application's logic. It takes the raw data for a single rep and performs all calculations and analyses for the selected week, returning a structured object with all insights and flags.</p>
-                
-                <h3>UI Rendering <code>renderWeeklyReport(...)</code></h3>
-                <p>This function takes the processed data from <code>processDataForWeek</code> and generates the final HTML for a single rep's weekly report. It creates the grid of day cards and populates them with check-in/out times, details, and the color-coded flag indicators.</p>
-                
-                <h3>Utility Functions</h3>
-                <p>The script includes several utility functions for common tasks:</p>
-                <ul class="list-disc list-inside mt-4 space-y-2">
-                    <li><code>getDistance(coords1, coords2)</code> Calculates the Haversine distance in meters between two lat/long coordinates.</li>
-                    <li><code>findNearestCenter(targetLatLong)</code> Iterates through all business centers to find the one closest to a given event location.</li>
-                    <li><code>formatDate(dateString)</code> and <code>formatTime(timeValue)</code> Standardize the display of dates and times.</li>
-                    <li><code>getWeekOfMonth(date)</code> A custom function to determine the week number (1-5) within a given month.</li>
-                </ul>
-            </section>
+    <div class="container mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        <div class="my-12 sm:my-16 lg:my-20 bg-white p-8 sm:p-12 rounded-2xl shadow-xl">
             
-            <!-- Dependencies -->
-            <section id="dependencies">
-                <h2>6. Dependencies</h2>
-                <p>The project relies on a few external libraries, all loaded via CDN for simplicity:</p>
-                <ul class="list-disc list-inside mt-4 space-y-2">
-                    <li><strong>Tailwind CSS</strong> For all styling and layout.</li>
-                    <li><strong>Google Fonts (Inter & Source Code Pro)</strong> For typography.</li>
-                    <li><strong>Google Material Icons</strong> For UI icons.</li>
-                    <li><strong>Leaflet.js</strong> For the interactive map modal.</li>
-                </ul>
-            </section>
+            <header class="mb-12 text-center">
+                <h1 class="text-4xl sm:text-5xl font-bold tracking-tighter text-gray-900">Technical Documentation</h1>
+                <p class="mt-3 text-lg sm:text-xl text-gray-500">Weekly Timesheet Anomaly Detection Dashboard</p>
+            </header>
 
-        </main>
+            <main class="space-y-16">
 
-        <footer class="mt-16 pt-8 border-t border-gray-300 text-center text-sm text-gray-500">
-            <p>Documentation generated on <span id="generation-date"></span></p>
-        </footer>
+                <section id="overview" class="prose prose-lg max-w-none prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline">
+                    <h2>1. Overview</h2>
+                    <p>
+                        This document outlines the technical details of the <strong>Weekly Timesheet Dashboard</strong>, a single-page web application designed to run within a Google Apps Script environment. The application fetches timesheet data from a Google Sheet, processes it to identify potential anomalies, and displays it in a user-friendly weekly report format.
+                    </p>
+                    <p>
+                        The frontend is built with vanilla JavaScript and HTML, and is styled with Tailwind CSS. It performs all data processing, analysis, and rendering client-side after receiving the raw data from the Google Apps Script backend.
+                    </p>
+                </section>
+
+                <hr class="border-gray-200">
+
+                <section id="architecture" class="prose prose-lg max-w-none">
+                    <h2>2. Architecture & Data Flow</h2>
+                    <p>
+                        The application follows a simple client-server model where the Google Apps Script environment acts as the server. The data flows in a clear, linear sequence.
+                    </p>
+                    <ol>
+                        <li><strong>Initial Load</strong> The user opens the Apps Script web app URL. The <code>index.html</code> file is served.</li>
+                        <li><strong>Data Fetching</strong> A JavaScript function on the client, <code>google.script.run</code>, calls a server-side function (e.g., <code>getDashboardData()</code> in `Code.gs`). This is an asynchronous call.</li>
+                        <li><strong>Backend Processing</strong> The <code>getDashboardData()</code> function in <code>Code.gs</code> reads data from the Google Sheet and returns it as a JSON-like object.</li>
+                        <li><strong>Client-Side Handling</strong> The <code>withSuccessHandler(onDataSuccess)</code> callback is triggered on the client, storing the fetched data.</li>
+                        <li><strong>UI Initialization</strong> The <code>onDataSuccess</code> function hides the loader, populates filter dropdowns, and triggers the initial report generation.</li>
+                        <li><strong>Report Generation</strong> The <code>generateReport</code> function kicks off the main analysis and rendering pipeline based on user input or initial load.</li>
+                        <li><strong>Analysis & Rendering</strong> The data is filtered, processed by <code>processDataForWeek</code>, and rendered into HTML by <code>renderWeeklyReport</code>.</li>
+                    </ol>
+                </section>
+
+                <hr class="border-gray-200">
+
+                <section id="configuration">
+                    <div class="prose prose-lg max-w-none mb-6">
+                        <h2>3. Analysis Configuration</h2>
+                        <p>
+                            The core analysis logic is controlled by several constants defined at the top of the client-side script. These values can be tuned to adjust the sensitivity of the anomaly detection.
+                        </p>
+                    </div>
+                    <div class="overflow-x-auto rounded-lg border border-gray-200">
+                        <table class="w-full text-left text-base">
+                            <thead class="bg-gray-50 text-gray-800 font-semibold">
+                                <tr>
+                                    <th class="p-4">Constant Name</th>
+                                    <th class="p-4">Default Value</th>
+                                    <th class="p-4">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="p-4 font-mono text-sm">HOME_PROXIMITY_METERS</td>
+                                    <td class="p-4 font-mono text-sm">200</td>
+                                    <td class="p-4 text-gray-600">The radius (in meters) around a rep's home to be considered "Near Home".</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="p-4 font-mono text-sm">CENTER_PROXIMITY_METERS</td>
+                                    <td class="p-4 font-mono text-sm">200</td>
+                                    <td class="p-4 text-gray-600">The radius (in meters) around a business center to be considered "At Center".</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="p-4 font-mono text-sm">REPEATED_LOCATION_RADIUS_METERS</td>
+                                    <td class="p-4 font-mono text-sm">50</td>
+                                    <td class="p-4 text-gray-600">The radius used to group multiple events into a single location cluster.</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="p-4 font-mono text-sm">REPEATED_LOCATION_THRESHOLD</td>
+                                    <td class="p-4 font-mono text-sm">5</td>
+                                    <td class="p-4 text-gray-600">Minimum events in a cluster to be flagged as a "Repeated Location".</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="p-4 font-mono text-sm">SUSPICIOUS_TIME_WINDOW_SECONDS</td>
+                                    <td class="p-4 font-mono text-sm">60</td>
+                                    <td class="p-4 text-gray-600">Time window (seconds) for detecting suspiciously similar check-in/out times.</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="p-4 font-mono text-sm">SUSPICIOUS_TIME_THRESHOLD</td>
+                                    <td class="p-4 font-mono text-sm">3</td>
+                                    <td class="p-4 text-gray-600">Minimum number of days with similar times to trigger a "Time Anomaly" flag.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+                
+                <hr class="border-gray-200">
+
+                <section id="flags">
+                    <div class="prose prose-lg max-w-none mb-8">
+                        <h2>4. Visual Flags & Legend</h2>
+                        <p>
+                            To provide at-a-glance insights, the dashboard uses a system of color-coded flags. These flags appear next to events and provide immediate context for potential anomalies.
+                        </p>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="flex items-start gap-4">
+                            <i class="material-icons text-blue-500 mt-1 text-2xl">schedule</i>
+                            <div>
+                                <b class="text-lg font-semibold text-gray-900">Time Anomaly</b>
+                                <code class="ml-2 text-xs font-bold bg-blue-100 text-blue-800 rounded-full px-2 py-1">isSuspiciousTime</code>
+                                <p class="text-gray-600 mt-1">Indicates that the check-in or out time is suspiciously similar on 3 or more days in the week.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <i class="material-icons text-purple-500 mt-1 text-2xl">repeat</i>
+                            <div>
+                                <b class="text-lg font-semibold text-gray-900">Repeated (Home)</b>
+                                <code class="ml-2 text-xs font-bold bg-purple-100 text-purple-800 rounded-full px-2 py-1">isRepeatedLocationHome</code>
+                                <p class="text-gray-600 mt-1">Flags 5+ events clustered in the same location, which is also near the rep's home base.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                             <i class="material-icons text-teal-500 mt-1 text-2xl">pin_drop</i>
+                            <div>
+                                <b class="text-lg font-semibold text-gray-900">Repeated (Away)</b>
+                                <code class="ml-2 text-xs font-bold bg-teal-100 text-teal-800 rounded-full px-2 py-1">isRepeatedLocationAway</code>
+                                <p class="text-gray-600 mt-1">Flags 5+ events clustered in the same location, but away from the rep's home base.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <i class="material-icons text-orange-500 mt-1 text-2xl">home</i>
+                            <div>
+                                <b class="text-lg font-semibold text-gray-900">Near Home</b>
+                                <code class="ml-2 text-xs font-bold bg-orange-100 text-orange-800 rounded-full px-2 py-1">isNearHome</code>
+                                <p class="text-gray-600 mt-1">The event occurred within 200m of the rep's designated home base.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <i class="material-icons text-red-500 mt-1 text-2xl">warning</i>
+                            <div>
+                                <b class="text-lg font-semibold text-gray-900">Far From Center</b>
+                                <code class="ml-2 text-xs font-bold bg-red-100 text-red-800 rounded-full px-2 py-1">isFarFromCenter</code>
+                                <p class="text-gray-600 mt-1">The event is over 200m from the nearest known business center location.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <i class="material-icons text-green-500 mt-1 text-2xl">location_on</i>
+                            <div>
+                                <b class="text-lg font-semibold text-gray-900">At Center</b>
+                                <code class="ml-2 text-xs font-bold bg-green-100 text-green-800 rounded-full px-2 py-1">isAtCenter</code>
+                                <p class="text-gray-600 mt-1">The event occurred within 200m of a known business center location.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <hr class="border-gray-200">
+
+                <section id="functions" class="prose prose-lg max-w-none prose-headings:mb-3 prose-p:mt-0 prose-headings:mt-10 first:prose-headings:mt-0">
+                    <h2>5. Key JavaScript Functions</h2>
+                    
+                    <h3>Data Entry Point <code>onDataSuccess(dataObject)</code></h3>
+                    <p>This is the primary callback function triggered after fetching data from Google Apps Script. It validates the incoming data, stores it in global variables, populates the UI filters, and triggers the initial report generation.</p>
+                    
+                    <h3>UI Orchestrator <code>generateReport()</code></h3>
+                    <p>This function orchestrates the creation of the report. It reads the current filter values, determines which reps to process, and iterates through them, calling the processing and rendering functions for each.</p>
+
+                    <h3>Core Analysis Engine <code>processDataForWeek(...)</code></h3>
+                    <p>This is the heart of the application's logic. It takes the raw data for a single rep and performs all calculations and analyses for the selected week, returning a structured object with all insights and flags.</p>
+                    
+                    <h3>UI Rendering <code>renderWeeklyReport(...)</code></h3>
+                    <p>This function takes the processed data from <code>processDataForWeek</code> and generates the final HTML for a single rep's weekly report. It creates the grid of day cards and populates them with check-in/out times, details, and the color-coded flag indicators.</p>
+                    
+                    <h3>Utility Functions</h3>
+                    <p>The script includes several utility functions for common tasks.</p>
+                    <ul class="not-prose text-lg text-gray-700 list-disc list-outside ml-5 space-y-2">
+                        <li><code>getDistance(coords1, coords2)</code> Calculates the Haversine distance in meters.</li>
+                        <li><code>findNearestCenter(targetLatLong)</code> Finds the closest business center to an event.</li>
+                        <li><code>formatDate(dateString)</code> and <code>formatTime(timeValue)</code> Standardize date and time display.</li>
+                        <li><code>getWeekOfMonth(date)</code> A custom function to determine the week number within a month.</li>
+                    </ul>
+                </section>
+
+                <hr class="border-gray-200">
+
+                <section id="dependencies" class="prose prose-lg max-w-none">
+                    <h2>6. Dependencies</h2>
+                    <p>The project relies on a few external libraries, all loaded via CDN for simplicity.</p>
+                    <ul>
+                        <li><strong>Tailwind CSS</strong> For all styling and layout.</li>
+                        <li><strong>Google Fonts (Inter & Source Code Pro)</strong> For typography.</li>
+                        <li><strong>Google Material Icons</strong> For UI icons.</li>
+                        <li><strong>Leaflet.js</strong> For the interactive map modal.</li>
+                    </ul>
+                </section>
+
+            </main>
+
+            <footer class="mt-16 pt-8 border-t border-gray-200 text-center text-sm text-gray-500">
+                <p>Documentation generated on <span id="generation-date" class="font-medium"></span></p>
+            </footer>
+
+        </div>
     </div>
+
     <script>
         document.getElementById('generation-date').textContent = new Date().toUTCString();
     </script>
