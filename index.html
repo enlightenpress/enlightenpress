@@ -80,29 +80,87 @@
                             <h2 class="text-3xl font-bold tracking-tight text-gray-900 mb-8">1. Overview</h2>
                             <div class="prose prose-lg max-w-none prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline">
                                 <p>
-                                    This document outlines the technical details of the <strong>Weekly Timesheet Dashboard</strong>, a single-page web application designed to run within a Google Apps Script environment. The application fetches timesheet data from a Google Sheet, processes it to identify potential anomalies, and displays it in a user-friendly weekly report format.
-                                </p>
-                                <p>
-                                    The frontend is built with vanilla JavaScript and HTML, and is styled with Tailwind CSS. It performs all data processing, analysis, and rendering client-side after receiving the raw data from the Google Apps Script backend.
+                                    This document outlines the technical details of the <strong>Weekly Timesheet Dashboard</strong>, a single-page web application designed to run within a Google Apps Script environment. The application fetches timesheet data from a Google Sheet, processes it to identify potential anomalies, and displays it in a user-friendly weekly report format. The frontend is built with vanilla JavaScript and HTML, and is styled with Tailwind CSS. It performs all data processing, analysis, and rendering client-side after receiving the raw data from the Google Apps Script backend.
                                 </p>
                             </div>
                         </section>
 
                         <section id="architecture">
                             <h2 class="text-3xl font-bold tracking-tight text-gray-900 mb-8">2. Architecture & Data Flow</h2>
-                            <div class="prose prose-lg max-w-none">
-                                <p>
-                                    The application follows a simple client-server model where the Google Apps Script environment acts as the server. The data flows in a clear, linear sequence.
-                                </p>
-                                <ol class="space-y-2">
-                                    <li><strong>Initial Load</strong> The user opens the Apps Script web app URL. The <code>index.html</code> file is served.</li>
-                                    <li><strong>Data Fetching</strong> A JavaScript function on the client, <code>google.script.run</code>, calls a server-side function (e.g., <code>getDashboardData()</code> in `Code.gs`). This is an asynchronous call.</li>
-                                    <li><strong>Backend Processing</strong> The <code>getDashboardData()</code> function in <code>Code.gs</code> reads data from the Google Sheet and returns it as a JSON-like object.</li>
-                                    <li><strong>Client-Side Handling</strong> The <code>withSuccessHandler(onDataSuccess)</code> callback is triggered on the client, storing the fetched data.</li>
-                                    <li><strong>UI Initialization</strong> The <code>onDataSuccess</code> function hides the loader, populates filter dropdowns, and triggers the initial report generation.</li>
-                                    <li><strong>Report Generation</strong> The <code>generateReport</code> function kicks off the main analysis and rendering pipeline based on user input or initial load.</li>
-                                    <li><strong>Analysis & Rendering</strong> The data is filtered, processed by <code>processDataForWeek</code>, and rendered into HTML by <code>renderWeeklyReport</code>.</li>
-                                </ol>
+                            <div class="relative pl-8">
+                                <div class="absolute left-[34px] top-12 bottom-12 w-0.5 bg-gray-200"></div>
+                                <div class="space-y-12">
+                                    <div class="relative flex items-start gap-6">
+                                        <div class="flex-shrink-0 w-12 h-12 bg-white border-2 border-blue-500 rounded-full flex items-center justify-center font-bold text-blue-500 z-10">1</div>
+                                        <div class="pt-2">
+                                            <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                                                <i class="material-icons text-gray-500">web</i>
+                                                Initial Load (Client)
+                                            </h3>
+                                            <p class="mt-1 text-gray-600">User opens the web app URL. The <code>index.html</code> file is served.</p>
+                                        </div>
+                                    </div>
+                                    <div class="relative flex items-start gap-6">
+                                        <div class="flex-shrink-0 w-12 h-12 bg-white border-2 border-blue-500 rounded-full flex items-center justify-center font-bold text-blue-500 z-10">2</div>
+                                        <div class="pt-2">
+                                            <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                                                <i class="material-icons text-gray-500">http</i>
+                                                Data Fetching (Client → Server)
+                                            </h3>
+                                            <p class="mt-1 text-gray-600">Client-side JavaScript calls <code>google.script.run</code> to asynchronously request data.</p>
+                                        </div>
+                                    </div>
+                                    <div class="relative flex items-start gap-6">
+                                        <div class="flex-shrink-0 w-12 h-12 bg-white border-2 border-indigo-500 rounded-full flex items-center justify-center font-bold text-indigo-500 z-10">3</div>
+                                        <div class="pt-2">
+                                            <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                                                <i class="material-icons text-gray-500">dns</i>
+                                                Backend Processing (Server)
+                                            </h3>
+                                            <p class="mt-1 text-gray-600">The <code>getDashboardData()</code> function in <code>Code.gs</code> reads data from the Google Sheet.</p>
+                                        </div>
+                                    </div>
+                                    <div class="relative flex items-start gap-6">
+                                        <div class="flex-shrink-0 w-12 h-12 bg-white border-2 border-indigo-500 rounded-full flex items-center justify-center font-bold text-indigo-500 z-10">4</div>
+                                        <div class="pt-2">
+                                            <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                                                <i class="material-icons text-gray-500">unarchive</i>
+                                                Data Return (Server → Client)
+                                            </h3>
+                                            <p class="mt-1 text-gray-600">The server returns the raw timesheet data as a JSON-like object.</p>
+                                        </div>
+                                    </div>
+                                     <div class="relative flex items-start gap-6">
+                                        <div class="flex-shrink-0 w-12 h-12 bg-white border-2 border-blue-500 rounded-full flex items-center justify-center font-bold text-blue-500 z-10">5</div>
+                                        <div class="pt-2">
+                                            <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                                                <i class="material-icons text-gray-500">input</i>
+                                                Client-Side Handling
+                                            </h3>
+                                            <p class="mt-1 text-gray-600">The <code>onDataSuccess</code> callback is triggered, storing the fetched data.</p>
+                                        </div>
+                                    </div>
+                                     <div class="relative flex items-start gap-6">
+                                        <div class="flex-shrink-0 w-12 h-12 bg-white border-2 border-blue-500 rounded-full flex items-center justify-center font-bold text-blue-500 z-10">6</div>
+                                        <div class="pt-2">
+                                            <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                                                <i class="material-icons text-gray-500">grid_view</i>
+                                                UI Initialization
+                                            </h3>
+                                            <p class="mt-1 text-gray-600">The loader is hidden, filters are populated, and the initial report generation begins.</p>
+                                        </div>
+                                    </div>
+                                    <div class="relative flex items-start gap-6">
+                                        <div class="flex-shrink-0 w-12 h-12 bg-white border-2 border-blue-500 rounded-full flex items-center justify-center font-bold text-blue-500 z-10">7</div>
+                                        <div class="pt-2">
+                                            <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                                                <i class="material-icons text-gray-500">analytics</i>
+                                                Analysis & Rendering
+                                            </h3>
+                                            <p class="mt-1 text-gray-600">Data is filtered, processed by <code>processDataForWeek</code>, and rendered into HTML.</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </section>
 
@@ -219,42 +277,65 @@
 
                         <section id="functions">
                             <h2 class="text-3xl font-bold tracking-tight text-gray-900 mb-8">5. Key JavaScript Functions</h2>
-                            <div class="prose prose-lg max-w-none">
-                                <div class="space-y-8">
-                                    <div>
-                                        <h3 class="!mt-0 !mb-2">Data Entry Point <code>onDataSuccess(dataObject)</code></h3>
-                                        <p>This is the primary callback function triggered after fetching data from Google Apps Script. It validates the incoming data, stores it in global variables, populates the UI filters, and triggers the initial report generation.</p>
-                                    </div>
-                                    <div>
-                                        <h3 class="!mt-0 !mb-2">UI Orchestrator <code>generateReport()</code></h3>
-                                        <p>This function orchestrates the creation of the report. It reads the current filter values, determines which reps to process, and iterates through them, calling the processing and rendering functions for each.</p>
-                                    </div>
-                                    <div>
-                                        <h3 class="!mt-0 !mb-2">Core Analysis Engine <code>processDataForWeek(...)</code></h3>
-                                        <p>This is the heart of the application's logic. It takes the raw data for a single rep and performs all calculations and analyses for the selected week, returning a structured object with all insights and flags.</p>
-                                    </div>
-                                    <div>
-                                        <h3 class="!mt-0 !mb-2">UI Rendering <code>renderWeeklyReport(...)</code></h3>
-                                        <p>This function takes the processed data from <code>processDataForWeek</code> and generates the final HTML for a single rep's weekly report. It creates the grid of day cards and populates them with check-in/out times, details, and the color-coded flag indicators.</p>
-                                    </div>
-                                    <div>
-                                        <h3 class="!mt-0 !mb-2">Utility Functions</h3>
-                                        <p>The script includes several utility functions for common tasks.</p>
-                                        <ul class="!mt-4 space-y-2">
-                                            <li><code>getDistance(coords1, coords2)</code> Calculates the Haversine distance in meters.</li>
-                                            <li><code>findNearestCenter(targetLatLong)</code> Finds the closest business center to an event.</li>
-                                            <li><code>formatDate(dateString)</code> and <code>formatTime(timeValue)</code> Standardize date and time display.</li>
-                                            <li><code>getWeekOfMonth(date)</code> A custom function to determine the week number within a month.</li>
-                                        </ul>
-                                    </div>
-                                </div>
+                            <div class="prose prose-lg max-w-none mb-6">
+                                <p>The application's client-side logic is organized into several key functions, each with a distinct responsibility. The table below outlines these functions and their purposes.</p>
+                            </div>
+                            <div class="overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
+                                <table class="w-full text-left text-base">
+                                    <thead class="bg-gray-50 text-gray-800 font-semibold">
+                                        <tr>
+                                            <th class="p-4 w-1/6">Category</th>
+                                            <th class="p-4 w-1/4">Function Signature</th>
+                                            <th class="p-4">Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200">
+                                        <tr>
+                                            <td class="p-4 align-top font-medium text-gray-800">Data Entry Point</td>
+                                            <td class="p-4 align-top"><code class="font-mono !text-sm !font-medium">onDataSuccess(dataObject)</code></td>
+                                            <td class="p-4 align-top text-gray-600">The primary callback triggered after fetching data. It validates and stores data, populates UI filters, and starts the initial report generation.</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-4 align-top font-medium text-gray-800">UI Orchestrator</td>
+                                            <td class="p-4 align-top"><code class="font-mono !text-sm !font-medium">generateReport()</code></td>
+                                            <td class="p-4 align-top text-gray-600">Orchestrates the report creation by reading filter values and calling the processing and rendering functions for each selected representative.</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-4 align-top font-medium text-gray-800">Core Analysis Engine</td>
+                                            <td class="p-4 align-top"><code class="font-mono !text-sm !font-medium">processDataForWeek(...)</code></td>
+                                            <td class="p-4 align-top text-gray-600">The heart of the logic. It takes raw data for a single rep and performs all calculations and analysis for the week, returning an object with insights and flags.</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-4 align-top font-medium text-gray-800">UI Rendering</td>
+                                            <td class="p-4 align-top"><code class="font-mono !text-sm !font-medium">renderWeeklyReport(...)</code></td>
+                                            <td class="p-4 align-top text-gray-600">Takes processed data and generates the final HTML for a weekly report, creating the grid of day cards and populating them with details and flags.</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-4 align-top font-medium text-gray-800" rowspan="4">Utility Functions</td>
+                                            <td class="p-4 align-top"><code class="font-mono !text-sm !font-medium">getDistance(coords1, coords2)</code></td>
+                                            <td class="p-4 align-top text-gray-600">Calculates the Haversine distance in meters.</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-4 align-top"><code class="font-mono !text-sm !font-medium">findNearestCenter(targetLatLong)</code></td>
+                                            <td class="p-4 align-top text-gray-600">Finds the closest business center to a given event.</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-4 align-top"><code class="font-mono !text-sm !font-medium">formatDate(dateString)<br>formatTime(timeValue)</code></td>
+                                            <td class="p-4 align-top text-gray-600">Standardize date and time display format.</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-4 align-top"><code class="font-mono !text-sm !font-medium">getWeekOfMonth(date)</code></td>
+                                            <td class="p-4 align-top text-gray-600">A custom function to determine the week number within a month.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </section>
 
                         <section id="dependencies">
                             <h2 class="text-3xl font-bold tracking-tight text-gray-900 mb-8">6. Dependencies</h2>
                             <div class="prose prose-lg max-w-none">
-                                <p>The project relies on a few external libraries, all loaded via CDN for simplicity.</p>
+                                <p class="!mb-5">The project relies on a few external libraries, all loaded via CDN for simplicity.</p>
                                 <ul class="!mt-4 space-y-2">
                                     <li><strong>Tailwind CSS</strong> For all styling and layout.</li>
                                     <li><strong>Google Fonts (Inter & Source Code Pro)</strong> For typography.</li>
