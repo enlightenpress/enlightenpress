@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AppSheet Check-In/Out System Manual</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom styles for the theme colors */
+        .bg-primary { background-color: #00556C; }
+        .text-primary { color: #00556C; }
+        .bg-secondary { background-color: #60C1C1; }
+        .text-secondary { color: #60C1C1; }
+        .bg-accent { background-color: #FBAB90; }
+        .text-accent { color: #FBAB90; }
+        .border-secondary { border-color: #60C1C1; }
+        .hover-bg-primary-dark:hover { background-color: #004456; }
+        
+        /* Enhanced button styles */
+        .btn-enhanced {
+            transform: translateY(0);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .btn-enhanced:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Subtle animations for icons */
+        .icon-bounce {
+            animation: subtle-bounce 2s infinite;
+        }
+        
+        @keyframes subtle-bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-3px);
+            }
+            60% {
+                transform: translateY(-2px);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Header -->
+    <header class="bg-primary text-white p-4 sm:p-6 md:p-8 text-center shadow-lg">
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight">Welcome to the New Check-In/Out System!</h1>
+        <p class="mt-2 text-lg sm:text-xl opacity-90">Your simple guide to the new feature in AppSheet.</p>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-5xl mx-auto p-3 sm:p-4 md:p-8">
+
+        <!-- Prerequisites Section -->
+        <section id="prerequisites" class="bg-white rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 md:p-8 mb-6 sm:mb-8 border-l-4 border-accent">
+            <h2 class="text-2xl sm:text-3xl font-bold text-primary mb-3 sm:mb-4">Before You Start: Important Prerequisites</h2>
+            <div class="space-y-6 md:grid md:grid-cols-2 md:gap-6 md:items-center md:space-y-0">
+                <div>
+                    <p class="text-gray-700 mb-4 text-base sm:text-lg">To ensure everything works perfectly, please make sure you follow these two simple rules:</p>
+                    <ul class="list-disc list-inside space-y-2 sm:space-y-3 text-gray-600 text-base sm:text-lg">
+                        <li><span class="font-semibold">Use Your Phone:</span> This system is designed for mobile. Please only use your smartphone to check in and out, not a desktop or laptop.</li>
+                        <li><span class="font-semibold">Enable Location/GPS:</span> Your phone's location services must be turned ON for AppSheet. This is crucial for recording accurate location data for your visits.</li>
+                    </ul>
+                </div>
+                <div class="flex flex-col justify-center space-y-3 sm:space-y-4">
+                    <p class="text-center font-semibold text-gray-700 text-base sm:text-lg">How to enable location services:</p>
+                    <a href="https://support.apple.com/en-us/111723" target="_blank" class="btn-enhanced flex items-center justify-center w-full text-center bg-gray-800 text-white font-bold py-3 sm:py-4 px-4 sm:px-6 rounded-lg hover:bg-gray-700 transition-all min-h-[48px]">
+                        <svg class="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 icon-bounce flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.09997 22C7.78997 22.05 6.79997 20.68 5.95997 19.47C4.24997 17 2.93997 12.45 4.69997 9.39C5.56997 7.87 7.13997 6.91 8.81997 6.88C10.1 6.86 11.32 7.75 12.11 7.75C12.89 7.75 14.37 6.68 15.92 6.84C16.57 6.87 18.39 7.1 19.56 8.82C19.47 8.88 17.39 10.1 17.41 12.63C17.44 15.65 20.06 16.66 20.09 16.67C20.06 16.74 19.67 18.11 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/>
+                        </svg>
+                        <span class="text-base sm:text-xl">Instructions for iPhone</span>
+                    </a>
+                    <a href="https://support.google.com/accounts/answer/3467281" target="_blank" class="btn-enhanced flex items-center justify-center w-full text-center bg-green-600 text-white font-bold py-3 sm:py-4 px-4 sm:px-6 rounded-lg hover:bg-green-500 transition-all min-h-[48px]">
+                        <img src="images/android.png" alt="Android" class="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 icon-bounce flex-shrink-0">
+                        <span class="text-base sm:text-xl">Instructions for Android</span>
+                    </a>
+                    <a href="https://support.google.com/appsheet/answer/10107276" target="_blank" class="btn-enhanced flex items-center justify-center w-full text-center bg-secondary text-white font-bold py-3 sm:py-4 px-4 sm:px-6 rounded-lg hover-bg-primary-dark transition-all min-h-[48px]">
+                        <svg class="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 icon-bounce flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M12,10A2,2 0 0,0 10,12A2,2 0 0,0 12,14A2,2 0 0,0 14,12A2,2 0 0,0 12,10M10,22C9.75,22 9.54,21.82 9.5,21.58L9.13,18.93C8.5,18.68 7.96,18.34 7.44,17.94L4.95,18.95C4.73,19.03 4.46,18.95 4.34,18.73L2.34,15.27C2.21,15.05 2.27,14.78 2.46,14.63L4.57,12.97L4.5,12L4.57,11L2.46,9.37C2.27,9.22 2.21,8.95 2.34,8.73L4.34,5.27C4.46,5.05 4.73,4.96 4.95,5.05L7.44,6.05C7.96,5.66 8.5,5.32 9.13,5.07L9.5,2.42C9.54,2.18 9.75,2 10,2H14C14.25,2 14.46,2.18 14.5,2.42L14.87,5.07C15.5,5.32 16.04,5.66 16.56,6.05L19.05,5.05C19.27,4.96 19.54,5.05 19.66,5.27L21.66,8.73C21.79,8.95 21.73,9.22 21.54,9.37L19.43,11L19.5,12L19.43,13L21.54,14.63C21.73,14.78 21.79,15.05 21.66,15.27L19.66,18.73C19.54,18.95 19.27,19.04 19.05,18.95L16.56,17.95C16.04,18.34 15.5,18.68 14.87,18.93L14.5,21.58C14.46,21.82 14.25,22 14,22H10M11.25,4L10.88,6.61C9.68,6.86 8.62,7.5 7.85,8.39L5.44,7.35L4.69,8.65L6.8,10.2C6.4,11.37 6.4,12.64 6.8,13.8L4.68,15.36L5.43,16.66L7.86,15.62C8.63,16.5 9.68,17.14 10.87,17.38L11.24,20H12.76L13.13,17.39C14.32,17.14 15.37,16.5 16.14,15.62L18.57,16.66L19.32,15.36L17.2,13.81C17.6,12.64 17.6,11.37 17.2,10.2L19.31,8.65L18.56,7.35L16.15,8.39C15.38,7.5 14.32,6.86 13.12,6.62L12.75,4H11.25Z"/>
+                        </svg>
+                        <span class="text-base sm:text-xl">AppSheet Location Guide</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- The Main View -->
+        <section id="main-view" class="bg-white rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 md:p-8 mb-6 sm:mb-8">
+            <h2 class="text-2xl sm:text-3xl font-bold text-primary mb-3 sm:mb-4">The 'Check In / Out' View</h2>
+            <p class="text-gray-700 mb-4 sm:mb-6 text-center text-base sm:text-lg">In the first tab of the app, you will see two main buttons to start and end your day.</p>
+            <div class="flex justify-center">
+                <img src="images/checkin_buttons.png" alt="Check In and Check Out Buttons" class="rounded-lg shadow-md max-w-full h-auto" onerror="this.onerror=null;this.src='https://placehold.co/600x200/F0F0F0/00556C?text=Image+Error';">
+            </div>
+        </section>
+
+        <!-- Step 1: Check-In Process -->
+        <section id="check-in" class="bg-white rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 md:p-8 mb-6 sm:mb-8">
+            <h2 class="text-2xl sm:text-3xl font-bold text-primary mb-3 sm:mb-4">Step 1: How to Check In</h2>
+            <p class="text-gray-700 mb-4 sm:mb-6 text-base sm:text-lg">Checking in marks the start of your workday and records your location and time automatically.</p>
+            <div class="space-y-6 md:grid md:grid-cols-2 md:gap-8 md:items-center md:space-y-0">
+                <!-- Left Column: Instructions -->
+                <div class="space-y-3 sm:space-y-4">
+                    <p class="text-base sm:text-lg">1. Tap the <strong class="text-secondary">'Check In'</strong> button.</p>
+                    <p class="text-base sm:text-lg">2. A confirmation pop-up will appear. Tap <strong class="text-secondary">'Check In'</strong> again to confirm.</p>
+                    <p class="text-base sm:text-lg">That's it! You're checked in for the day. The system automatically records your time and location.</p>
+                </div>
+                <!-- Right Column: Image -->
+                <div class="flex justify-center">
+                     <img src="images/checkin_modal.png" alt="AppSheet Check In Modal" class="rounded-lg shadow-md max-w-full h-auto" onerror="this.onerror=null;this.src='https://placehold.co/300x250/60C1C1/ffffff?text=Image+Error';">
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 2: Check-Out Process -->
+        <section id="check-out" class="bg-white rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 md:p-8 mb-6 sm:mb-8">
+            <h2 class="text-2xl sm:text-3xl font-bold text-primary mb-3 sm:mb-4">Step 2: How to Check Out & Log Your Sales</h2>
+            <p class="text-gray-700 mb-4 sm:mb-6 text-base sm:text-lg">At the end of your day, check out to log your sales activity. This replaces the old Google Sheet.</p>
+            <div class="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
+                <p class="text-base sm:text-lg">1. Tap the <strong class="text-secondary">'Check Out'</strong> button and confirm in the pop-up modal.</p>
+                <p class="text-base sm:text-lg">2. The daily sales form will open. Fill in all the details about your day's work.</p>
+                <p class="text-base sm:text-lg">3. After submitting the form, you'll see a success message. Your checkout is complete!</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 text-center">
+                <div class="flex flex-col items-center">
+                    <p class="font-semibold text-gray-600 mb-2 text-base sm:text-lg">1. Confirm Check Out</p>
+                    <img src="images/checkout_modal.png" alt="Check Out Modal" class="rounded-lg shadow-md max-w-full h-auto" onerror="this.onerror=null;this.src='https://placehold.co/250x300/00556C/ffffff?text=Image+Error';">
+                </div>
+                 <div class="flex flex-col items-center">
+                    <p class="font-semibold text-gray-600 mb-2 text-base sm:text-lg">2. Fill Out Form</p>
+                    <img src="images/sales_form.png" alt="Daily Sales Form" class="rounded-lg shadow-md max-w-full h-auto" onerror="this.onerror=null;this.src='https://placehold.co/250x300/00556C/ffffff?text=Image+Error';">
+                </div>
+                 <div class="flex flex-col items-center">
+                    <p class="font-semibold text-gray-600 mb-2 text-base sm:text-lg">3. See Success Message</p>
+                    <img src="images/checkout_success.png" alt="Check Out Success Message" class="rounded-lg shadow-md max-w-full h-auto" onerror="this.onerror=null;this.src='https://placehold.co/250x300/00556C/ffffff?text=Image+Error';">
+                </div>
+            </div>
+        </section>
+
+        <!-- Weekly Dashboard Section -->
+        <section id="dashboard" class="bg-white rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 md:p-8 mb-6 sm:mb-8">
+            <h2 class="text-2xl sm:text-3xl font-bold text-primary mb-3 sm:mb-4">See Your Progress: The Weekly Dashboard</h2>
+            <p class="text-gray-700 mb-4 sm:mb-6 text-base sm:text-lg">At the bottom of the app, you'll find your new <strong class="text-secondary">'Weekly Dashboard'</strong>. This view shows you all your activity for the week.</p>
+            <div class="text-center">
+                <img src="images/weekly_dashboard.png" alt="Weekly Dashboard" class="rounded-lg shadow-md inline-block max-w-full h-auto" onerror="this.onerror=null;this.src='https://placehold.co/600x350/F0F0F0/00556C?text=Image+Error';">
+                <p class="text-gray-600 mt-3 sm:mt-4 text-base sm:text-lg">You can see your check-in status, location, total sales, visits, and all other details you've logged during your check-outs.</p>
+            </div>
+        </section>
+        
+        <!-- Important Reminders -->
+        <section id="reminders" class="bg-primary text-white rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 md:p-8">
+            <h2 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-center">Very Important Reminders</h2>
+            <div class="flex flex-col md:flex-row justify-around items-center text-center gap-4 sm:gap-6">
+                <div class="p-3 sm:p-4 rounded-lg bg-white bg-opacity-10 w-full max-w-xs">
+                    <h3 class="text-xl sm:text-2xl font-semibold text-accent mb-2">Once a Day Only</h3>
+                    <p class="text-base sm:text-lg">Please <strong class="font-bold">Check In only ONCE</strong> when you start your day and <strong class="font-bold">Check Out only ONCE</strong> when you finish.</p>
+                </div>
+                 <div class="p-3 sm:p-4 rounded-lg bg-white bg-opacity-10 w-full max-w-xs">
+                    <h3 class="text-xl sm:text-2xl font-semibold text-accent mb-2">Already Checked In?</h3>
+                    <p class="text-base sm:text-lg">If you're not sure if you've checked in, just look at the <strong class="font-bold">Weekly Dashboard</strong>. Your 'Checkin Status' will show your location if you're already in!</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+</body>
+</html>
