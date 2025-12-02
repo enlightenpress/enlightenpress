@@ -26,279 +26,368 @@
             color: #00556C;
             border-right: 4px solid #60C1C1;
         }
+
+        /* Lock Screen Styles */
+        #lock-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #00556C; /* brand-dark */
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        
+        .pin-input {
+            letter-spacing: 0.5em;
+            font-size: 1.5rem;
+            text-align: center;
+        }
     </style>
 </head>
 
 <body class="bg-slate-50 text-gray-700">
 
-    <!-- Top Navigation Bar -->
-    <header class="bg-brand-dark text-white shadow-lg sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <i class="material-icons text-brand-teal">dashboard</i>
-                <h1 class="text-xl font-bold tracking-wide">Dashboard Reference Guide</h1>
+    <!-- Lock Screen Overlay -->
+    <div id="lock-screen">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md text-center">
+            <div class="mb-6">
+                <div class="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="material-icons text-3xl text-teal-600">lock</i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800">Restricted Access</h2>
+                <p class="text-gray-500 mt-2">Please enter the PIN to view the documentation.</p>
             </div>
-            <div class="text-sm text-gray-300">For Internal Use</div>
+            
+            <form id="pin-form" onsubmit="checkPin(event)">
+                <input type="password" id="pin-input" class="pin-input w-full p-4 border-2 border-gray-200 rounded-xl focus:border-teal-500 focus:outline-none transition-colors mb-4" placeholder="••••" maxlength="4" autofocus>
+                <button type="submit" class="w-full bg-[#00556C] hover:bg-[#004455] text-white font-bold py-3 px-4 rounded-xl transition-colors flex items-center justify-center gap-2">
+                    <span>Unlock Guide</span>
+                    <i class="material-icons text-sm">arrow_forward</i>
+                </button>
+                <p id="error-msg" class="text-red-500 mt-3 text-sm font-semibold hidden">Incorrect PIN. Please try again.</p>
+            </form>
         </div>
-    </header>
+        <p class="text-white/50 mt-8 text-sm">Internal Use Only</p>
+    </div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="flex flex-col lg:flex-row gap-8">
+    <!-- Main Content Wrapper (Hidden by default) -->
+    <div id="main-content" class="hidden">
+        <!-- Top Navigation Bar -->
+        <header class="bg-brand-dark text-white shadow-lg sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i class="material-icons text-brand-teal">dashboard</i>
+                    <h1 class="text-xl font-bold tracking-wide">Dashboard Reference Guide</h1>
+                </div>
+                <div class="text-sm text-gray-300">For Internal Use</div>
+            </div>
+        </header>
 
-            <!-- Sidebar Navigation -->
-            <aside class="lg:w-64 flex-shrink-0 hidden lg:block">
-                <nav class="sticky top-24 space-y-1">
-                    <a href="#overview" class="nav-item active block px-4 py-3 font-medium text-gray-600 hover:bg-gray-100 rounded-l transition-colors" onclick="setActive(this)">Overview</a>
-                    <a href="#thresholds" class="nav-item block px-4 py-3 font-medium text-gray-600 hover:bg-gray-100 rounded-l transition-colors" onclick="setActive(this)">⚙️ The Logic Rules</a>
-                    <a href="#anomalies" class="nav-item block px-4 py-3 font-medium text-gray-600 hover:bg-gray-100 rounded-l transition-colors" onclick="setActive(this)">🚩 Anomalies & Flags</a>
-                    <a href="#calculations" class="nav-item block px-4 py-3 font-medium text-gray-600 hover:bg-gray-100 rounded-l transition-colors" onclick="setActive(this)">🧮 How Math Works</a>
-                    <a href="#kpis" class="nav-item block px-4 py-3 font-medium text-gray-600 hover:bg-gray-100 rounded-l transition-colors" onclick="setActive(this)">📊 KPI Definitions</a>
-                </nav>
-            </aside>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-col lg:flex-row gap-8">
 
-            <!-- Main Content -->
-            <main class="flex-1 min-w-0">
+                <!-- Sidebar Navigation -->
+                <aside class="lg:w-64 flex-shrink-0 hidden lg:block">
+                    <nav class="sticky top-24 space-y-1">
+                        <a href="#overview" class="nav-item active block px-4 py-3 font-medium text-gray-600 hover:bg-gray-100 rounded-l transition-colors" onclick="setActive(this)">Overview</a>
+                        <a href="#thresholds" class="nav-item block px-4 py-3 font-medium text-gray-600 hover:bg-gray-100 rounded-l transition-colors" onclick="setActive(this)">⚙️ The Logic Rules</a>
+                        <a href="#anomalies" class="nav-item block px-4 py-3 font-medium text-gray-600 hover:bg-gray-100 rounded-l transition-colors" onclick="setActive(this)">🚩 Anomalies & Flags</a>
+                        <a href="#calculations" class="nav-item block px-4 py-3 font-medium text-gray-600 hover:bg-gray-100 rounded-l transition-colors" onclick="setActive(this)">🧮 How Math Works</a>
+                        <a href="#kpis" class="nav-item block px-4 py-3 font-medium text-gray-600 hover:bg-gray-100 rounded-l transition-colors" onclick="setActive(this)">📊 KPI Definitions</a>
+                    </nav>
+                </aside>
 
-                <!-- Section: Overview -->
-                <section id="overview" class="mb-12 scroll-mt-24">
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:p-8">
-                        <h2 class="text-3xl font-bold brand-dark mb-4">What is this dashboard?</h2>
-                        <p class="text-lg leading-relaxed mb-6">
-                            The Weekly Timesheet Dashboard compares what a representative <strong>claims</strong> they did (manual timesheets) against what the <strong>system recorded</strong> (GPS and timestamps). It highlights discrepancies automatically so you don't have to hunt for them.
-                        </p>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-                            <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
-                                <h3 class="font-bold text-blue-800">Verifies Visits</h3>
-                                <p class="text-sm text-blue-600">Checks if the rep was actually at the location.</p>
-                            </div>
-                            <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
-                                <h3 class="font-bold text-green-800">Calculates Hours</h3>
-                                <p class="text-sm text-green-600">Compares claimed work hours vs. actual GPS timestamps.</p>
-                            </div>
-                            <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-500">
-                                <h3 class="font-bold text-red-800">Flags Anomalies</h3>
-                                <p class="text-sm text-red-600">Highlights late starts, early finishes, and gaps.</p>
+                <!-- Main Content -->
+                <main class="flex-1 min-w-0">
+
+                    <!-- Section: Overview -->
+                    <section id="overview" class="mb-12 scroll-mt-24">
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:p-8">
+                            <h2 class="text-3xl font-bold brand-dark mb-4">What is this dashboard?</h2>
+                            <p class="text-lg leading-relaxed mb-6">
+                                The Weekly Timesheet Dashboard compares what a representative <strong>claims</strong> they did (manual timesheets) against what the <strong>system recorded</strong> (GPS and timestamps). It highlights discrepancies automatically so you don't have to hunt for them.
+                            </p>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                                <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+                                    <h3 class="font-bold text-blue-800">Verifies Visits</h3>
+                                    <p class="text-sm text-blue-600">Checks if the rep was actually at the location.</p>
+                                </div>
+                                <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
+                                    <h3 class="font-bold text-green-800">Calculates Hours</h3>
+                                    <p class="text-sm text-green-600">Compares claimed work hours vs. actual GPS timestamps.</p>
+                                </div>
+                                <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-500">
+                                    <h3 class="font-bold text-red-800">Flags Anomalies</h3>
+                                    <p class="text-sm text-red-600">Highlights late starts, early finishes, and gaps.</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </section>
+                    </section>
 
-                <!-- Section: Thresholds -->
-                <section id="thresholds" class="mb-12 scroll-mt-24">
-                    <div class="bg-white rounded-xl shadow-lg border-2 border-brand-teal p-6 lg:p-8 relative overflow-hidden">
-                        <div class="absolute top-0 right-0 bg-brand-teal text-white px-4 py-1 rounded-bl-lg font-bold text-sm">CRITICAL RULES</div>
-                        <h2 class="text-2xl font-bold brand-dark mb-6 flex items-center">
-                            <i class="material-icons mr-2">gavel</i> Official Thresholds
-                        </h2>
-                        
-                        <p class="mb-6 text-gray-600">These are the exact mathematical rules the code uses to flag behavior.</p>
+                    <!-- Section: Thresholds -->
+                    <section id="thresholds" class="mb-12 scroll-mt-24">
+                        <div class="bg-white rounded-xl shadow-lg border-2 border-brand-teal p-6 lg:p-8 relative overflow-hidden">
+                            <div class="absolute top-0 right-0 bg-brand-teal text-white px-4 py-1 rounded-bl-lg font-bold text-sm">CRITICAL RULES</div>
+                            <h2 class="text-2xl font-bold brand-dark mb-6 flex items-center">
+                                <i class="material-icons mr-2">gavel</i> Official Thresholds
+                            </h2>
+                            
+                            <p class="mb-6 text-gray-600">These are the exact mathematical rules the code uses to flag behavior.</p>
 
-                        <div class="space-y-6">
-                            <!-- Suspicious Visit Logic -->
-                            <div class="flex items-start">
-                                <div class="bg-yellow-100 text-yellow-800 p-3 rounded-lg mr-4 flex-shrink-0">
-                                    <i class="material-icons text-2xl">schedule</i>
+                            <div class="space-y-6">
+                                <!-- Suspicious Visit Logic -->
+                                <div class="flex items-start">
+                                    <div class="bg-yellow-100 text-yellow-800 p-3 rounded-lg mr-4 flex-shrink-0">
+                                        <i class="material-icons text-2xl">schedule</i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-xl font-bold text-gray-900">"Suspicious Visit Gap"</h3>
+                                        <p class="mt-1 text-gray-600">
+                                            Tagged if there is a gap of <strong>more than 2 hours</strong> between the end of one visit and the start of the next visit on the same day.
+                                        </p>
+                                        <code class="block mt-2 bg-gray-100 p-2 rounded text-sm text-gray-800 border border-gray-300">
+                                            Logic: (Next_Visit_Time - Previous_Visit_Time) > 2 Hours
+                                        </code>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h3 class="text-xl font-bold text-gray-900">"Suspicious Visit Gap"</h3>
-                                    <p class="mt-1 text-gray-600">
-                                        Tagged if there is a gap of <strong>more than 2 hours</strong> between the end of one visit and the start of the next visit on the same day.
-                                    </p>
-                                    <code class="block mt-2 bg-gray-100 p-2 rounded text-sm text-gray-800 border border-gray-300">
-                                        Logic: (Next_Visit_Time - Previous_Visit_Time) > 2 Hours
-                                    </code>
+
+                                <hr class="border-gray-100">
+
+                                <!-- Late Check-in -->
+                                <div class="flex items-start">
+                                    <div class="bg-red-100 text-red-800 p-3 rounded-lg mr-4 flex-shrink-0">
+                                        <i class="material-icons text-2xl">login</i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-xl font-bold text-gray-900">Late Check-in</h3>
+                                        <p class="mt-1 text-gray-600">
+                                            Tagged if the first check-in of the day is <strong>after 9:00 AM</strong>.
+                                        </p>
+                                        <p class="text-sm text-gray-500 mt-1 italic">
+                                            (Standard start is 8:00 AM + 1 hour grace period).
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <hr class="border-gray-100">
+
+                                <!-- Early Check-out -->
+                                <div class="flex items-start">
+                                    <div class="bg-red-100 text-red-800 p-3 rounded-lg mr-4 flex-shrink-0">
+                                        <i class="material-icons text-2xl">logout</i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-xl font-bold text-gray-900">Early Check-out</h3>
+                                        <p class="mt-1 text-gray-600">
+                                            Tagged if the last check-out of the day is <strong>before 4:00 PM</strong>.
+                                        </p>
+                                        <p class="text-sm text-gray-500 mt-1 italic">
+                                            (Standard end is 5:00 PM - 1 hour grace period).
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <hr class="border-gray-100">
+
+                                <!-- Location Logic -->
+                                <div class="flex items-start">
+                                    <div class="bg-indigo-100 text-indigo-800 p-3 rounded-lg mr-4 flex-shrink-0">
+                                        <i class="material-icons text-2xl">gps_fixed</i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-xl font-bold text-gray-900">Location Proximity Rules</h3>
+                                        <p class="mt-1 text-gray-600">
+                                            The system uses a strict <strong>200 meter radius</strong> for all spatial validations:
+                                        </p>
+                                        <ul class="list-disc list-inside mt-2 text-sm text-gray-600 space-y-1">
+                                            <li><strong>At Center:</strong> GPS pin is within 200m of Center coordinates.</li>
+                                            <li><strong>Near Home:</strong> GPS pin is within 200m of Home Base.</li>
+                                            <li><strong>Repeated Cluster:</strong> Multiple events occurring within 200m of each other.</li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
+                        </div>
+                    </section>
 
-                            <hr class="border-gray-100">
-
-                            <!-- Late Check-in -->
-                            <div class="flex items-start">
-                                <div class="bg-red-100 text-red-800 p-3 rounded-lg mr-4 flex-shrink-0">
-                                    <i class="material-icons text-2xl">login</i>
+                    <!-- Section: Anomalies -->
+                    <section id="anomalies" class="mb-12 scroll-mt-24">
+                        <h2 class="text-2xl font-bold brand-dark mb-4">Reading the Flags</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            
+                            <!-- Flag Card -->
+                            <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500">
+                                <div class="flex items-center mb-2">
+                                    <i class="material-icons text-blue-500 mr-2">schedule</i>
+                                    <span class="font-bold text-gray-800">Visit Time Gap</span>
                                 </div>
-                                <div>
-                                    <h3 class="text-xl font-bold text-gray-900">Late Check-in</h3>
-                                    <p class="mt-1 text-gray-600">
-                                        Tagged if the first check-in of the day is <strong>after 9:00 AM</strong>.
-                                    </p>
-                                    <p class="text-sm text-gray-500 mt-1 italic">
-                                        (Standard start is 8:00 AM + 1 hour grace period).
-                                    </p>
-                                </div>
+                                <p class="text-sm text-gray-600">Indicates a long period of inactivity during the workday (lunch breaks excluded).</p>
                             </div>
 
-                            <hr class="border-gray-100">
-
-                            <!-- Early Check-out -->
-                            <div class="flex items-start">
-                                <div class="bg-red-100 text-red-800 p-3 rounded-lg mr-4 flex-shrink-0">
-                                    <i class="material-icons text-2xl">logout</i>
+                            <!-- Flag Card -->
+                            <div class="bg-white p-5 rounded-lg shadow border-l-4 border-purple-600">
+                                <div class="flex items-center mb-2">
+                                    <i class="material-icons text-purple-600 mr-2">repeat</i>
+                                    <span class="font-bold text-gray-800">Repeated (Home)</span>
                                 </div>
-                                <div>
-                                    <h3 class="text-xl font-bold text-gray-900">Early Check-out</h3>
-                                    <p class="mt-1 text-gray-600">
-                                        Tagged if the last check-out of the day is <strong>before 4:00 PM</strong>.
-                                    </p>
-                                    <p class="text-sm text-gray-500 mt-1 italic">
-                                        (Standard end is 5:00 PM - 1 hour grace period).
-                                    </p>
-                                </div>
+                                <p class="text-sm text-gray-600">Multiple system events occurred at the same location, and that location is <strong>within 200m of their home base</strong>.</p>
                             </div>
 
-                            <hr class="border-gray-100">
-
-                            <!-- Location Logic -->
-                            <div class="flex items-start">
-                                <div class="bg-indigo-100 text-indigo-800 p-3 rounded-lg mr-4 flex-shrink-0">
-                                    <i class="material-icons text-2xl">gps_fixed</i>
+                            <!-- Flag Card -->
+                            <div class="bg-white p-5 rounded-lg shadow border-l-4 border-teal-600">
+                                <div class="flex items-center mb-2">
+                                    <i class="material-icons text-teal-600 mr-2">repeat</i>
+                                    <span class="font-bold text-gray-800">Repeated (Away)</span>
                                 </div>
-                                <div>
-                                    <h3 class="text-xl font-bold text-gray-900">Location Proximity Rules</h3>
-                                    <p class="mt-1 text-gray-600">
-                                        The system uses a strict <strong>200 meter radius</strong> for all spatial validations:
-                                    </p>
-                                    <ul class="list-disc list-inside mt-2 text-sm text-gray-600 space-y-1">
-                                        <li><strong>At Center:</strong> GPS pin is within 200m of Center coordinates.</li>
-                                        <li><strong>Near Home:</strong> GPS pin is within 200m of Home Base.</li>
-                                        <li><strong>Repeated Cluster:</strong> Multiple events occurring within 200m of each other.</li>
+                                <p class="text-sm text-gray-600">Multiple system events occurred at the same location, but it is <strong>away from home</strong> (e.g., sitting at a cafe for hours).</p>
+                            </div>
+
+                            <!-- Flag Card -->
+                            <div class="bg-white p-5 rounded-lg shadow border-l-4 border-red-500">
+                                <div class="flex items-center mb-2">
+                                    <i class="material-icons text-red-500 mr-2">warning</i>
+                                    <span class="font-bold text-gray-800">Far From Center</span>
+                                </div>
+                                <p class="text-sm text-gray-600">The rep claimed to visit a center, but their GPS pin was more than <strong>200 meters</strong> away.</p>
+                            </div>
+
+                        </div>
+                    </section>
+
+                    <!-- Section: Calculations -->
+                    <section id="calculations" class="mb-12 scroll-mt-24">
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:p-8">
+                            <h2 class="text-2xl font-bold brand-dark mb-6">How Hours are Calculated</h2>
+                            
+                            <div class="space-y-8">
+                                <div class="relative pl-8 border-l-2 border-gray-200">
+                                    <div class="absolute -left-3 top-0 bg-brand-teal rounded-full w-6 h-6 flex items-center justify-center text-white font-bold text-xs">1</div>
+                                    <h4 class="font-bold text-lg text-gray-800">Computed Hours (Net)</h4>
+                                    <p class="text-gray-600 mb-2">The time the system believes they worked.</p>
+                                    <div class="bg-gray-100 p-3 rounded text-sm font-mono text-gray-700 inline-block">
+                                        (CheckOut Time - CheckIn Time) - Break Duration
+                                    </div>
+                                </div>
+
+                                <div class="relative pl-8 border-l-2 border-gray-200">
+                                    <div class="absolute -left-3 top-0 bg-brand-dark rounded-full w-6 h-6 flex items-center justify-center text-white font-bold text-xs">2</div>
+                                    <h4 class="font-bold text-lg text-gray-800">Claimed Hours (Raw)</h4>
+                                    <p class="text-gray-600 mb-2">The total hours the representative wrote on their timesheet.</p>
+                                    <div class="bg-gray-100 p-3 rounded text-sm font-mono text-gray-700 inline-block">
+                                        Manual Entry from Column J
+                                    </div>
+                                </div>
+
+                                <div class="relative pl-8 border-l-2 border-gray-200">
+                                    <div class="absolute -left-3 top-0 bg-red-500 rounded-full w-6 h-6 flex items-center justify-center text-white font-bold text-xs">3</div>
+                                    <h4 class="font-bold text-lg text-gray-800">The Difference</h4>
+                                    <p class="text-gray-600 mb-2">The discrepancy between what they claimed and what the system computed.</p>
+                                    <div class="bg-gray-100 p-3 rounded text-sm font-mono text-gray-700 inline-block">
+                                        Claimed Hours - Computed Hours
+                                    </div>
+                                    <p class="text-sm mt-2 text-red-500 font-semibold">Positive number = Overclaimed (Paid too much)<br>Negative number = Underclaimed (Worked more than claimed)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Section: KPIs -->
+                    <section id="kpis" class="mb-24 scroll-mt-24">
+                        <h2 class="text-2xl font-bold brand-dark mb-6">Performance Formulas</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            
+                            <div class="bg-purple-50 p-6 rounded-xl border border-purple-100">
+                                <h3 class="text-xl font-bold text-purple-800 mb-2">Closing Ratio</h3>
+                                <p class="text-gray-700 mb-4">How effective is the rep at closing deals during visits?</p>
+                                <div class="bg-white p-3 rounded border border-purple-200 font-mono text-sm text-center text-purple-900 mb-3">
+                                    (Number of Sales ÷ Qualified Visits) × 100
+                                </div>
+                                
+                                <!-- Added Qualified Visits Definition -->
+                                <div class="border-t border-purple-200 pt-3">
+                                    <p class="text-xs font-bold text-purple-800 uppercase mb-1">What is a "Qualified Visit"?</p>
+                                    <p class="text-xs text-gray-600">The sum of:</p>
+                                    <ul class="text-xs text-gray-600 list-disc list-inside">
+                                        <li>New Schools</li>
+                                        <li>School Drop-offs & Pick-ups</li>
+                                        <li>New CCs & CC Follow-ups</li>
                                     </ul>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </section>
 
-                <!-- Section: Anomalies -->
-                <section id="anomalies" class="mb-12 scroll-mt-24">
-                    <h2 class="text-2xl font-bold brand-dark mb-4">Reading the Flags</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        
-                        <!-- Flag Card -->
-                        <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500">
-                            <div class="flex items-center mb-2">
-                                <i class="material-icons text-blue-500 mr-2">schedule</i>
-                                <span class="font-bold text-gray-800">Visit Time Gap</span>
-                            </div>
-                            <p class="text-sm text-gray-600">Indicates a long period of inactivity during the workday (lunch breaks excluded).</p>
-                        </div>
-
-                        <!-- Flag Card -->
-                        <div class="bg-white p-5 rounded-lg shadow border-l-4 border-purple-600">
-                            <div class="flex items-center mb-2">
-                                <i class="material-icons text-purple-600 mr-2">repeat</i>
-                                <span class="font-bold text-gray-800">Repeated (Home)</span>
-                            </div>
-                            <p class="text-sm text-gray-600">Multiple system events occurred at the same location, and that location is <strong>within 200m of their home base</strong>.</p>
-                        </div>
-
-                        <!-- Flag Card -->
-                        <div class="bg-white p-5 rounded-lg shadow border-l-4 border-teal-600">
-                            <div class="flex items-center mb-2">
-                                <i class="material-icons text-teal-600 mr-2">repeat</i>
-                                <span class="font-bold text-gray-800">Repeated (Away)</span>
-                            </div>
-                            <p class="text-sm text-gray-600">Multiple system events occurred at the same location, but it is <strong>away from home</strong> (e.g., sitting at a cafe for hours).</p>
-                        </div>
-
-                        <!-- Flag Card -->
-                        <div class="bg-white p-5 rounded-lg shadow border-l-4 border-red-500">
-                            <div class="flex items-center mb-2">
-                                <i class="material-icons text-red-500 mr-2">warning</i>
-                                <span class="font-bold text-gray-800">Far From Center</span>
-                            </div>
-                            <p class="text-sm text-gray-600">The rep claimed to visit a center, but their GPS pin was more than <strong>200 meters</strong> away.</p>
-                        </div>
-
-                    </div>
-                </section>
-
-                <!-- Section: Calculations -->
-                <section id="calculations" class="mb-12 scroll-mt-24">
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:p-8">
-                        <h2 class="text-2xl font-bold brand-dark mb-6">How Hours are Calculated</h2>
-                        
-                        <div class="space-y-8">
-                            <div class="relative pl-8 border-l-2 border-gray-200">
-                                <div class="absolute -left-3 top-0 bg-brand-teal rounded-full w-6 h-6 flex items-center justify-center text-white font-bold text-xs">1</div>
-                                <h4 class="font-bold text-lg text-gray-800">Computed Hours (Net)</h4>
-                                <p class="text-gray-600 mb-2">The time the system believes they worked.</p>
-                                <div class="bg-gray-100 p-3 rounded text-sm font-mono text-gray-700 inline-block">
-                                    (CheckOut Time - CheckIn Time) - Break Duration
+                            <div class="bg-orange-50 p-6 rounded-xl border border-orange-100">
+                                <h3 class="text-xl font-bold text-orange-800 mb-2">Avg Purchase Value</h3>
+                                <p class="text-gray-700 mb-4">What is the average dollar amount per sale?</p>
+                                <div class="bg-white p-3 rounded border border-orange-200 font-mono text-sm text-center text-orange-900">
+                                    Total Sales $ ÷ Number of Sales
                                 </div>
                             </div>
 
-                            <div class="relative pl-8 border-l-2 border-gray-200">
-                                <div class="absolute -left-3 top-0 bg-brand-dark rounded-full w-6 h-6 flex items-center justify-center text-white font-bold text-xs">2</div>
-                                <h4 class="font-bold text-lg text-gray-800">Claimed Hours (Raw)</h4>
-                                <p class="text-gray-600 mb-2">The total hours the representative wrote on their timesheet.</p>
-                                <div class="bg-gray-100 p-3 rounded text-sm font-mono text-gray-700 inline-block">
-                                    Manual Entry from Column J
+                            <div class="bg-indigo-50 p-6 rounded-xl border border-indigo-100">
+                                <h3 class="text-xl font-bold text-indigo-800 mb-2">Avg Sales Per Hour</h3>
+                                <p class="text-gray-700 mb-4">How much revenue is generated for every hour worked?</p>
+                                <div class="bg-white p-3 rounded border border-indigo-200 font-mono text-sm text-center text-indigo-900">
+                                    Total Sales $ ÷ Total Claimed Hours
                                 </div>
                             </div>
 
-                            <div class="relative pl-8 border-l-2 border-gray-200">
-                                <div class="absolute -left-3 top-0 bg-red-500 rounded-full w-6 h-6 flex items-center justify-center text-white font-bold text-xs">3</div>
-                                <h4 class="font-bold text-lg text-gray-800">The Difference</h4>
-                                <p class="text-gray-600 mb-2">The discrepancy between what they claimed and what the system computed.</p>
-                                <div class="bg-gray-100 p-3 rounded text-sm font-mono text-gray-700 inline-block">
-                                    Claimed Hours - Computed Hours
-                                </div>
-                                <p class="text-sm mt-2 text-red-500 font-semibold">Positive number = Overclaimed (Paid too much)<br>Negative number = Underclaimed (Worked more than claimed)</p>
-                            </div>
                         </div>
-                    </div>
-                </section>
+                    </section>
 
-                <!-- Section: KPIs -->
-                <section id="kpis" class="mb-24 scroll-mt-24">
-                    <h2 class="text-2xl font-bold brand-dark mb-6">Performance Formulas</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        
-                        <div class="bg-purple-50 p-6 rounded-xl border border-purple-100">
-                            <h3 class="text-xl font-bold text-purple-800 mb-2">Closing Ratio</h3>
-                            <p class="text-gray-700 mb-4">How effective is the rep at closing deals during visits?</p>
-                            <div class="bg-white p-3 rounded border border-purple-200 font-mono text-sm text-center text-purple-900 mb-3">
-                                (Number of Sales ÷ Qualified Visits) × 100
-                            </div>
-                            
-                            <!-- Added Qualified Visits Definition -->
-                            <div class="border-t border-purple-200 pt-3">
-                                <p class="text-xs font-bold text-purple-800 uppercase mb-1">What is a "Qualified Visit"?</p>
-                                <p class="text-xs text-gray-600">The sum of:</p>
-                                <ul class="text-xs text-gray-600 list-disc list-inside">
-                                    <li>New Schools</li>
-                                    <li>School Drop-offs & Pick-ups</li>
-                                    <li>New CCs & CC Follow-ups</li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="bg-orange-50 p-6 rounded-xl border border-orange-100">
-                            <h3 class="text-xl font-bold text-orange-800 mb-2">Avg Purchase Value</h3>
-                            <p class="text-gray-700 mb-4">What is the average dollar amount per sale?</p>
-                            <div class="bg-white p-3 rounded border border-orange-200 font-mono text-sm text-center text-orange-900">
-                                Total Sales $ ÷ Number of Sales
-                            </div>
-                        </div>
-
-                        <div class="bg-indigo-50 p-6 rounded-xl border border-indigo-100">
-                            <h3 class="text-xl font-bold text-indigo-800 mb-2">Avg Sales Per Hour</h3>
-                            <p class="text-gray-700 mb-4">How much revenue is generated for every hour worked?</p>
-                            <div class="bg-white p-3 rounded border border-indigo-200 font-mono text-sm text-center text-indigo-900">
-                                Total Sales $ ÷ Total Claimed Hours
-                            </div>
-                        </div>
-
-                    </div>
-                </section>
-
-            </main>
+                </main>
+            </div>
         </div>
     </div>
 
-    <!-- Simple JS for Sidebar Active State -->
+    <!-- Scripts -->
     <script>
+        // Set lock state initially
+        const LOCKED_STATE = true;
+        const SECRET_PIN = "3927";
+
+        function checkPin(event) {
+            event.preventDefault();
+            const input = document.getElementById('pin-input');
+            const errorMsg = document.getElementById('error-msg');
+            const lockScreen = document.getElementById('lock-screen');
+            const mainContent = document.getElementById('main-content');
+
+            if (input.value === SECRET_PIN) {
+                // Success: Hide lock screen, show content
+                lockScreen.style.opacity = '0';
+                lockScreen.style.transition = 'opacity 0.5s ease';
+                
+                setTimeout(() => {
+                    lockScreen.style.display = 'none';
+                    mainContent.classList.remove('hidden');
+                    // Add fade-in effect to main content
+                    mainContent.style.opacity = '0';
+                    mainContent.style.transition = 'opacity 0.5s ease';
+                    requestAnimationFrame(() => {
+                        mainContent.style.opacity = '1';
+                    });
+                }, 500);
+            } else {
+                // Error
+                errorMsg.classList.remove('hidden');
+                input.value = '';
+                input.classList.add('border-red-500');
+                setTimeout(() => {
+                    input.classList.remove('border-red-500');
+                }, 1000);
+            }
+        }
+
+        // Keep focus on input
+        document.getElementById('lock-screen').addEventListener('click', () => {
+            document.getElementById('pin-input').focus();
+        });
+
         function setActive(element) {
             // Remove active class from all items
             const items = document.querySelectorAll('.nav-item');
