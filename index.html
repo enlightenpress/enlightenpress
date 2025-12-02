@@ -1,380 +1,298 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Technical Documentation | Weekly Timesheet Dashboard</title>
-    
+    <title>Dashboard User Guide</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;500;700&display=swap" rel="stylesheet">
-    
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Simple style for the active nav link */
-        .nav-link.active {
-            color: #2563eb; /* blue-600 */
-            font-weight: 600;
-            border-left-color: #2563eb; /* blue-600 */
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .brand-teal { color: #60C1C1; }
+        .bg-brand-teal { background-color: #60C1C1; }
+        .brand-dark { color: #00556C; }
+        .bg-brand-dark { background-color: #00556C; }
+        
+        /* Smooth scrolling for anchor links */
+        html { scroll-behavior: smooth; }
+        
+        .nav-item.active {
+            background-color: #e0f2f1; /* teal-50 */
+            color: #00556C;
+            border-right: 4px solid #60C1C1;
         }
     </style>
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['Source Code Pro', 'monospace'],
-                    },
-                    // Custom typography styles to change code color
-                    typography: ({ theme }) => ({
-                        DEFAULT: {
-                            css: {
-                                'code': {
-                                    color: theme('colors.indigo.600'),
-                                    fontWeight: '500',
-                                },
-                                'code::before': { content: '""' },
-                                'code::after': { content: '""' },
-                            },
-                        },
-                    }),
-                }
-            }
-        }
-    </script>
 </head>
-<body class="bg-gray-100 font-sans text-gray-700 antialiased">
 
-    <div class="relative lg:grid lg:grid-cols-[280px_1fr] min-h-screen">
-        <aside class="hidden lg:block fixed top-0 left-0 h-full w-[280px] bg-white border-r border-gray-200 p-8">
-            <h3 class="text-sm font-semibold tracking-wide text-gray-900 uppercase">On this page</h3>
-            <nav class="mt-4">
-                <ul id="desktop-nav-links" class="space-y-2 text-gray-500">
-                    <li><a href="#overview" class="nav-link block border-l-2 border-transparent pl-4 py-1 hover:text-blue-600 hover:border-blue-600 transition-colors">Overview</a></li>
-                    <li><a href="#architecture" class="nav-link block border-l-2 border-transparent pl-4 py-1 hover:text-blue-600 hover:border-blue-600 transition-colors">Architecture & Data Flow</a></li>
-                    <li><a href="#configuration" class="nav-link block border-l-2 border-transparent pl-4 py-1 hover:text-blue-600 hover:border-blue-600 transition-colors">Analysis Configuration</a></li>
-                    <li><a href="#flags" class="nav-link block border-l-2 border-transparent pl-4 py-1 hover:text-blue-600 hover:border-blue-600 transition-colors">Visual Flags & Legend</a></li>
-                    <li><a href="#functions" class="nav-link block border-l-2 border-transparent pl-4 py-1 hover:text-blue-600 hover:border-blue-600 transition-colors">Key JavaScript Functions</a></li>
-                    <li><a href="#dependencies" class="nav-link block border-l-2 border-transparent pl-4 py-1 hover:text-blue-600 hover:border-blue-600 transition-colors">Dependencies</a></li>
-                </ul>
-            </nav>
-        </aside>
+<body class="bg-slate-50 text-gray-700">
 
-        <div class="lg:col-start-2">
-            <div class="container mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-                <div class="my-12 sm:my-16 lg:my-20">
-                    
-                    <header class="mb-16">
-                        <h1 class="text-4xl sm:text-5xl font-bold tracking-tighter text-gray-900">Technical Documentation</h1>
-                        <p class="mt-3 text-lg sm:text-xl text-gray-500">Weekly Timesheet Anomaly Detection Dashboard</p>
-                    </header>
-
-                    <main class="space-y-20">
-
-                        <section id="overview">
-                            <h2 class="text-3xl font-bold tracking-tight text-gray-900 mb-8">1. Overview</h2>
-                            <div class="prose prose-lg max-w-none prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline">
-                                <p>
-                                    This document outlines the technical details of the <strong>Weekly Timesheet Dashboard</strong>, a single-page web application designed to run within a Google Apps Script environment. The application fetches timesheet data from a Google Sheet, processes it to identify potential anomalies, and displays it in a user-friendly weekly report format. The frontend is built with vanilla JavaScript and HTML, and is styled with Tailwind CSS. It performs all data processing, analysis, and rendering client-side after receiving the raw data from the Google Apps Script backend.
-                                </p>
-                            </div>
-                        </section>
-
-                        <section id="architecture">
-                            <h2 class="text-3xl font-bold tracking-tight text-gray-900 mb-8">2. Architecture & Data Flow</h2>
-                            <div class="relative pl-8">
-                                <div class="absolute left-[34px] top-12 bottom-12 w-0.5 bg-gray-200"></div>
-                                <div class="space-y-12">
-                                    <div class="relative flex items-start gap-6">
-                                        <div class="flex-shrink-0 w-12 h-12 bg-white border-2 border-blue-500 rounded-full flex items-center justify-center font-bold text-blue-500 z-10">1</div>
-                                        <div class="pt-2">
-                                            <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                                                <i class="material-icons text-gray-500">web</i>
-                                                Initial Load (Client)
-                                            </h3>
-                                            <p class="mt-1 text-gray-600">User opens the web app URL. The <code>index.html</code> file is served.</p>
-                                        </div>
-                                    </div>
-                                    <div class="relative flex items-start gap-6">
-                                        <div class="flex-shrink-0 w-12 h-12 bg-white border-2 border-blue-500 rounded-full flex items-center justify-center font-bold text-blue-500 z-10">2</div>
-                                        <div class="pt-2">
-                                            <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                                                <i class="material-icons text-gray-500">http</i>
-                                                Data Fetching (Client → Server)
-                                            </h3>
-                                            <p class="mt-1 text-gray-600">Client-side JavaScript calls <code>google.script.run</code> to asynchronously request data.</p>
-                                        </div>
-                                    </div>
-                                    <div class="relative flex items-start gap-6">
-                                        <div class="flex-shrink-0 w-12 h-12 bg-white border-2 border-indigo-500 rounded-full flex items-center justify-center font-bold text-indigo-500 z-10">3</div>
-                                        <div class="pt-2">
-                                            <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                                                <i class="material-icons text-gray-500">dns</i>
-                                                Backend Processing (Server)
-                                            </h3>
-                                            <p class="mt-1 text-gray-600">The <code>getDashboardData()</code> function in <code>Code.gs</code> reads data from the Google Sheet.</p>
-                                        </div>
-                                    </div>
-                                    <div class="relative flex items-start gap-6">
-                                        <div class="flex-shrink-0 w-12 h-12 bg-white border-2 border-indigo-500 rounded-full flex items-center justify-center font-bold text-indigo-500 z-10">4</div>
-                                        <div class="pt-2">
-                                            <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                                                <i class="material-icons text-gray-500">unarchive</i>
-                                                Data Return (Server → Client)
-                                            </h3>
-                                            <p class="mt-1 text-gray-600">The server returns the raw timesheet data as a JSON-like object.</p>
-                                        </div>
-                                    </div>
-                                     <div class="relative flex items-start gap-6">
-                                        <div class="flex-shrink-0 w-12 h-12 bg-white border-2 border-blue-500 rounded-full flex items-center justify-center font-bold text-blue-500 z-10">5</div>
-                                        <div class="pt-2">
-                                            <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                                                <i class="material-icons text-gray-500">input</i>
-                                                Client-Side Handling
-                                            </h3>
-                                            <p class="mt-1 text-gray-600">The <code>onDataSuccess</code> callback is triggered, storing the fetched data.</p>
-                                        </div>
-                                    </div>
-                                     <div class="relative flex items-start gap-6">
-                                        <div class="flex-shrink-0 w-12 h-12 bg-white border-2 border-blue-500 rounded-full flex items-center justify-center font-bold text-blue-500 z-10">6</div>
-                                        <div class="pt-2">
-                                            <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                                                <i class="material-icons text-gray-500">grid_view</i>
-                                                UI Initialization
-                                            </h3>
-                                            <p class="mt-1 text-gray-600">The loader is hidden, filters are populated, and the initial report generation begins.</p>
-                                        </div>
-                                    </div>
-                                    <div class="relative flex items-start gap-6">
-                                        <div class="flex-shrink-0 w-12 h-12 bg-white border-2 border-blue-500 rounded-full flex items-center justify-center font-bold text-blue-500 z-10">7</div>
-                                        <div class="pt-2">
-                                            <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                                                <i class="material-icons text-gray-500">analytics</i>
-                                                Analysis & Rendering
-                                            </h3>
-                                            <p class="mt-1 text-gray-600">Data is filtered, processed by <code>processDataForWeek</code>, and rendered into HTML.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-
-                        <section id="configuration">
-                            <h2 class="text-3xl font-bold tracking-tight text-gray-900 mb-8">3. Analysis Configuration</h2>
-                            <div class="prose prose-lg max-w-none mb-6">
-                                <p>
-                                    The core analysis logic is controlled by several constants defined at the top of the client-side script. These values can be tuned to adjust the sensitivity of the anomaly detection.
-                                </p>
-                            </div>
-                            <div class="overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
-                                <table class="w-full text-left text-base">
-                                    <thead class="bg-gray-50 text-gray-800 font-semibold">
-                                        <tr>
-                                            <th class="p-4">Constant Name</th>
-                                            <th class="p-4">Default Value</th>
-                                            <th class="p-4">Description</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-gray-200">
-                                        <tr>
-                                            <td class="p-4 font-mono text-sm text-indigo-600 font-medium">HOME_PROXIMITY_METERS</td>
-                                            <td class="p-4 font-mono text-sm">200</td>
-                                            <td class="p-4 text-gray-600">The radius (in meters) around a rep's home to be considered "Near Home".</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="p-4 font-mono text-sm text-indigo-600 font-medium">CENTER_PROXIMITY_METERS</td>
-                                            <td class="p-4 font-mono text-sm">200</td>
-                                            <td class="p-4 text-gray-600">The radius (in meters) around a business center to be considered "At Center".</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="p-4 font-mono text-sm text-indigo-600 font-medium">REPEATED_LOCATION_RADIUS_METERS</td>
-                                            <td class="p-4 font-mono text-sm">50</td>
-                                            <td class="p-4 text-gray-600">The radius used to group multiple events into a single location cluster.</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="p-4 font-mono text-sm text-indigo-600 font-medium">REPEATED_LOCATION_THRESHOLD</td>
-                                            <td class="p-4 font-mono text-sm">5</td>
-                                            <td class="p-4 text-gray-600">Minimum events in a cluster to be flagged as a "Repeated Location".</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="p-4 font-mono text-sm text-indigo-600 font-medium">SUSPICIOUS_TIME_WINDOW_SECONDS</td>
-                                            <td class="p-4 font-mono text-sm">60</td>
-                                            <td class="p-4 text-gray-600">Time window (seconds) for detecting suspiciously similar check-in/out times.</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="p-4 font-mono text-sm text-indigo-600 font-medium">SUSPICIOUS_TIME_THRESHOLD</td>
-                                            <td class="p-4 font-mono text-sm">3</td>
-                                            <td class="p-4 text-gray-600">Minimum number of days with similar times to trigger a "Time Anomaly" flag.</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </section>
-                        
-                        <section id="flags">
-                            <h2 class="text-3xl font-bold tracking-tight text-gray-900 mb-8">4. Visual Flags & Legend</h2>
-                            <div class="prose prose-lg max-w-none mb-8">
-                                <p>
-                                    To provide at-a-glance insights, the dashboard uses a system of color-coded flags. These flags appear next to events and provide immediate context for potential anomalies.
-                                </p>
-                            </div>
-                            <div class="space-y-6">
-                                <div class="flex items-start gap-4">
-                                    <i class="material-icons text-blue-500 mt-1 text-2xl">schedule</i>
-                                    <div>
-                                        <b class="text-lg font-semibold text-gray-900">Time Anomaly</b>
-                                        <code class="ml-2 !text-xs !font-bold bg-blue-100 text-blue-800 rounded-full px-2 py-1">isSuspiciousTime</code>
-                                        <p class="text-gray-600 mt-1">Indicates that the check-in or out time is suspiciously similar on 3 or more days in the week.</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-start gap-4">
-                                    <i class="material-icons text-purple-500 mt-1 text-2xl">repeat</i>
-                                    <div>
-                                        <b class="text-lg font-semibold text-gray-900">Repeated (Home)</b>
-                                        <code class="ml-2 !text-xs !font-bold bg-purple-100 text-purple-800 rounded-full px-2 py-1">isRepeatedLocationHome</code>
-                                        <p class="text-gray-600 mt-1">Flags 5+ events clustered in the same location, which is also near the rep's home base.</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-start gap-4">
-                                     <i class="material-icons text-teal-500 mt-1 text-2xl">pin_drop</i>
-                                    <div>
-                                        <b class="text-lg font-semibold text-gray-900">Repeated (Away)</b>
-                                        <code class="ml-2 !text-xs !font-bold bg-teal-100 text-teal-800 rounded-full px-2 py-1">isRepeatedLocationAway</code>
-                                        <p class="text-gray-600 mt-1">Flags 5+ events clustered in the same location, but away from the rep's home base.</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-start gap-4">
-                                    <i class="material-icons text-orange-500 mt-1 text-2xl">home</i>
-                                    <div>
-                                        <b class="text-lg font-semibold text-gray-900">Near Home</b>
-                                        <code class="ml-2 !text-xs !font-bold bg-orange-100 text-orange-800 rounded-full px-2 py-1">isNearHome</code>
-                                        <p class="text-gray-600 mt-1">The event occurred within 200m of the rep's designated home base.</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-start gap-4">
-                                    <i class="material-icons text-red-500 mt-1 text-2xl">warning</i>
-                                    <div>
-                                        <b class="text-lg font-semibold text-gray-900">Far From Center</b>
-                                        <code class="ml-2 !text-xs !font-bold bg-red-100 text-red-800 rounded-full px-2 py-1">isFarFromCenter</code>
-                                        <p class="text-gray-600 mt-1">The event is over 200m from the nearest known business center location.</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-start gap-4">
-                                    <i class="material-icons text-green-500 mt-1 text-2xl">location_on</i>
-                                    <div>
-                                        <b class="text-lg font-semibold text-gray-900">At Center</b>
-                                        <code class="ml-2 !text-xs !font-bold bg-green-100 text-green-800 rounded-full px-2 py-1">isAtCenter</code>
-                                        <p class="text-gray-600 mt-1">The event occurred within 200m of a known business center location.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-
-                        <section id="functions">
-                            <h2 class="text-3xl font-bold tracking-tight text-gray-900 mb-8">5. Key JavaScript Functions</h2>
-                            <div class="prose prose-lg max-w-none mb-6">
-                                <p>The application's client-side logic is organized into several key functions, each with a distinct responsibility. The table below outlines these functions and their purposes.</p>
-                            </div>
-                            <div class="overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
-                                <table class="w-full text-left text-base">
-                                    <thead class="bg-gray-50 text-gray-800 font-semibold">
-                                        <tr>
-                                            <th class="p-4 w-1/6">Category</th>
-                                            <th class="p-4 w-1/4">Function Signature</th>
-                                            <th class="p-4">Description</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-gray-200">
-                                        <tr>
-                                            <td class="p-4 align-top font-medium text-gray-800">Data Entry Point</td>
-                                            <td class="p-4 align-top"><code class="font-mono !text-sm !font-medium">onDataSuccess(dataObject)</code></td>
-                                            <td class="p-4 align-top text-gray-600">The primary callback triggered after fetching data. It validates and stores data, populates UI filters, and starts the initial report generation.</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="p-4 align-top font-medium text-gray-800">UI Orchestrator</td>
-                                            <td class="p-4 align-top"><code class="font-mono !text-sm !font-medium">generateReport()</code></td>
-                                            <td class="p-4 align-top text-gray-600">Orchestrates the report creation by reading filter values and calling the processing and rendering functions for each selected representative.</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="p-4 align-top font-medium text-gray-800">Core Analysis Engine</td>
-                                            <td class="p-4 align-top"><code class="font-mono !text-sm !font-medium">processDataForWeek(...)</code></td>
-                                            <td class="p-4 align-top text-gray-600">The heart of the logic. It takes raw data for a single rep and performs all calculations and analysis for the week, returning an object with insights and flags.</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="p-4 align-top font-medium text-gray-800">UI Rendering</td>
-                                            <td class="p-4 align-top"><code class="font-mono !text-sm !font-medium">renderWeeklyReport(...)</code></td>
-                                            <td class="p-4 align-top text-gray-600">Takes processed data and generates the final HTML for a weekly report, creating the grid of day cards and populating them with details and flags.</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="p-4 align-top font-medium text-gray-800" rowspan="4">Utility Functions</td>
-                                            <td class="p-4 align-top"><code class="font-mono !text-sm !font-medium">getDistance(coords1, coords2)</code></td>
-                                            <td class="p-4 align-top text-gray-600">Calculates the Haversine distance in meters.</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="p-4 align-top"><code class="font-mono !text-sm !font-medium">findNearestCenter(targetLatLong)</code></td>
-                                            <td class="p-4 align-top text-gray-600">Finds the closest business center to a given event.</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="p-4 align-top"><code class="font-mono !text-sm !font-medium">formatDate(dateString)<br>formatTime(timeValue)</code></td>
-                                            <td class="p-4 align-top text-gray-600">Standardize date and time display format.</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="p-4 align-top"><code class="font-mono !text-sm !font-medium">getWeekOfMonth(date)</code></td>
-                                            <td class="p-4 align-top text-gray-600">A custom function to determine the week number within a month.</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </section>
-
-                        <section id="dependencies">
-                            <h2 class="text-3xl font-bold tracking-tight text-gray-900 mb-8">6. Dependencies</h2>
-                            <div class="prose prose-lg max-w-none">
-                                <p class="!mb-5">The project relies on a few external libraries, all loaded via CDN for simplicity.</p>
-                                <ul class="!mt-4 space-y-2">
-                                    <li><strong>Tailwind CSS</strong> For all styling and layout.</li>
-                                    <li><strong>Google Fonts (Inter & Source Code Pro)</strong> For typography.</li>
-                                    <li><strong>Google Material Icons</strong> For UI icons.</li>
-                                    <li><strong>Leaflet.js</strong> For the interactive map modal.</li>
-                                </ul>
-                            </div>
-                        </section>
-
-                    </main>
-
-                    <footer class="mt-20 pt-8 border-t border-gray-300 text-center text-sm text-gray-500">
-                        <p>Documentation generated on <span id="generation-date" class="font-medium"></span></p>
-                    </footer>
-
-                </div>
+    <!-- Top Navigation Bar -->
+    <header class="bg-brand-dark text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <i class="material-icons text-brand-teal">dashboard</i>
+                <h1 class="text-xl font-bold tracking-wide">Dashboard Reference Guide</h1>
             </div>
+            <div class="text-sm text-gray-300">For Internal Use</div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col lg:flex-row gap-8">
+
+            <!-- Sidebar Navigation -->
+            <aside class="lg:w-64 flex-shrink-0 hidden lg:block">
+                <nav class="sticky top-24 space-y-1">
+                    <a href="#overview" class="nav-item active block px-4 py-3 font-medium text-gray-600 hover:bg-gray-100 rounded-l transition-colors" onclick="setActive(this)">Overview</a>
+                    <a href="#anomalies" class="nav-item block px-4 py-3 font-medium text-gray-600 hover:bg-gray-100 rounded-l transition-colors" onclick="setActive(this)">🚩 Anomalies & Flags</a>
+                    <a href="#thresholds" class="nav-item block px-4 py-3 font-medium text-gray-600 hover:bg-gray-100 rounded-l transition-colors" onclick="setActive(this)">⚙️ The Logic Rules</a>
+                    <a href="#locations" class="nav-item block px-4 py-3 font-medium text-gray-600 hover:bg-gray-100 rounded-l transition-colors" onclick="setActive(this)">📍 Location Checks</a>
+                    <a href="#calculations" class="nav-item block px-4 py-3 font-medium text-gray-600 hover:bg-gray-100 rounded-l transition-colors" onclick="setActive(this)">🧮 How Math Works</a>
+                    <a href="#kpis" class="nav-item block px-4 py-3 font-medium text-gray-600 hover:bg-gray-100 rounded-l transition-colors" onclick="setActive(this)">📊 KPI Definitions</a>
+                </nav>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="flex-1 min-w-0">
+
+                <!-- Section: Overview -->
+                <section id="overview" class="mb-12 scroll-mt-24">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:p-8">
+                        <h2 class="text-3xl font-bold brand-dark mb-4">What is this dashboard?</h2>
+                        <p class="text-lg leading-relaxed mb-6">
+                            The Weekly Timesheet Dashboard compares what a representative <strong>claims</strong> they did (manual timesheets) against what the <strong>system recorded</strong> (GPS and timestamps). It highlights discrepancies automatically so you don't have to hunt for them.
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                            <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+                                <h3 class="font-bold text-blue-800">Verifies Visits</h3>
+                                <p class="text-sm text-blue-600">Checks if the rep was actually at the location.</p>
+                            </div>
+                            <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
+                                <h3 class="font-bold text-green-800">Calculates Hours</h3>
+                                <p class="text-sm text-green-600">Compares claimed work hours vs. actual GPS timestamps.</p>
+                            </div>
+                            <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-500">
+                                <h3 class="font-bold text-red-800">Flags Anomalies</h3>
+                                <p class="text-sm text-red-600">Highlights late starts, early finishes, and gaps.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section: Thresholds (The Answer to your question) -->
+                <section id="thresholds" class="mb-12 scroll-mt-24">
+                    <div class="bg-white rounded-xl shadow-lg border-2 border-brand-teal p-6 lg:p-8 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-brand-teal text-white px-4 py-1 rounded-bl-lg font-bold text-sm">CRITICAL RULES</div>
+                        <h2 class="text-2xl font-bold brand-dark mb-6 flex items-center">
+                            <i class="material-icons mr-2">gavel</i> Official Thresholds
+                        </h2>
+                        
+                        <p class="mb-6 text-gray-600">These are the exact mathematical rules the code uses to flag behavior.</p>
+
+                        <div class="space-y-6">
+                            <!-- Suspicious Visit Logic -->
+                            <div class="flex items-start">
+                                <div class="bg-yellow-100 text-yellow-800 p-3 rounded-lg mr-4 flex-shrink-0">
+                                    <i class="material-icons text-2xl">schedule</i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-900">"Suspicious Visit Gap"</h3>
+                                    <p class="mt-1 text-gray-600">
+                                        Tagged if there is a gap of <strong>more than 2 hours</strong> between the end of one visit and the start of the next visit on the same day.
+                                    </p>
+                                    <code class="block mt-2 bg-gray-100 p-2 rounded text-sm text-gray-800 border border-gray-300">
+                                        Logic: (Next_Visit_Time - Previous_Visit_Time) > 2 Hours
+                                    </code>
+                                </div>
+                            </div>
+
+                            <hr class="border-gray-100">
+
+                            <!-- Late Check-in -->
+                            <div class="flex items-start">
+                                <div class="bg-red-100 text-red-800 p-3 rounded-lg mr-4 flex-shrink-0">
+                                    <i class="material-icons text-2xl">login</i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-900">Late Check-in</h3>
+                                    <p class="mt-1 text-gray-600">
+                                        Tagged if the first check-in of the day is <strong>after 9:00 AM</strong>.
+                                    </p>
+                                    <p class="text-sm text-gray-500 mt-1 italic">
+                                        (Standard start is 8:00 AM + 1 hour grace period).
+                                    </p>
+                                </div>
+                            </div>
+
+                            <hr class="border-gray-100">
+
+                            <!-- Early Check-out -->
+                            <div class="flex items-start">
+                                <div class="bg-red-100 text-red-800 p-3 rounded-lg mr-4 flex-shrink-0">
+                                    <i class="material-icons text-2xl">logout</i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-900">Early Check-out</h3>
+                                    <p class="mt-1 text-gray-600">
+                                        Tagged if the last check-out of the day is <strong>before 4:00 PM</strong>.
+                                    </p>
+                                    <p class="text-sm text-gray-500 mt-1 italic">
+                                        (Standard end is 5:00 PM - 1 hour grace period).
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section: Anomalies -->
+                <section id="anomalies" class="mb-12 scroll-mt-24">
+                    <h2 class="text-2xl font-bold brand-dark mb-4">Reading the Flags</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        
+                        <!-- Flag Card -->
+                        <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500">
+                            <div class="flex items-center mb-2">
+                                <i class="material-icons text-blue-500 mr-2">schedule</i>
+                                <span class="font-bold text-gray-800">Visit Time Gap</span>
+                            </div>
+                            <p class="text-sm text-gray-600">Indicates a long period of inactivity during the workday (lunch breaks excluded).</p>
+                        </div>
+
+                        <!-- Flag Card -->
+                        <div class="bg-white p-5 rounded-lg shadow border-l-4 border-purple-600">
+                            <div class="flex items-center mb-2">
+                                <i class="material-icons text-purple-600 mr-2">repeat</i>
+                                <span class="font-bold text-gray-800">Repeated (Home)</span>
+                            </div>
+                            <p class="text-sm text-gray-600">Multiple system events occurred at the same location, and that location is <strong>near their home base</strong>.</p>
+                        </div>
+
+                        <!-- Flag Card -->
+                        <div class="bg-white p-5 rounded-lg shadow border-l-4 border-teal-600">
+                            <div class="flex items-center mb-2">
+                                <i class="material-icons text-teal-600 mr-2">repeat</i>
+                                <span class="font-bold text-gray-800">Repeated (Away)</span>
+                            </div>
+                            <p class="text-sm text-gray-600">Multiple system events occurred at the same location, but it is <strong>away from home</strong> (e.g., sitting at a cafe for hours).</p>
+                        </div>
+
+                        <!-- Flag Card -->
+                        <div class="bg-white p-5 rounded-lg shadow border-l-4 border-red-500">
+                            <div class="flex items-center mb-2">
+                                <i class="material-icons text-red-500 mr-2">warning</i>
+                                <span class="font-bold text-gray-800">Far From Center</span>
+                            </div>
+                            <p class="text-sm text-gray-600">The rep claimed to visit a center, but their GPS pin was more than <strong>200 meters</strong> away.</p>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- Section: Calculations -->
+                <section id="calculations" class="mb-12 scroll-mt-24">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:p-8">
+                        <h2 class="text-2xl font-bold brand-dark mb-6">How Hours are Calculated</h2>
+                        
+                        <div class="space-y-8">
+                            <div class="relative pl-8 border-l-2 border-gray-200">
+                                <div class="absolute -left-3 top-0 bg-brand-teal rounded-full w-6 h-6 flex items-center justify-center text-white font-bold text-xs">1</div>
+                                <h4 class="font-bold text-lg text-gray-800">Computed Hours (Net)</h4>
+                                <p class="text-gray-600 mb-2">The time the system believes they worked.</p>
+                                <div class="bg-gray-100 p-3 rounded text-sm font-mono text-gray-700 inline-block">
+                                    (CheckOut Time - CheckIn Time) - Break Duration
+                                </div>
+                            </div>
+
+                            <div class="relative pl-8 border-l-2 border-gray-200">
+                                <div class="absolute -left-3 top-0 bg-brand-dark rounded-full w-6 h-6 flex items-center justify-center text-white font-bold text-xs">2</div>
+                                <h4 class="font-bold text-lg text-gray-800">Claimed Hours (Raw)</h4>
+                                <p class="text-gray-600 mb-2">The total hours the representative wrote on their timesheet.</p>
+                                <div class="bg-gray-100 p-3 rounded text-sm font-mono text-gray-700 inline-block">
+                                    Manual Entry from Column J
+                                </div>
+                            </div>
+
+                            <div class="relative pl-8 border-l-2 border-gray-200">
+                                <div class="absolute -left-3 top-0 bg-red-500 rounded-full w-6 h-6 flex items-center justify-center text-white font-bold text-xs">3</div>
+                                <h4 class="font-bold text-lg text-gray-800">The Difference</h4>
+                                <p class="text-gray-600 mb-2">The discrepancy between what they claimed and what the system computed.</p>
+                                <div class="bg-gray-100 p-3 rounded text-sm font-mono text-gray-700 inline-block">
+                                    Claimed Hours - Computed Hours
+                                </div>
+                                <p class="text-sm mt-2 text-red-500 font-semibold">Positive number = Overclaimed (Paid too much)<br>Negative number = Underclaimed (Worked more than claimed)</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section: KPIs -->
+                <section id="kpis" class="mb-24 scroll-mt-24">
+                    <h2 class="text-2xl font-bold brand-dark mb-6">Performance Formulas</h2>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        
+                        <div class="bg-purple-50 p-6 rounded-xl border border-purple-100">
+                            <h3 class="text-xl font-bold text-purple-800 mb-2">Closing Ratio</h3>
+                            <p class="text-gray-700 mb-4">How effective is the rep at closing deals during visits?</p>
+                            <div class="bg-white p-3 rounded border border-purple-200 font-mono text-sm text-center text-purple-900">
+                                (Number of Sales ÷ Qualified Visits) × 100
+                            </div>
+                        </div>
+
+                        <div class="bg-indigo-50 p-6 rounded-xl border border-indigo-100">
+                            <h3 class="text-xl font-bold text-indigo-800 mb-2">Avg Sales Per Hour</h3>
+                            <p class="text-gray-700 mb-4">How much revenue is generated for every hour worked?</p>
+                            <div class="bg-white p-3 rounded border border-indigo-200 font-mono text-sm text-center text-indigo-900">
+                                Total Sales $ ÷ Total Claimed Hours
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+            </main>
         </div>
     </div>
 
+    <!-- Simple JS for Sidebar Active State -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('generation-date').textContent = new Date().toUTCString();
+        function setActive(element) {
+            // Remove active class from all items
+            const items = document.querySelectorAll('.nav-item');
+            items.forEach(item => {
+                item.classList.remove('active');
+                item.classList.remove('bg-teal-50');
+                item.classList.remove('border-r-4');
+                item.classList.remove('border-teal-400');
+            });
 
-            const sections = document.querySelectorAll('main section');
-            const navLinks = document.querySelectorAll('.nav-link');
-            
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        navLinks.forEach(link => {
-                            link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
-                        });
-                    }
-                });
-            }, { rootMargin: "-50% 0px -50% 0px" }); // Activate when section is in the middle of the viewport
+            // Add active class to clicked item
+            element.classList.add('active');
+        }
+
+        // Highlight sidebar on scroll
+        window.addEventListener('scroll', () => {
+            let current = '';
+            const sections = document.querySelectorAll('section');
+            const navItems = document.querySelectorAll('.nav-item');
 
             sections.forEach(section => {
-                observer.observe(section);
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 150) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('href').includes(current)) {
+                    item.classList.add('active');
+                }
             });
         });
     </script>
