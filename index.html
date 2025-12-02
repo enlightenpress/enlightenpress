@@ -49,9 +49,8 @@
             <aside class="lg:w-64 flex-shrink-0 hidden lg:block">
                 <nav class="sticky top-24 space-y-1">
                     <a href="#overview" class="nav-item active block px-4 py-3 font-medium text-gray-600 hover:bg-gray-100 rounded-l transition-colors" onclick="setActive(this)">Overview</a>
-                    <a href="#anomalies" class="nav-item block px-4 py-3 font-medium text-gray-600 hover:bg-gray-100 rounded-l transition-colors" onclick="setActive(this)">🚩 Anomalies & Flags</a>
                     <a href="#thresholds" class="nav-item block px-4 py-3 font-medium text-gray-600 hover:bg-gray-100 rounded-l transition-colors" onclick="setActive(this)">⚙️ The Logic Rules</a>
-                    <a href="#locations" class="nav-item block px-4 py-3 font-medium text-gray-600 hover:bg-gray-100 rounded-l transition-colors" onclick="setActive(this)">📍 Location Checks</a>
+                    <a href="#anomalies" class="nav-item block px-4 py-3 font-medium text-gray-600 hover:bg-gray-100 rounded-l transition-colors" onclick="setActive(this)">🚩 Anomalies & Flags</a>
                     <a href="#calculations" class="nav-item block px-4 py-3 font-medium text-gray-600 hover:bg-gray-100 rounded-l transition-colors" onclick="setActive(this)">🧮 How Math Works</a>
                     <a href="#kpis" class="nav-item block px-4 py-3 font-medium text-gray-600 hover:bg-gray-100 rounded-l transition-colors" onclick="setActive(this)">📊 KPI Definitions</a>
                 </nav>
@@ -84,7 +83,7 @@
                     </div>
                 </section>
 
-                <!-- Section: Thresholds (The Answer to your question) -->
+                <!-- Section: Thresholds -->
                 <section id="thresholds" class="mb-12 scroll-mt-24">
                     <div class="bg-white rounded-xl shadow-lg border-2 border-brand-teal p-6 lg:p-8 relative overflow-hidden">
                         <div class="absolute top-0 right-0 bg-brand-teal text-white px-4 py-1 rounded-bl-lg font-bold text-sm">CRITICAL RULES</div>
@@ -146,6 +145,26 @@
                                     </p>
                                 </div>
                             </div>
+
+                            <hr class="border-gray-100">
+
+                            <!-- Location Logic -->
+                            <div class="flex items-start">
+                                <div class="bg-indigo-100 text-indigo-800 p-3 rounded-lg mr-4 flex-shrink-0">
+                                    <i class="material-icons text-2xl">gps_fixed</i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-900">Location Proximity Rules</h3>
+                                    <p class="mt-1 text-gray-600">
+                                        The system uses a strict <strong>200 meter radius</strong> for all spatial validations:
+                                    </p>
+                                    <ul class="list-disc list-inside mt-2 text-sm text-gray-600 space-y-1">
+                                        <li><strong>At Center:</strong> GPS pin is within 200m of Center coordinates.</li>
+                                        <li><strong>Near Home:</strong> GPS pin is within 200m of Home Base.</li>
+                                        <li><strong>Repeated Cluster:</strong> Multiple events occurring within 200m of each other.</li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -170,7 +189,7 @@
                                 <i class="material-icons text-purple-600 mr-2">repeat</i>
                                 <span class="font-bold text-gray-800">Repeated (Home)</span>
                             </div>
-                            <p class="text-sm text-gray-600">Multiple system events occurred at the same location, and that location is <strong>near their home base</strong>.</p>
+                            <p class="text-sm text-gray-600">Multiple system events occurred at the same location, and that location is <strong>within 200m of their home base</strong>.</p>
                         </div>
 
                         <!-- Flag Card -->
@@ -234,13 +253,32 @@
                 <!-- Section: KPIs -->
                 <section id="kpis" class="mb-24 scroll-mt-24">
                     <h2 class="text-2xl font-bold brand-dark mb-6">Performance Formulas</h2>
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         
                         <div class="bg-purple-50 p-6 rounded-xl border border-purple-100">
                             <h3 class="text-xl font-bold text-purple-800 mb-2">Closing Ratio</h3>
                             <p class="text-gray-700 mb-4">How effective is the rep at closing deals during visits?</p>
-                            <div class="bg-white p-3 rounded border border-purple-200 font-mono text-sm text-center text-purple-900">
+                            <div class="bg-white p-3 rounded border border-purple-200 font-mono text-sm text-center text-purple-900 mb-3">
                                 (Number of Sales ÷ Qualified Visits) × 100
+                            </div>
+                            
+                            <!-- Added Qualified Visits Definition -->
+                            <div class="border-t border-purple-200 pt-3">
+                                <p class="text-xs font-bold text-purple-800 uppercase mb-1">What is a "Qualified Visit"?</p>
+                                <p class="text-xs text-gray-600">The sum of:</p>
+                                <ul class="text-xs text-gray-600 list-disc list-inside">
+                                    <li>New Schools</li>
+                                    <li>School Drop-offs & Pick-ups</li>
+                                    <li>New CCs & CC Follow-ups</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="bg-orange-50 p-6 rounded-xl border border-orange-100">
+                            <h3 class="text-xl font-bold text-orange-800 mb-2">Avg Purchase Value</h3>
+                            <p class="text-gray-700 mb-4">What is the average dollar amount per sale?</p>
+                            <div class="bg-white p-3 rounded border border-orange-200 font-mono text-sm text-center text-orange-900">
+                                Total Sales $ ÷ Number of Sales
                             </div>
                         </div>
 
