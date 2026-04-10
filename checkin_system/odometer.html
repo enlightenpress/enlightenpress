@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Odometer Tracker — Documentation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    :root {
+      --teal:      #60C1C1;
+      --dark-teal: #00556C;
+      --light-teal:#e6f7f7;
+      --coral:     #F26F62;
+      --bg:        #f8fafc;
+      --white:     #ffffff;
+      --gray-50:   #f9fafb;
+      --gray-100:  #f3f4f6;
+      --gray-200:  #e5e7eb;
+      --gray-300:  #d1d5db;
+      --gray-500:  #6b7280;
+      --gray-700:  #374151;
+      --gray-800:  #1f2937;
+      --green:     #16a34a;
+      --green-bg:  #dcfce7;
+      --yellow:    #ca8a04;
+      --yellow-bg: #fef9c3;
+      --red:       #dc2626;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--gray-800);
+      line-height: 1.7;
+    }
+
+    /* ── SCROLLBAR ─────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--gray-100); }
+    ::-webkit-scrollbar-thumb { background: var(--teal); border-radius: 4px; }
+
+    /* ── NAV ───────────────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--dark-teal);
+      color: white;
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+      box-shadow: 0 2px 12px rgba(0,85,108,.35);
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      font-weight: 800;
+      font-size: 1.05rem;
+      letter-spacing: -.01em;
+    }
+    .nav-brand span { color: var(--teal); }
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
+    .nav-links a {
+      color: rgba(255,255,255,.75);
+      text-decoration: none;
+      font-size: .85rem;
+      font-weight: 500;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--teal); }
+    @media (max-width: 720px) { .nav-links { display: none; } }
+
+    /* ── HERO ──────────────────────────────────────────── */
+    .hero {
+      background: linear-gradient(135deg, var(--dark-teal) 0%, #007a96 60%, var(--teal) 100%);
+      color: white;
+      padding: 5rem 2rem 4rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 320px; height: 320px;
+      background: rgba(96,193,193,.15);
+      border-radius: 50%;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -60px; left: -60px;
+      width: 240px; height: 240px;
+      background: rgba(255,255,255,.06);
+      border-radius: 50%;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.25);
+      border-radius: 999px;
+      padding: .3rem .9rem;
+      font-size: .8rem;
+      font-weight: 600;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 900;
+      letter-spacing: -.03em;
+      line-height: 1.1;
+      margin-bottom: .75rem;
+    }
+    .hero h1 span { color: var(--teal); }
+    .hero p {
+      font-size: 1.1rem;
+      opacity: .85;
+      max-width: 540px;
+      margin: 0 auto 2rem;
+    }
+    .hero-meta {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .hero-meta-item {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      font-size: .85rem;
+      opacity: .75;
+    }
+
+    /* ── CONTENT LAYOUT ────────────────────────────────── */
+    .page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+
+    /* ── SECTION ───────────────────────────────────────── */
+    .section { margin-bottom: 4rem; }
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: .5rem;
+    }
+    .section h2 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--dark-teal);
+      letter-spacing: -.02em;
+      margin-bottom: .5rem;
+    }
+    .section .lead {
+      font-size: 1.05rem;
+      color: var(--gray-500);
+      margin-bottom: 2rem;
+      max-width: 680px;
+    }
+    .divider {
+      border: none;
+      border-top: 2px solid var(--gray-200);
+      margin: 3.5rem 0;
+    }
+
+    /* ── CARDS ─────────────────────────────────────────── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+    }
+    .card {
+      background: var(--white);
+      border: 1.5px solid var(--gray-200);
+      border-radius: 14px;
+      padding: 1.5rem;
+      box-shadow: 0 1px 4px rgba(0,0,0,.05);
+      transition: box-shadow .2s, border-color .2s;
+    }
+    .card:hover {
+      box-shadow: 0 4px 20px rgba(0,85,108,.1);
+      border-color: var(--teal);
+    }
+    .card-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1rem;
+      font-size: 1.4rem;
+    }
+    .card-icon.teal   { background: var(--light-teal); color: var(--dark-teal); }
+    .card-icon.coral  { background: #fde8e6; color: var(--coral); }
+    .card-icon.green  { background: var(--green-bg); color: var(--green); }
+    .card-icon.yellow { background: var(--yellow-bg); color: var(--yellow); }
+    .card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--dark-teal);
+      margin-bottom: .35rem;
+    }
+    .card p {
+      font-size: .9rem;
+      color: var(--gray-500);
+      line-height: 1.6;
+    }
+
+    /* ── FLOW DIAGRAM ──────────────────────────────────── */
+    .flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0;
+      margin: 2rem 0;
+    }
+    .flow-step {
+      background: var(--white);
+      border: 2px solid var(--teal);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      text-align: center;
+      min-width: 130px;
+      max-width: 160px;
+    }
+    .flow-step .flow-icon {
+      font-size: 1.6rem;
+      margin-bottom: .4rem;
+    }
+    .flow-step .flow-title {
+      font-size: .8rem;
+      font-weight: 700;
+      color: var(--dark-teal);
+    }
+    .flow-step .flow-sub {
+      font-size: .72rem;
+      color: var(--gray-500);
+      margin-top: .2rem;
+    }
+    .flow-arrow {
+      font-size: 1.5rem;
+      color: var(--teal);
+      padding: 0 .5rem;
+      font-weight: 700;
+    }
+    @media (max-width: 600px) {
+      .flow { flex-direction: column; }
+      .flow-arrow { transform: rotate(90deg); }
+    }
+
+    /* ── TABLE ─────────────────────────────────────────── */
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 12px;
+      border: 1.5px solid var(--gray-200);
+      box-shadow: 0 1px 4px rgba(0,0,0,.04);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .9rem;
+    }
+    thead tr {
+      background: var(--dark-teal);
+      color: white;
+    }
+    thead th {
+      padding: .85rem 1.1rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: .82rem;
+      letter-spacing: .02em;
+    }
+    tbody tr {
+      border-bottom: 1px solid var(--gray-100);
+      transition: background .15s;
+    }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--light-teal); }
+    tbody td {
+      padding: .8rem 1.1rem;
+      color: var(--gray-700);
+      vertical-align: top;
+    }
+    td .pill {
+      display: inline-block;
+      padding: .2rem .65rem;
+      border-radius: 999px;
+      font-size: .75rem;
+      font-weight: 600;
+    }
+    .pill-teal   { background: var(--light-teal); color: var(--dark-teal); }
+    .pill-gray   { background: var(--gray-100); color: var(--gray-500); }
+    .pill-green  { background: var(--green-bg); color: var(--green); }
+    .pill-yellow { background: var(--yellow-bg); color: var(--yellow); }
+    .pill-coral  { background: #fde8e6; color: var(--coral); }
+
+    /* ── CALLOUT BOXES ─────────────────────────────────── */
+    .callout {
+      border-left: 4px solid var(--teal);
+      background: var(--light-teal);
+      border-radius: 0 10px 10px 0;
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      display: flex;
+      gap: .75rem;
+      align-items: flex-start;
+    }
+    .callout.warn  { border-color: var(--yellow); background: var(--yellow-bg); }
+    .callout.error { border-color: var(--red); background: #fef2f2; }
+    .callout.success { border-color: var(--green); background: var(--green-bg); }
+    .callout i { font-size: 1.3rem; color: var(--dark-teal); margin-top: .05rem; flex-shrink: 0; }
+    .callout.warn i { color: var(--yellow); }
+    .callout.error i { color: var(--red); }
+    .callout.success i { color: var(--green); }
+    .callout p { font-size: .92rem; color: var(--gray-700); }
+    .callout strong { color: var(--gray-800); }
+
+    /* ── STATUS BADGES DEMO ────────────────────────────── */
+    .badge-demo {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .badge-item {
+      background: var(--white);
+      border: 1.5px solid var(--gray-200);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: flex-start;
+      gap: .75rem;
+      flex: 1;
+      min-width: 200px;
+    }
+    .badge-item .badge {
+      display: inline-block;
+      padding: .25rem .75rem;
+      border-radius: 999px;
+      font-size: .78rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .badge-green  { background: #dcfce7; color: #166534; }
+    .badge-yellow { background: #fef9c3; color: #854d0e; }
+    .badge-gray   { background: #f3f4f6; color: #6b7280; }
+    .badge-desc { font-size: .85rem; color: var(--gray-500); line-height: 1.5; margin-top: .35rem; }
+
+    /* ── DAY CARD DEMO ─────────────────────────────────── */
+    .day-card-demo {
+      background: var(--white);
+      border: 2px solid #86efac;
+      border-radius: 12px;
+      padding: 1.1rem 1.25rem;
+      max-width: 320px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    }
+    .day-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: .75rem;
+    }
+    .day-card-header .day-name {
+      font-weight: 700;
+      color: var(--gray-800);
+    }
+    .day-card-header .day-date {
+      font-size: .82rem;
+      color: var(--gray-500);
+      margin-left: .4rem;
+    }
+    .day-reading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: .35rem 0;
+    }
+    .day-reading .label {
+      display: flex;
+      align-items: center;
+      gap: .3rem;
+      font-size: .88rem;
+      color: var(--gray-500);
+    }
+    .day-reading .value {
+      font-family: 'Courier New', monospace;
+      font-weight: 700;
+      color: var(--gray-800);
+      font-size: .95rem;
+    }
+    .day-divider { border-top: 1px solid var(--gray-200); margin: .5rem 0; }
+    .day-km {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .day-km .label {
+      font-weight: 700;
+      color: var(--gray-700);
+      font-size: .88rem;
+    }
+    .day-km .value {
+      font-family: 'Courier New', monospace;
+      font-weight: 900;
+      font-size: 1.5rem;
+      color: var(--dark-teal);
+    }
+
+    /* ── WEEK BLOCK DEMO ───────────────────────────────── */
+    .week-demo {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1.5px solid var(--gray-200);
+      margin: 1.5rem 0;
+    }
+    .week-demo-header {
+      background: rgba(96,193,193,.12);
+      border-top: 3px solid var(--teal);
+      padding: .75rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: .88rem;
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+    .week-demo-header .title { font-weight: 700; color: var(--dark-teal); }
+    .week-demo-header .stats { color: var(--gray-500); }
+    .week-demo-header .stats strong { color: var(--dark-teal); }
+    .week-demo-footer {
+      background: var(--dark-teal);
+      color: white;
+      padding: .75rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: .88rem;
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+    .week-demo-footer .total { font-weight: 700; }
+    .week-demo-footer .meta { opacity: .75; font-size: .8rem; }
+    .week-demo-body {
+      padding: .75rem;
+      background: var(--white);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: .6rem;
+    }
+    .mini-card {
+      background: var(--gray-50);
+      border: 1.5px solid var(--gray-200);
+      border-radius: 8px;
+      padding: .6rem .75rem;
+      font-size: .78rem;
+    }
+    .mini-card.complete { border-color: #86efac; background: #f0fdf4; }
+    .mini-card.incomplete { border-color: #fde047; background: #fefce8; }
+    .mini-card .mc-day { font-weight: 700; color: var(--gray-800); }
+    .mini-card .mc-km { font-weight: 700; color: var(--dark-teal); margin-top: .2rem; }
+    @media (max-width: 520px) { .week-demo-body { grid-template-columns: 1fr 1fr; } }
+
+    /* ── FEATURE LIST ──────────────────────────────────── */
+    .feature-list { list-style: none; }
+    .feature-list li {
+      display: flex;
+      gap: .75rem;
+      align-items: flex-start;
+      padding: .75rem 0;
+      border-bottom: 1px solid var(--gray-100);
+    }
+    .feature-list li:last-child { border-bottom: none; }
+    .feature-list li i {
+      color: var(--teal);
+      font-size: 1.2rem;
+      margin-top: .1rem;
+      flex-shrink: 0;
+    }
+    .feature-list li .feat-title { font-weight: 600; color: var(--gray-800); }
+    .feature-list li .feat-desc  { font-size: .88rem; color: var(--gray-500); line-height: 1.5; }
+
+    /* ── STEP LIST ─────────────────────────────────────── */
+    .steps { counter-reset: step-counter; list-style: none; }
+    .steps li {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+    }
+    .step-num {
+      counter-increment: step-counter;
+      flex-shrink: 0;
+      width: 32px; height: 32px;
+      background: var(--dark-teal);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: .85rem;
+    }
+    .step-num::before { content: counter(step-counter); }
+    .step-body .step-title { font-weight: 700; color: var(--dark-teal); margin-bottom: .2rem; }
+    .step-body p { font-size: .9rem; color: var(--gray-500); line-height: 1.6; }
+
+    /* ── TOC ───────────────────────────────────────────── */
+    .toc {
+      background: var(--white);
+      border: 1.5px solid var(--gray-200);
+      border-radius: 14px;
+      padding: 1.5rem 1.75rem;
+      margin-bottom: 3rem;
+    }
+    .toc h3 {
+      font-size: .8rem;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      font-weight: 700;
+      color: var(--gray-500);
+      margin-bottom: 1rem;
+    }
+    .toc ol {
+      list-style: none;
+      counter-reset: toc-counter;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: .4rem .75rem;
+    }
+    .toc ol li { counter-increment: toc-counter; }
+    .toc ol li a {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      text-decoration: none;
+      color: var(--dark-teal);
+      font-size: .88rem;
+      font-weight: 500;
+      padding: .35rem .5rem;
+      border-radius: 6px;
+      transition: background .15s;
+    }
+    .toc ol li a::before {
+      content: counter(toc-counter, decimal-leading-zero);
+      font-size: .72rem;
+      font-weight: 700;
+      color: var(--teal);
+      min-width: 22px;
+    }
+    .toc ol li a:hover { background: var(--light-teal); }
+
+    /* ── FOOTER ────────────────────────────────────────── */
+    footer {
+      background: var(--dark-teal);
+      color: rgba(255,255,255,.7);
+      text-align: center;
+      padding: 2rem;
+      font-size: .85rem;
+    }
+    footer strong { color: white; }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ──────────────────────────────────────────────────── -->
+<nav>
+  <div class="nav-brand">
+    <i class="material-icons" style="color:var(--teal);font-size:1.3rem;">speed</i>
+    Odometer Tracker <span>&nbsp;Docs</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#how-it-works">How It Works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#data">Data Structure</a></li>
+    <li><a href="#report">Reading the Report</a></li>
+    <li><a href="#tech">Technical Notes</a></li>
+  </ul>
+</nav>
+
+<!-- ── HERO ─────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-badge">
+    <i class="material-icons" style="font-size:.9rem;">description</i>
+    System Documentation
+  </div>
+  <h1>Odometer Tracker<br /><span>Documentation</span></h1>
+  <p>A complete guide to how the Odometer Tracker works — written for everyone, from the day-to-day user to the decision-maker in the room.</p>
+  <div class="hero-meta">
+    <div class="hero-meta-item"><i class="material-icons" style="font-size:1rem;">cloud</i> Google Apps Script Web App</div>
+    <div class="hero-meta-item"><i class="material-icons" style="font-size:1rem;">table_chart</i> Powered by Google Sheets</div>
+    <div class="hero-meta-item"><i class="material-icons" style="font-size:1rem;">devices</i> Desktop &amp; Mobile Ready</div>
+  </div>
+</section>
+
+<!-- ── MAIN ──────────────────────────────────────────────────── -->
+<main class="page">
+
+  <!-- TABLE OF CONTENTS -->
+  <div class="toc">
+    <h3>Table of Contents</h3>
+    <ol>
+      <li><a href="#overview">What is the Odometer Tracker?</a></li>
+      <li><a href="#how-it-works">How the System Works</a></li>
+      <li><a href="#data-flow">Data Flow Step by Step</a></li>
+      <li><a href="#features">Feature Overview</a></li>
+      <li><a href="#filters">Using the Filters</a></li>
+      <li><a href="#report">Reading the Report</a></li>
+      <li><a href="#day-cards">Day Cards Explained</a></li>
+      <li><a href="#status-badges">Status Badges</a></li>
+      <li><a href="#navigation">Navigation &amp; Sidebar</a></li>
+      <li><a href="#data">Data Structure (Google Sheets)</a></li>
+      <li><a href="#refresh">Refreshing Data</a></li>
+      <li><a href="#photos">Viewing Odometer Photos</a></li>
+      <li><a href="#tech">Technical Architecture</a></li>
+    </ol>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────────────
+       1. WHAT IS IT
+  ──────────────────────────────────────────────────────────── -->
+  <section class="section" id="overview">
+    <div class="section-label"><i class="material-icons" style="font-size:.9rem;">info</i> Introduction</div>
+    <h2>What is the Odometer Tracker?</h2>
+    <p class="lead">A live dashboard that automatically pulls odometer readings from field reps and turns them into clear, week-by-week kilometre reports.</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon teal"><i class="material-icons">speed</i></div>
+        <h3>What it tracks</h3>
+        <p>Each sales rep's vehicle odometer reading at the <strong>start and end of every working day</strong>, giving an accurate picture of how far they drove.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon green"><i class="material-icons">calculate</i></div>
+        <h3>What it calculates</h3>
+        <p>The <strong>daily kilometres driven</strong> (end reading minus start reading), plus weekly totals and a daily average — all calculated automatically.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon coral"><i class="material-icons">photo_camera</i></div>
+        <h3>Photo verification</h3>
+        <p>Reps submit a <strong>photo of the odometer</strong> at check-in and check-out. Managers can click to view the actual image at any time.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon yellow"><i class="material-icons">people</i></div>
+        <h3>Multiple reps</h3>
+        <p>View a single rep or <strong>all reps at once</strong>, each with their own complete report card — side by side for easy comparison.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────────────────────────
+       2. HOW IT WORKS
+  ──────────────────────────────────────────────────────────── -->
+  <section class="section" id="how-it-works">
+    <div class="section-label"><i class="material-icons" style="font-size:.9rem;">hub</i> System Architecture</div>
+    <h2>How the System Works</h2>
+    <p class="lead">The tracker connects three pieces together: the reps' data submissions, a Google Sheet that stores everything, and this dashboard that reads and displays it beautifully.</p>
+
+    <div class="flow">
+      <div class="flow-step">
+        <div class="flow-icon">📱</div>
+        <div class="flow-title">Field Reps</div>
+        <div class="flow-sub">Submit check-in &amp; check-out with odometer reading + photo</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="flow-icon">📊</div>
+        <div class="flow-title">Google Sheet</div>
+        <div class="flow-sub">All submissions stored as rows with date, status, readings &amp; images</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="flow-icon">⚙️</div>
+        <div class="flow-title">Apps Script</div>
+        <div class="flow-sub">Server-side code reads the sheet and serves data to the dashboard</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="flow-icon">🖥️</div>
+        <div class="flow-title">Dashboard</div>
+        <div class="flow-sub">Displays filtered, calculated reports with navigation &amp; photo viewer</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <i class="material-icons">lightbulb</i>
+      <p><strong>In plain English:</strong> Think of it like a digital logbook. Every morning a rep records their odometer reading when they start driving, and every evening when they finish. This tool reads all those records and instantly shows you a clean report of how far everyone drove — by day, by week, or across any date range you choose.</p>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────────────────────────
+       3. DATA FLOW
+  ──────────────────────────────────────────────────────────── -->
+  <section class="section" id="data-flow">
+    <div class="section-label"><i class="material-icons" style="font-size:.9rem;">account_tree</i> Process</div>
+    <h2>Data Flow — Step by Step</h2>
+    <p class="lead">Here is exactly what happens from when you open the dashboard to when you see a completed report.</p>
+
+    <ol class="steps">
+      <li>
+        <div class="step-num"></div>
+        <div class="step-body">
+          <div class="step-title">Dashboard loads</div>
+          <p>When you open the web app, it immediately contacts the Google Apps Script server and calls the <code>getDashboardData()</code> function. A spinning loader is shown while this is happening.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-num"></div>
+        <div class="step-body">
+          <div class="step-title">Server reads Google Sheets</div>
+          <p>The server reads every rep's sheet — each rep has their own tab in the Google Sheet. The data is read and sent back to the dashboard as a structured package. To avoid reading the sheet every single time, the server caches the data (stores a temporary copy). This makes subsequent loads much faster.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-num"></div>
+        <div class="step-body">
+          <div class="step-title">Filters are set up</div>
+          <p>The dashboard populates the rep dropdown with all known rep names, sorted alphabetically. The date range is automatically set to the current Monday–Friday working week so you see today's data immediately.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-num"></div>
+        <div class="step-body">
+          <div class="step-title">Report is generated</div>
+          <p>The dashboard matches each row of data to a date, pairs up <em>Check In</em> and <em>Check Out</em> records, subtracts start from end odometer to get daily KM, then groups the days into Monday–Friday weeks before rendering the cards you see on screen.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-num"></div>
+        <div class="step-body">
+          <div class="step-title">Navigation is set up</div>
+          <p>After the report renders, the sidebar (desktop) and mobile pills are built out so you can jump between reps instantly. A scroll-aware sticky header also activates so you always know which rep's data you are looking at.</p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────────────────────────
+       4. FEATURES
+  ──────────────────────────────────────────────────────────── -->
+  <section class="section" id="features">
+    <div class="section-label"><i class="material-icons" style="font-size:.9rem;">star</i> Features</div>
+    <h2>Feature Overview</h2>
+    <p class="lead">A summary of everything the Odometer Tracker can do.</p>
+
+    <ul class="feature-list">
+      <li>
+        <i class="material-icons">filter_alt</i>
+        <div>
+          <div class="feat-title">Flexible Date Range Filtering</div>
+          <div class="feat-desc">Pick any start and end date to view historical data, run a custom period report, or focus on a specific week. The dashboard defaults to the current Mon–Fri for instant daily visibility.</div>
+        </div>
+      </li>
+      <li>
+        <i class="material-icons">person</i>
+        <div>
+          <div class="feat-title">Individual or All-Reps View</div>
+          <div class="feat-desc">Use the rep selector to view a single rep in isolation, or choose "All Reps" to generate a complete report for everyone at once — each rep gets their own clearly labelled section.</div>
+        </div>
+      </li>
+      <li>
+        <i class="material-icons">calendar_today</i>
+        <div>
+          <div class="feat-title">Automatic Week Grouping</div>
+          <div class="feat-desc">Days are automatically grouped into Monday–Friday working weeks. Each week shows a header with running totals and an average, plus a summary bar at the bottom.</div>
+        </div>
+      </li>
+      <li>
+        <i class="material-icons">calculate</i>
+        <div>
+          <div class="feat-title">Automatic KM Calculation</div>
+          <div class="feat-desc">The system calculates daily KM automatically: it takes the end-of-day odometer reading and subtracts the start-of-day reading. No manual arithmetic required.</div>
+        </div>
+      </li>
+      <li>
+        <i class="material-icons">photo_camera</i>
+        <div>
+          <div class="feat-title">Photo Verification</div>
+          <div class="feat-desc">Every odometer reading can be backed by a photo. A camera icon appears next to any reading where a photo was submitted. Clicking it opens the image in full screen in a new browser tab, loading it directly from Google Drive.</div>
+        </div>
+      </li>
+      <li>
+        <i class="material-icons">sidebar</i>
+        <div>
+          <div class="feat-title">Rep Sidebar (Desktop)</div>
+          <div class="feat-desc">On larger screens, a fixed sidebar on the left lists all reps in the current report. Clicking a name scrolls directly to that rep's section. The currently visible rep is automatically highlighted as you scroll.</div>
+        </div>
+      </li>
+      <li>
+        <i class="material-icons">smartphone</i>
+        <div>
+          <div class="feat-title">Mobile Navigation Pills</div>
+          <div class="feat-desc">On phones and tablets, a horizontal scrollable row of rep name pills appears below the filters. Tapping a pill jumps to that rep's data.</div>
+        </div>
+      </li>
+      <li>
+        <i class="material-icons">push_pin</i>
+        <div>
+          <div class="feat-title">Sticky Rep Header</div>
+          <div class="feat-desc">As you scroll down through a long report, a sticky banner slides in at the top of the screen showing the name of the rep whose data is currently in view. This prevents losing track of which rep you are looking at.</div>
+        </div>
+      </li>
+      <li>
+        <i class="material-icons">cached</i>
+        <div>
+          <div class="feat-title">Data Refresh</div>
+          <div class="feat-desc">The "Refresh Data" button clears the server cache and re-reads the Google Sheet from scratch. Use this to pull in new submissions that were added after the dashboard was initially loaded.</div>
+        </div>
+      </li>
+      <li>
+        <i class="material-icons">devices</i>
+        <div>
+          <div class="feat-title">Fully Responsive Design</div>
+          <div class="feat-desc">The layout adapts to any screen size. Day cards reflow from a 3-column grid on desktop down to a single column on mobile. All headers and summaries also restructure gracefully.</div>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────────────────────────
+       5. FILTERS
+  ──────────────────────────────────────────────────────────── -->
+  <section class="section" id="filters">
+    <div class="section-label"><i class="material-icons" style="font-size:.9rem;">filter_list</i> Controls</div>
+    <h2>Using the Filters</h2>
+    <p class="lead">At the top of the dashboard is a filter bar with four controls. Here is what each one does.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Control</th>
+            <th>What it does</th>
+            <th>Default</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Select Rep</strong></td>
+            <td>Choose a single rep by name, or select "All Reps" to see everyone at once.</td>
+            <td><span class="pill pill-teal">All Reps</span></td>
+          </tr>
+          <tr>
+            <td><strong>Start Date</strong></td>
+            <td>The first day of the date range you want to report on.</td>
+            <td><span class="pill pill-teal">Monday of current week</span></td>
+          </tr>
+          <tr>
+            <td><strong>End Date</strong></td>
+            <td>The last day of the date range. The system includes all data up to 11:59 PM on this date.</td>
+            <td><span class="pill pill-teal">Friday of current week</span></td>
+          </tr>
+          <tr>
+            <td><strong>Generate Report</strong></td>
+            <td>Applies the selected filters and renders the report. Click this after changing any filter.</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><strong>Refresh Data</strong></td>
+            <td>Clears the server cache and re-fetches all data from Google Sheets. Use when new submissions have been made.</td>
+            <td>—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout warn" style="margin-top:1.25rem;">
+      <i class="material-icons">warning</i>
+      <p><strong>Important:</strong> The "Generate Report" button must be clicked after changing filters for the report to update. Changing the date or rep selection alone does <em>not</em> automatically refresh the view.</p>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────────────────────────
+       6. THE REPORT
+  ──────────────────────────────────────────────────────────── -->
+  <section class="section" id="report">
+    <div class="section-label"><i class="material-icons" style="font-size:.9rem;">assessment</i> Report Layout</div>
+    <h2>Reading the Report</h2>
+    <p class="lead">The report is organised into three levels: the Rep section, then weeks inside it, then individual day cards inside each week.</p>
+
+    <!-- Week block demo -->
+    <div class="week-demo">
+      <div class="week-demo-header">
+        <span class="title">📅 Week of 07/04/2025 – 11/04/2025</span>
+        <span class="stats">Total: <strong>312 km</strong> | Avg: <strong>62.4 km/day</strong></span>
+      </div>
+      <div class="week-demo-body">
+        <div class="mini-card complete">
+          <div class="mc-day">Monday · 07/04</div>
+          <div class="mc-km">58 km ✓</div>
+        </div>
+        <div class="mini-card complete">
+          <div class="mc-day">Tuesday · 08/04</div>
+          <div class="mc-km">74 km ✓</div>
+        </div>
+        <div class="mini-card complete">
+          <div class="mc-day">Wednesday · 09/04</div>
+          <div class="mc-km">61 km ✓</div>
+        </div>
+        <div class="mini-card incomplete">
+          <div class="mc-day">Thursday · 10/04</div>
+          <div class="mc-km" style="color:var(--yellow)">Incomplete ⚠</div>
+        </div>
+        <div class="mini-card complete">
+          <div class="mc-day">Friday · 11/04</div>
+          <div class="mc-km">119 km ✓</div>
+        </div>
+      </div>
+      <div class="week-demo-footer">
+        <span class="total">🚗 Weekly Total: 312 km</span>
+        <span class="meta">4 of 5 days recorded · Avg: 62.4 km/day</span>
+      </div>
+    </div>
+
+    <div style="background:var(--white);border:1.5px solid var(--gray-200);border-radius:12px;padding:1.5rem;margin-top:1.5rem;">
+      <h3 style="font-size:1rem;font-weight:700;color:var(--dark-teal);margin-bottom:1rem;">Report Structure</h3>
+      <ul class="feature-list">
+        <li>
+          <i class="material-icons">person</i>
+          <div>
+            <div class="feat-title">Rep Header (dark teal banner)</div>
+            <div class="feat-desc">Shows the rep's name and the full date range covered by the report. Each rep has their own separate block with a distinct header.</div>
+          </div>
+        </li>
+        <li>
+          <i class="material-icons">date_range</i>
+          <div>
+            <div class="feat-title">Week Header (teal-tinted bar)</div>
+            <div class="feat-desc">Shows the Monday–Friday span for that week, the week's total kilometres, and the average daily KM. Only weeks that fall within the selected date range are shown.</div>
+          </div>
+        </li>
+        <li>
+          <i class="material-icons">grid_view</i>
+          <div>
+            <div class="feat-title">Day Cards Grid</div>
+            <div class="feat-desc">A grid of cards — one per working day (Mon–Fri). Each card shows the day's odometer readings, daily KM, and status badge. Weekends are excluded.</div>
+          </div>
+        </li>
+        <li>
+          <i class="material-icons">speed</i>
+          <div>
+            <div class="feat-title">Week Summary Bar (dark teal footer)</div>
+            <div class="feat-desc">At the bottom of every week block, a dark bar shows the weekly total, the number of days recorded, and the average KM per day.</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────────────────────────
+       7. DAY CARDS
+  ──────────────────────────────────────────────────────────── -->
+  <section class="section" id="day-cards">
+    <div class="section-label"><i class="material-icons" style="font-size:.9rem;">view_module</i> Day Cards</div>
+    <h2>Day Cards Explained</h2>
+    <p class="lead">Each working day is represented by a card. Here is an annotated example of what a fully completed day looks like.</p>
+
+    <div style="display:flex;gap:2rem;flex-wrap:wrap;align-items:flex-start;">
+      <div class="day-card-demo">
+        <div class="day-card-header">
+          <div>
+            <span class="day-name">Tuesday</span>
+            <span class="day-date">08/04/2025</span>
+          </div>
+          <span class="badge badge-green">Recorded</span>
+        </div>
+        <div class="day-reading">
+          <div class="label">
+            <i class="material-icons" style="font-size:.95rem;color:var(--teal);">play_arrow</i>
+            Start
+          </div>
+          <div class="value">124,832 km <span style="color:var(--teal);font-size:.8rem;">📷</span></div>
+        </div>
+        <div class="day-reading">
+          <div class="label">
+            <i class="material-icons" style="font-size:.95rem;color:var(--coral);">stop</i>
+            End
+          </div>
+          <div class="value">124,906 km <span style="color:var(--coral);font-size:.8rem;">📷</span></div>
+        </div>
+        <div class="day-divider"></div>
+        <div class="day-km">
+          <div class="label">
+            <i class="material-icons" style="font-size:.95rem;color:var(--dark-teal);">directions_car</i>
+            Daily KM
+          </div>
+          <div class="value">74 km</div>
+        </div>
+      </div>
+
+      <div style="flex:1;min-width:240px;">
+        <ul class="feature-list">
+          <li>
+            <i class="material-icons">badge</i>
+            <div>
+              <div class="feat-title">Day &amp; Date</div>
+              <div class="feat-desc">The day name and formatted date (DD/MM/YYYY) so there is never any ambiguity about which day you are looking at.</div>
+            </div>
+          </li>
+          <li>
+            <i class="material-icons">play_arrow</i>
+            <div>
+              <div class="feat-title">Start Reading</div>
+              <div class="feat-desc">The odometer number recorded at <strong>Check In</strong> — the reading when the rep started their day. The 📷 icon appears if a photo was submitted; click it to view the image.</div>
+            </div>
+          </li>
+          <li>
+            <i class="material-icons">stop</i>
+            <div>
+              <div class="feat-title">End Reading</div>
+              <div class="feat-desc">The odometer number recorded at <strong>Check Out</strong> — the reading at end of day. Also supports a photo verification link.</div>
+            </div>
+          </li>
+          <li>
+            <i class="material-icons">directions_car</i>
+            <div>
+              <div class="feat-title">Daily KM (large number)</div>
+              <div class="feat-desc">Automatically calculated: <strong>End − Start</strong>. This is the headline figure — the total distance driven that day. Only shown when both readings are present.</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────────────────────────
+       8. STATUS BADGES
+  ──────────────────────────────────────────────────────────── -->
+  <section class="section" id="status-badges">
+    <div class="section-label"><i class="material-icons" style="font-size:.9rem;">label</i> Status Indicators</div>
+    <h2>Status Badges</h2>
+    <p class="lead">Every day card has a coloured badge in the top-right corner that instantly tells you the state of that day's data.</p>
+
+    <div class="badge-demo">
+      <div class="badge-item">
+        <div>
+          <span class="badge badge-green">Recorded</span>
+          <div class="badge-desc">Both a start and end odometer reading are present. Daily KM has been successfully calculated. This is the desired state.</div>
+        </div>
+      </div>
+      <div class="badge-item">
+        <div>
+          <span class="badge badge-yellow">Incomplete</span>
+          <div class="badge-desc">Only one reading is present — either a Check In or a Check Out was submitted, but not both. Daily KM cannot be calculated. Action may be required.</div>
+        </div>
+      </div>
+      <div class="badge-item">
+        <div>
+          <span class="badge badge-gray">No Data</span>
+          <div class="badge-desc">No odometer data was submitted for this day. The day falls within the date range but no form submission exists for it.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout success">
+      <i class="material-icons">check_circle</i>
+      <p><strong>At a glance:</strong> A healthy week shows all five day cards with a green "Recorded" badge. Yellow badges indicate follow-up is needed with the rep to complete their submission.</p>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────────────────────────
+       9. NAVIGATION
+  ──────────────────────────────────────────────────────────── -->
+  <section class="section" id="navigation">
+    <div class="section-label"><i class="material-icons" style="font-size:.9rem;">navigation</i> Navigation</div>
+    <h2>Navigation &amp; Sidebar</h2>
+    <p class="lead">Several navigation aids keep you oriented when working through reports for multiple reps.</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon teal"><i class="material-icons">view_sidebar</i></div>
+        <h3>Rep Sidebar (Desktop)</h3>
+        <p>On screens wider than a laptop, a sticky sidebar on the left lists all reps in the current report. It sticks to the viewport as you scroll so it is always accessible. The currently visible rep is <strong>highlighted in teal</strong> automatically.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon teal"><i class="material-icons">more_horiz</i></div>
+        <h3>Mobile Rep Pills</h3>
+        <p>On phones and tablets, a horizontal scrollable row of name pills appears below the filter bar when "All Reps" is selected. Tap any pill to jump to that rep's section. The active pill turns teal.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon coral"><i class="material-icons">push_pin</i></div>
+        <h3>Sticky Rep Banner</h3>
+        <p>When you scroll past a rep's header, a slim teal banner slides in at the very top of the screen displaying the rep's name. It disappears automatically when you scroll back to the top or close it with the ✕ button.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────────────────────────
+       10. DATA STRUCTURE
+  ──────────────────────────────────────────────────────────── -->
+  <section class="section" id="data">
+    <div class="section-label"><i class="material-icons" style="font-size:.9rem;">table_chart</i> Data Structure</div>
+    <h2>Data Structure (Google Sheets)</h2>
+    <p class="lead">The dashboard reads data from a Google Sheet. Each sales rep has their own sheet tab. Here are the columns the system looks for:</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Column Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>WorkDate</strong></td>
+            <td><span class="pill pill-teal">Date</span></td>
+            <td>The date the rep worked. Accepted formats: <code>YYYY-MM-DD</code> or <code>DD/MM/YYYY</code>.</td>
+            <td><span class="pill pill-green">Required</span></td>
+          </tr>
+          <tr>
+            <td><strong>Status</strong></td>
+            <td><span class="pill pill-teal">Text</span></td>
+            <td>Must contain either <em>"check in"</em> or <em>"check out"</em> (case-insensitive). This determines whether the row is treated as a start-of-day or end-of-day entry.</td>
+            <td><span class="pill pill-green">Required</span></td>
+          </tr>
+          <tr>
+            <td><strong>Start of Day Odometer Number</strong></td>
+            <td><span class="pill pill-teal">Number</span></td>
+            <td>The odometer reading at the beginning of the day, in kilometres. Read from <em>Check In</em> rows only.</td>
+            <td><span class="pill pill-yellow">Conditional</span></td>
+          </tr>
+          <tr>
+            <td><strong>End of Day Odometer Number</strong></td>
+            <td><span class="pill pill-teal">Number</span></td>
+            <td>The odometer reading at end of day, in kilometres. Read from <em>Check Out</em> rows only.</td>
+            <td><span class="pill pill-yellow">Conditional</span></td>
+          </tr>
+          <tr>
+            <td><strong>Start of Day Odometer Picture</strong></td>
+            <td><span class="pill pill-teal">Text / URL</span></td>
+            <td>A Google Drive file path or identifier for the start-of-day odometer photo. Used to load the image when the camera icon is clicked.</td>
+            <td><span class="pill pill-gray">Optional</span></td>
+          </tr>
+          <tr>
+            <td><strong>End of Day Odometer Picture</strong></td>
+            <td><span class="pill pill-teal">Text / URL</span></td>
+            <td>A Google Drive file path or identifier for the end-of-day odometer photo.</td>
+            <td><span class="pill pill-gray">Optional</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout" style="margin-top:1.5rem;">
+      <i class="material-icons">info</i>
+      <p><strong>How pairing works:</strong> For each date, the system looks for a <em>Check In</em> row (to get the start reading) and a <em>Check Out</em> row (to get the end reading). If both are found, daily KM is calculated. If only one is found, the day is marked "Incomplete". The column headers must match <em>exactly</em> as listed above.</p>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────────────────────────
+       11. REFRESH
+  ──────────────────────────────────────────────────────────── -->
+  <section class="section" id="refresh">
+    <div class="section-label"><i class="material-icons" style="font-size:.9rem;">cached</i> Data Refresh</div>
+    <h2>Refreshing Data</h2>
+    <p class="lead">The dashboard uses a server-side cache to load quickly. Here's what that means and when to use the refresh button.</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon teal"><i class="material-icons">bolt</i></div>
+        <h3>Why caching exists</h3>
+        <p>Reading a large Google Sheet every time someone opens the dashboard would be slow. The server saves a copy of the data so repeat visits load almost instantly.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon coral"><i class="material-icons">cached</i></div>
+        <h3>When to refresh</h3>
+        <p>Click <strong>"Refresh Data"</strong> whenever a rep has submitted new data since you first opened the dashboard, or if you suspect the data shown is out of date.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon green"><i class="material-icons">check_circle</i></div>
+        <h3>What refresh does</h3>
+        <p>It calls <code>clearDashboardCache()</code> on the server to delete the stored copy, then immediately re-reads all sheets fresh. The report re-generates automatically.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────────────────────────
+       12. PHOTOS
+  ──────────────────────────────────────────────────────────── -->
+  <section class="section" id="photos">
+    <div class="section-label"><i class="material-icons" style="font-size:.9rem;">photo_camera</i> Photo Viewer</div>
+    <h2>Viewing Odometer Photos</h2>
+    <p class="lead">Every odometer reading can be backed by a physical photo of the dashboard — providing an auditable trail and discouraging inaccurate data entry.</p>
+
+    <ol class="steps">
+      <li>
+        <div class="step-num"></div>
+        <div class="step-body">
+          <div class="step-title">Spot the camera icon</div>
+          <p>On a day card, if a photo was submitted, a small camera icon (📷) appears next to the odometer reading. Start readings show a teal icon; end readings show a coral icon.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-num"></div>
+        <div class="step-body">
+          <div class="step-title">Click to open</div>
+          <p>Clicking the icon immediately opens a new browser tab. A "Loading image..." message is shown while the image is being fetched from Google Drive. This two-step approach is needed to satisfy browser popup-blocker rules.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-num"></div>
+        <div class="step-body">
+          <div class="step-title">Image loads full-screen</div>
+          <p>The Apps Script server retrieves the image from Google Drive, converts it to a data URL, and sends it back to the tab. The image is then displayed centred on a black background for easy reading.</p>
+        </div>
+      </li>
+    </ol>
+
+    <div class="callout warn">
+      <i class="material-icons">warning</i>
+      <p><strong>If no camera icon appears</strong> on a reading, it means no photo was submitted for that entry. The reading is still valid, but there is no photo evidence to view.</p>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────────────────────────────────────────
+       13. TECHNICAL NOTES
+  ──────────────────────────────────────────────────────────── -->
+  <section class="section" id="tech">
+    <div class="section-label"><i class="material-icons" style="font-size:.9rem;">code</i> Technical</div>
+    <h2>Technical Architecture</h2>
+    <p class="lead">For developers or technical stakeholders — a summary of the technology stack and design decisions.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Layer</th>
+            <th>Technology</th>
+            <th>Role</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Frontend</strong></td>
+            <td><span class="pill pill-teal">HTML / Vanilla JS</span></td>
+            <td>Single-page dashboard. No framework dependencies beyond Tailwind CSS (loaded via CDN) and Material Icons.</td>
+          </tr>
+          <tr>
+            <td><strong>Styling</strong></td>
+            <td><span class="pill pill-teal">Tailwind CSS</span></td>
+            <td>Utility-first CSS framework for rapid, consistent layout. Custom CSS handles dynamic HTML that Tailwind's JIT compiler cannot purge-scan.</td>
+          </tr>
+          <tr>
+            <td><strong>Backend</strong></td>
+            <td><span class="pill pill-teal">Google Apps Script</span></td>
+            <td>Serverless JavaScript runtime hosted on Google's infrastructure. Exposes <code>getDashboardData()</code>, <code>clearDashboardCache()</code>, and <code>getOdometerImage()</code> as callable server functions.</td>
+          </tr>
+          <tr>
+            <td><strong>Data Store</strong></td>
+            <td><span class="pill pill-teal">Google Sheets</span></td>
+            <td>One tab per sales rep. The backend reads rows using the Sheets API via Apps Script's built-in SpreadsheetApp service.</td>
+          </tr>
+          <tr>
+            <td><strong>File Storage</strong></td>
+            <td><span class="pill pill-teal">Google Drive</span></td>
+            <td>Odometer photos are stored in Google Drive. The backend retrieves them using DriveApp, converts them to base64 data URLs, and streams them to the browser.</td>
+          </tr>
+          <tr>
+            <td><strong>Caching</strong></td>
+            <td><span class="pill pill-teal">Apps Script Cache Service</span></td>
+            <td>Server-side caching reduces Google Sheets API calls. Cache is invalidated manually via the Refresh button.</td>
+          </tr>
+          <tr>
+            <td><strong>Date handling</strong></td>
+            <td><span class="pill pill-teal">Custom JS</span></td>
+            <td>Date strings are parsed to local-time <code>Date</code> objects (avoiding UTC offset issues). Two formats are supported: <code>YYYY-MM-DD</code> and <code>DD/MM/YYYY</code>.</td>
+          </tr>
+          <tr>
+            <td><strong>Scroll detection</strong></td>
+            <td><span class="pill pill-teal">IntersectionObserver API</span></td>
+            <td>Used for both the sticky rep header and sidebar active-state highlighting. No polling — purely event-driven.</td>
+          </tr>
+          <tr>
+            <td><strong>Security</strong></td>
+            <td><span class="pill pill-teal">HTML escaping</span></td>
+            <td>All user-supplied and sheet-sourced text is passed through an <code>escapeHtml()</code> function before being injected into the DOM, preventing XSS attacks.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout" style="margin-top:1.5rem;">
+      <i class="material-icons">build</i>
+      <p><strong>Server functions called by the dashboard:</strong> <code>getDashboardData()</code> — returns all rep data as a structured JSON object; <code>clearDashboardCache()</code> — purges the server-side cache; <code>getOdometerImage(imagePath)</code> — fetches an image from Drive and returns it as a base64 data URL string.</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- ── FOOTER ────────────────────────────────────────────────── -->
+<footer>
+  <p><strong>Odometer Tracker</strong> — Internal Tool Documentation</p>
+  <p style="margin-top:.4rem;">Built on Google Apps Script &amp; Google Sheets &nbsp;·&nbsp; Last updated April 2026</p>
+</footer>
+
+</body>
+</html>
