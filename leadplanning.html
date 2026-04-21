@@ -741,6 +741,74 @@
 
     .qual-name { font-size: 13px; color: var(--text-secondary); }
 
+    /* ── QUALIFIER LEGEND CARDS ─────────────────── */
+    .legend-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 18px 0;
+    }
+
+    .legend-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg-card);
+    }
+
+    .legend-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .legend-icon svg {
+      width: 26px;
+      height: 26px;
+      stroke-width: 1.6;
+      fill: none;
+      stroke: currentColor;
+    }
+
+    .legend-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+
+    .legend-desc {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .li-best  { background: #dcfce7; color: #166534; }
+    .li-high  { background: #e0f2fe; color: #0369a1; }
+    .li-medium{ background: #fef9c3; color: #854d0e; }
+    .li-bottom{ background: #ef4444; color: #ffffff; }
+    .li-new   { background: #dbeafe; color: #1d4ed8; }
+    .li-potential { background: #fef3c7; color: #92400e; }
+    .li-low   { background: #fce7f3; color: #9d174d; }
+    .li-dead  { background: #f3f4f6; color: #374151; }
+
+    html.light .li-best  { background: #bbf7d0; }
+    html.light .li-high  { background: #bae6fd; }
+    html.light .li-medium{ background: #fef08a; }
+    html.light .li-new   { background: #bfdbfe; }
+    html.light .li-potential { background: #fde68a; }
+    html.light .li-low   { background: #fbcfe8; }
+    html.light .li-dead  { background: #e5e7eb; }
+
     /* ── ARCHITECTURE LOOP ───────────────────────── */
     .arch-loop {
       display: grid;
@@ -1866,15 +1934,96 @@ AND(
       internal quality rankings. These apply to the <code>Qualifiers</code> and
       <code>LatLong</code> columns.
     </p>
-    <div class="qual-grid">
-      <div class="qual-item"><div class="status-dot s-green"></div><span class="qual-rank">Best</span><span class="qual-name">Green</span></div>
-      <div class="qual-item"><div class="status-dot s-cyan"></div><span class="qual-rank">High</span><span class="qual-name">Cyan</span></div>
-      <div class="qual-item"><div class="status-dot s-blue"></div><span class="qual-rank">New</span><span class="qual-name">#1e3a8a Dark Blue</span></div>
-      <div class="qual-item"><div class="status-dot s-yellow"></div><span class="qual-rank">Medium</span><span class="qual-name">Yellow</span></div>
-      <div class="qual-item"><div class="status-dot s-orange"></div><span class="qual-rank">Potential</span><span class="qual-name">Orange</span></div>
-      <div class="qual-item"><div class="status-dot s-pink"></div><span class="qual-rank">Low</span><span class="qual-name">Pink</span></div>
-      <div class="qual-item"><div class="status-dot s-dkred"></div><span class="qual-rank">Bottom</span><span class="qual-name">#7f1d1d Dark Red</span></div>
-      <div class="qual-item"><div class="status-dot s-gray"></div><span class="qual-rank">Dead</span><span class="qual-name">Primary Text</span></div>
+    <div class="legend-grid">
+
+      <!-- BEST -->
+      <div class="legend-card">
+        <div class="legend-icon li-best">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.8"/><line x1="12" y1="7.8" x2="12" y2="16"/><line x1="7.5" y1="11" x2="16.5" y2="11"/><line x1="12" y1="16" x2="8" y2="21"/><line x1="12" y1="16" x2="16" y2="21"/></svg>
+        </div>
+        <div>
+          <div class="legend-label" style="color:#166534">Best</div>
+          <div class="legend-desc">Purchased at last visit</div>
+        </div>
+      </div>
+
+      <!-- NEW -->
+      <div class="legend-card">
+        <div class="legend-icon li-new">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.8"/><line x1="12" y1="7.8" x2="12" y2="16"/><line x1="7.5" y1="11" x2="16.5" y2="11"/><line x1="12" y1="16" x2="8" y2="21"/><line x1="12" y1="16" x2="16" y2="21"/></svg>
+        </div>
+        <div>
+          <div class="legend-label" style="color:#1d4ed8">New</div>
+          <div class="legend-desc">Total visit count of 0</div>
+        </div>
+      </div>
+
+      <!-- HIGH -->
+      <div class="legend-card">
+        <div class="legend-icon li-high">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.8"/><line x1="12" y1="7.8" x2="12" y2="16"/><line x1="7.5" y1="11" x2="16.5" y2="11"/><line x1="12" y1="16" x2="8" y2="21"/><line x1="12" y1="16" x2="16" y2="21"/></svg>
+        </div>
+        <div>
+          <div class="legend-label" style="color:#0369a1">High</div>
+          <div class="legend-desc">Last purchase 2 or 3 visits ago</div>
+        </div>
+      </div>
+
+      <!-- POTENTIAL -->
+      <div class="legend-card">
+        <div class="legend-icon li-potential">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.8"/><line x1="12" y1="7.8" x2="12" y2="16"/><line x1="7.5" y1="11" x2="16.5" y2="11"/><line x1="12" y1="16" x2="8" y2="21"/><line x1="12" y1="16" x2="16" y2="21"/></svg>
+        </div>
+        <div>
+          <div class="legend-label" style="color:#92400e">Potential</div>
+          <div class="legend-desc">Never bought, visit count 1–3</div>
+        </div>
+      </div>
+
+      <!-- MEDIUM -->
+      <div class="legend-card">
+        <div class="legend-icon li-medium">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.8"/><line x1="12" y1="7.8" x2="12" y2="16"/><line x1="7.5" y1="11" x2="16.5" y2="11"/><line x1="12" y1="16" x2="8" y2="21"/><line x1="12" y1="16" x2="16" y2="21"/></svg>
+        </div>
+        <div>
+          <div class="legend-label" style="color:#854d0e">Medium</div>
+          <div class="legend-desc">Last purchase 4 or 5 visits ago</div>
+        </div>
+      </div>
+
+      <!-- LOW -->
+      <div class="legend-card">
+        <div class="legend-icon li-low">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.8"/><line x1="12" y1="7.8" x2="12" y2="16"/><line x1="7.5" y1="11" x2="16.5" y2="11"/><line x1="12" y1="16" x2="8" y2="21"/><line x1="12" y1="16" x2="16" y2="21"/></svg>
+        </div>
+        <div>
+          <div class="legend-label" style="color:#9d174d">Low</div>
+          <div class="legend-desc">Never bought, visit count 4 or 5</div>
+        </div>
+      </div>
+
+      <!-- BOTTOM -->
+      <div class="legend-card">
+        <div class="legend-icon li-bottom">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.8"/><line x1="12" y1="7.8" x2="12" y2="16"/><line x1="7.5" y1="11" x2="16.5" y2="11"/><line x1="12" y1="16" x2="8" y2="21"/><line x1="12" y1="16" x2="16" y2="21"/></svg>
+        </div>
+        <div>
+          <div class="legend-label" style="color:#b91c1c">Bottom</div>
+          <div class="legend-desc">Last purchase 6 or more visits ago</div>
+        </div>
+      </div>
+
+      <!-- DEAD -->
+      <div class="legend-card">
+        <div class="legend-icon li-dead">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.8"/><line x1="12" y1="7.8" x2="12" y2="16"/><line x1="7.5" y1="11" x2="16.5" y2="11"/><line x1="12" y1="16" x2="8" y2="21"/><line x1="12" y1="16" x2="16" y2="21"/></svg>
+        </div>
+        <div>
+          <div class="legend-label" style="color:#374151">Dead</div>
+          <div class="legend-desc">Never bought, visit count 6 or more</div>
+        </div>
+      </div>
+
     </div>
   </section>
 
