@@ -1,0 +1,2115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Australia Leadplanning App — Technical Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-primary:    #0b1215;
+      --bg-secondary:  #111d22;
+      --bg-card:       #162028;
+      --bg-panel:      #1a2730;
+      --border:        #243540;
+      --border-light:  #1e3040;
+
+      --teal:          #4ab8b0;
+      --teal-dim:      #2d7a74;
+      --teal-glow:     rgba(74, 184, 176, 0.12);
+      --coral:         #e07a5f;
+      --coral-dim:     #9e4f38;
+      --coral-glow:    rgba(224, 122, 95, 0.1);
+      --cream:         #ddd5c4;
+      --cream-dim:     #8a8075;
+      --gold:          #c9a96e;
+      --mint:          #7ecfbd;
+
+      --text-primary:  #ddd5c4;
+      --text-secondary:#8ea3ae;
+      --text-muted:    #4a6070;
+
+      --mono:          'IBM Plex Mono', monospace;
+      --sans:          'IBM Plex Sans', sans-serif;
+
+      --sidebar-w:     280px;
+      --header-h:      56px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--sans);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--teal-dim); }
+
+    /* ── HEADER ──────────────────────────────────── */
+    #header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--header-h);
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      z-index: 100;
+    }
+
+    .header-brand { display: flex; align-items: center; gap: 12px; }
+
+    .header-logo {
+      width: 28px; height: 28px;
+      border: 1.5px solid var(--teal);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .header-logo svg {
+      width: 14px; height: 14px;
+      stroke: var(--teal);
+      fill: none;
+      stroke-width: 2;
+    }
+
+    .header-title {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--teal);
+      font-weight: 500;
+    }
+    .header-title span { color: var(--text-muted); margin-left: 8px; }
+
+    .header-meta {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .header-meta .dot {
+      width: 6px; height: 6px;
+      background: var(--teal);
+      border-radius: 50%;
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .header-divider { color: var(--border); }
+
+    /* ── LAYOUT ──────────────────────────────────── */
+    #layout {
+      display: flex;
+      margin-top: var(--header-h);
+      min-height: calc(100vh - var(--header-h));
+    }
+
+    /* ── SIDEBAR ─────────────────────────────────── */
+    #sidebar {
+      width: var(--sidebar-w);
+      flex-shrink: 0;
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--border);
+      position: fixed;
+      top: var(--header-h);
+      bottom: 0;
+      left: 0;
+      overflow-y: auto;
+      padding: 24px 0 40px;
+    }
+
+    .nav-group { margin-bottom: 4px; }
+
+    .nav-group-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 16px 20px 6px;
+      display: block;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 20px;
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: all 0.15s;
+      border-left: 2px solid transparent;
+      font-family: var(--sans);
+    }
+
+    .nav-item:hover {
+      color: var(--cream);
+      background: var(--teal-glow);
+      border-left-color: var(--teal-dim);
+    }
+
+    .nav-item.active {
+      color: var(--teal);
+      background: var(--teal-glow);
+      border-left-color: var(--teal);
+    }
+
+    .nav-item .num {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      min-width: 24px;
+    }
+
+    /* ── MAIN ────────────────────────────────────── */
+    #main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      max-width: 860px;
+      padding: 48px 56px 100px;
+    }
+
+    /* ── HERO ────────────────────────────────────── */
+    .hero {
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      padding: 44px 48px;
+      margin-bottom: 48px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--coral), var(--teal), transparent);
+    }
+
+    .hero-eyebrow {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--coral);
+      margin-bottom: 16px;
+    }
+
+    .hero h1 {
+      font-size: 28px;
+      font-weight: 300;
+      color: var(--cream);
+      letter-spacing: -0.01em;
+      line-height: 1.25;
+      margin-bottom: 16px;
+    }
+
+    .hero h1 strong { font-weight: 600; color: var(--coral); }
+
+    .hero-desc {
+      color: var(--text-secondary);
+      font-size: 14px;
+      max-width: 560px;
+      margin-bottom: 28px;
+    }
+
+    .hero-stats { display: flex; gap: 32px; flex-wrap: wrap; }
+
+    .hero-stat { display: flex; flex-direction: column; gap: 2px; }
+
+    .hero-stat .val {
+      font-family: var(--mono);
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--cream);
+    }
+
+    .hero-stat .lbl {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .hero-grid {
+      position: absolute;
+      bottom: -20px; right: -20px;
+      width: 220px; height: 160px;
+      opacity: 0.04;
+      background-image:
+        linear-gradient(var(--coral) 1px, transparent 1px),
+        linear-gradient(90deg, var(--coral) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    /* ── SECTION ─────────────────────────────────── */
+    .section { margin-bottom: 60px; }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-num {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--coral);
+      letter-spacing: 0.1em;
+      flex-shrink: 0;
+    }
+
+    .section-header h2 {
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--cream);
+      letter-spacing: -0.01em;
+    }
+
+    .section-header .badge {
+      font-family: var(--mono);
+      font-size: 9px;
+      padding: 2px 8px;
+      border: 1px solid var(--teal-dim);
+      color: var(--teal);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-left: auto;
+    }
+
+    .subsection { margin-bottom: 36px; }
+
+    .subsection-title {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .subsection-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-light);
+    }
+
+    h3 { font-size: 14px; font-weight: 500; color: var(--cream); margin-bottom: 10px; }
+
+    h4 {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--gold);
+      margin-bottom: 8px;
+      margin-top: 18px;
+      font-family: var(--mono);
+      letter-spacing: 0.05em;
+    }
+
+    p { color: var(--text-secondary); margin-bottom: 14px; line-height: 1.75; }
+
+    /* ── CARD ────────────────────────────────────── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 20px 24px;
+      margin-bottom: 16px;
+    }
+
+    .card-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .card.accent-teal  { border-left: 3px solid var(--teal); }
+    .card.accent-coral { border-left: 3px solid var(--coral); }
+    .card.accent-gold  { border-left: 3px solid var(--gold); }
+
+    /* ── CODE ────────────────────────────────────── */
+    .code-block {
+      background: #080f14;
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--teal-dim);
+      margin: 16px 0;
+      overflow-x: auto;
+    }
+
+    .code-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 16px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+    }
+
+    .code-lang {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--teal-dim);
+    }
+
+    .code-dots { display: flex; gap: 5px; }
+
+    .code-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--border);
+    }
+
+    pre {
+      padding: 20px;
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.8;
+      color: #8ecbbb;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    pre .comment { color: var(--text-muted); font-style: italic; }
+
+    code {
+      font-family: var(--mono);
+      font-size: 12px;
+      background: rgba(74, 184, 176, 0.08);
+      color: var(--teal);
+      padding: 1px 6px;
+      border: 1px solid rgba(74, 184, 176, 0.15);
+    }
+
+    /* ── TABLE ───────────────────────────────────── */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 13px;
+    }
+
+    .data-table th {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-align: left;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-panel);
+    }
+
+    .data-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-secondary);
+      vertical-align: top;
+    }
+
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover td { background: rgba(74,184,176,0.03); }
+
+    .data-table td:first-child {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--teal);
+      white-space: nowrap;
+    }
+
+    .data-table td.type {
+      color: var(--coral);
+      font-family: var(--mono);
+      font-size: 11px;
+    }
+
+    /* ── FIELD LIST ──────────────────────────────── */
+    .field-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin: 12px 0;
+    }
+
+    .field-list li {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      padding: 9px 14px;
+      background: var(--bg-card);
+      border: 1px solid transparent;
+      transition: border-color 0.15s;
+    }
+
+    .field-list li:hover { border-color: var(--border); }
+
+    .field-list .fname {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--teal);
+      min-width: 220px;
+      flex-shrink: 0;
+    }
+
+    .field-list .ftype {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--coral);
+      min-width: 90px;
+      flex-shrink: 0;
+    }
+
+    .field-list .fdesc { color: var(--text-secondary); font-size: 13px; }
+
+    /* ── STATUS ITEMS ────────────────────────────── */
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 8px;
+      margin: 14px 0;
+    }
+
+    .status-item {
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .status-item .slabel { font-size: 12.5px; color: var(--text-secondary); }
+
+    .s-green   { background: #22c55e; }
+    .s-red     { background: #ef4444; }
+    .s-orange  { background: #f97316; }
+    .s-yellow  { background: #eab308; }
+    .s-pink    { background: #ec4899; }
+    .s-cyan    { background: #06b6d4; }
+    .s-blue    { background: #1e3a8a; }
+    .s-dkblue  { background: #0981D1; }
+    .s-purple  { background: #9474e8; }
+    .s-gray    { background: #6b7280; }
+    .s-dkred   { background: #7f1d1d; }
+    .s-burg    { background: #811331; }
+    .s-theme   { background: var(--teal); }
+
+    /* ── NOTICE ──────────────────────────────────── */
+    .notice {
+      padding: 14px 18px;
+      border-left: 3px solid;
+      margin: 16px 0;
+      font-size: 13px;
+    }
+
+    .notice.info  { border-color: var(--teal);  background: var(--teal-glow);              color: var(--text-secondary); }
+    .notice.warn  { border-color: var(--gold);  background: rgba(201,169,110,0.08);         color: var(--text-secondary); }
+    .notice.danger{ border-color: var(--coral); background: var(--coral-glow);              color: var(--text-secondary); }
+
+    .notice strong {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .notice.info strong   { color: var(--teal); }
+    .notice.warn strong   { color: var(--gold); }
+    .notice.danger strong { color: var(--coral); }
+
+    /* ── TWO COL ─────────────────────────────────── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 14px 0;
+    }
+
+    /* ── SLICE CARD ──────────────────────────────── */
+    .slice-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      margin-bottom: 12px;
+    }
+
+    .slice-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+    }
+
+    .slice-num {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: var(--teal-dim);
+      color: var(--bg-primary);
+      padding: 2px 8px;
+      flex-shrink: 0;
+    }
+
+    .slice-num.coral { background: var(--coral-dim); }
+    .slice-num.gold  { background: rgba(201,169,110,0.6); color: var(--bg-primary); }
+
+    .slice-name {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--cream);
+    }
+
+    .slice-mode {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-left: auto;
+      letter-spacing: 0.06em;
+    }
+
+    .slice-body { padding: 16px 20px; }
+
+    .slice-body p { margin-bottom: 10px; }
+
+    /* ── ACTION CARD ─────────────────────────────── */
+    .action-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      margin-bottom: 12px;
+    }
+
+    .action-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .action-badge {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: var(--coral-dim);
+      color: var(--bg-primary);
+      padding: 2px 8px;
+      flex-shrink: 0;
+    }
+
+    .action-name {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--cream);
+    }
+
+    .action-type {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--coral);
+      margin-left: auto;
+    }
+
+    .action-body { padding: 14px 20px; }
+
+    /* ── MAPPING TABLE ───────────────────────────── */
+    .kv-table {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      border: 1px solid var(--border);
+      margin: 12px 0;
+    }
+
+    .kv-key, .kv-val {
+      padding: 8px 14px;
+      border-bottom: 1px solid var(--border-light);
+      font-size: 13px;
+    }
+
+    .kv-row:last-child .kv-key,
+    .kv-row:last-child .kv-val { border-bottom: none; }
+
+    .kv-key {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      color: var(--teal);
+      background: var(--bg-panel);
+      white-space: nowrap;
+    }
+
+    .kv-val {
+      color: var(--text-secondary);
+      font-family: var(--mono);
+      font-size: 11.5px;
+    }
+
+    /* ── FORMAT RULE ROW ─────────────────────────── */
+    .rule-row {
+      display: grid;
+      grid-template-columns: 160px 1fr auto;
+      gap: 12px;
+      align-items: start;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .rule-row:last-child { border-bottom: none; }
+    .rule-name { font-family: var(--mono); font-size: 11px; color: var(--text-secondary); }
+    .rule-cond { font-family: var(--mono); font-size: 11px; color: var(--cream-dim); word-break: break-all; }
+
+    .rule-color {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      font-family: var(--mono);
+    }
+
+    .color-swatch {
+      width: 12px; height: 12px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    /* ── QUALIFIER GRID ──────────────────────────── */
+    .qual-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 8px;
+      margin: 14px 0;
+    }
+
+    .qual-item {
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .qual-rank {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      min-width: 50px;
+    }
+
+    .qual-name { font-size: 13px; color: var(--text-secondary); }
+
+    /* ── ARCHITECTURE LOOP ───────────────────────── */
+    .arch-loop {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .arch-node {
+      padding: 18px 20px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      position: relative;
+      text-align: center;
+    }
+
+    .arch-node::after {
+      content: '→';
+      position: absolute;
+      right: -14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 16px;
+      z-index: 1;
+    }
+
+    .arch-node:last-child::after { display: none; }
+
+    .arch-node-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .arch-node-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--cream);
+    }
+
+    .arch-node-desc {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 40px 0;
+    }
+
+    [id] { scroll-margin-top: calc(var(--header-h) + 24px); }
+
+    /* ── FOOTER ──────────────────────────────────── */
+    #footer {
+      margin-left: var(--sidebar-w);
+      border-top: 1px solid var(--border);
+      padding: 20px 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-text {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+    }
+
+    /* ── LIGHT THEME ───────────────────────────────── */
+    html.light {
+      --bg-primary:    #f4f2ed;
+      --bg-secondary:  #eceae4;
+      --bg-card:       #ffffff;
+      --bg-panel:      #e8e6e0;
+      --border:        #d0cec6;
+      --border-light:  #dcdad3;
+
+      --teal:          #1a8c84;
+      --teal-dim:      #0d6660;
+      --teal-glow:     rgba(26, 140, 132, 0.1);
+      --coral:         #bf5a3e;
+      --coral-dim:     #8a3a24;
+      --coral-glow:    rgba(191, 90, 62, 0.1);
+      --cream:         #2a2420;
+      --cream-dim:     #5a5650;
+      --gold:          #8a6a2e;
+      --mint:          #1a8c7a;
+
+      --text-primary:  #1a1814;
+      --text-secondary:#4a6070;
+      --text-muted:    #7a8a95;
+    }
+
+    .theme-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      padding: 4px 10px;
+      transition: border-color 0.2s, color 0.2s;
+      flex-shrink: 0;
+    }
+    .theme-btn:hover { border-color: var(--teal); color: var(--teal); }
+
+    @media (max-width: 900px) {
+      #sidebar { display: none; }
+      #main { margin-left: 0; padding: 32px 24px 80px; }
+      #footer { margin-left: 0; }
+      .two-col, .arch-loop { grid-template-columns: 1fr; }
+      .arch-node::after { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header id="header">
+  <div class="header-brand">
+    <div class="header-logo">
+      <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="5"/><line x1="8" y1="3" x2="8" y2="1"/><line x1="8" y1="15" x2="8" y2="13"/><line x1="3" y1="8" x2="1" y2="8"/><line x1="15" y1="8" x2="13" y2="8"/></svg>
+    </div>
+    <div>
+      <div class="header-title">Enlighten Press <span>/ Australia Leadplanning</span></div>
+    </div>
+  </div>
+  <div class="header-meta">
+    <div class="dot"></div>
+    <span>VERSION: 1.000017</span>
+    <span class="header-divider">|</span>
+    <span>PLATFORM: AppSheet</span>
+    <span class="header-divider">|</span>
+    <span>REGION: AU</span>
+  </div>
+  <button class="theme-btn" id="themeToggle">LIGHT</button>
+</header>
+
+<!-- ═══════════ SIDEBAR ═══════════ -->
+<nav id="sidebar">
+
+  <div class="nav-group">
+    <span class="nav-group-label">Overview</span>
+    <a href="#intro" class="nav-item"><span class="num">00</span> Introduction</a>
+  </div>
+
+  <div class="nav-group">
+    <span class="nav-group-label">Part I — Data Architecture</span>
+    <a href="#tbl-leads" class="nav-item"><span class="num">01</span> Table: Leads</a>
+    <a href="#tbl-mapfilter" class="nav-item"><span class="num">02</span> Table: Map Filter</a>
+    <a href="#tbl-legend" class="nav-item"><span class="num">03</span> Table: Legend</a>
+    <a href="#tbl-usersettings" class="nav-item"><span class="num">04</span> Table: Per User Settings</a>
+  </div>
+
+  <div class="nav-group">
+    <span class="nav-group-label">Part II — Slices</span>
+    <a href="#slices-simple" class="nav-item"><span class="num">05</span> Categorization Slices</a>
+    <a href="#slices-actionable" class="nav-item"><span class="num">06</span> Actionable Slices</a>
+    <a href="#slices-cooldown" class="nav-item"><span class="num">07</span> Cool-down Slices</a>
+    <a href="#slices-dynamic" class="nav-item"><span class="num">08</span> Dynamic Map Slices</a>
+  </div>
+
+  <div class="nav-group">
+    <span class="nav-group-label">Part III — UX</span>
+    <a href="#views-maps" class="nav-item"><span class="num">09</span> Map Views</a>
+    <a href="#views-dashboard" class="nav-item"><span class="num">10</span> Dashboard &amp; Filtering</a>
+    <a href="#views-detail" class="nav-item"><span class="num">11</span> Detail &amp; Form Views</a>
+  </div>
+
+  <div class="nav-group">
+    <span class="nav-group-label">Part IV — Format Rules</span>
+    <a href="#fmt-status" class="nav-item"><span class="num">12</span> Status Pin Colors</a>
+    <a href="#fmt-type" class="nav-item"><span class="num">13</span> Type Pin Icons</a>
+    <a href="#fmt-qualifier" class="nav-item"><span class="num">14</span> Qualifier Colors</a>
+    <a href="#fmt-disabled" class="nav-item"><span class="num">15</span> Disabled Rules</a>
+  </div>
+
+  <div class="nav-group">
+    <span class="nav-group-label">Part V — Actions</span>
+    <a href="#actions-nav" class="nav-item"><span class="num">16</span> Navigation Actions</a>
+    <a href="#actions-comms" class="nav-item"><span class="num">17</span> Communication Actions</a>
+    <a href="#actions-crud" class="nav-item"><span class="num">18</span> Data Actions</a>
+  </div>
+
+</nav>
+
+<!-- ═══════════ MAIN ═══════════ -->
+<main id="main">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-eyebrow">Enlighten Press · AppSheet · Australia Field Sales</div>
+    <h1><strong>Australia Leadplanning App</strong><br>Technical Documentation</h1>
+    <p class="hero-desc">
+      Complete technical reference for the Australia field-sales CRM — covering the
+      data model, all 11 slice formulas (including cool-down date math), dynamic map
+      filtering architecture, 20 format rules, and 10 actions.
+    </p>
+    <div class="hero-stats">
+      <div class="hero-stat"><span class="val">4</span><span class="lbl">Tables</span></div>
+      <div class="hero-stat"><span class="val">11</span><span class="lbl">Slices</span></div>
+      <div class="hero-stat"><span class="val">36</span><span class="lbl">Views</span></div>
+      <div class="hero-stat"><span class="val">20</span><span class="lbl">Format Rules</span></div>
+      <div class="hero-stat"><span class="val">10</span><span class="lbl">Actions</span></div>
+    </div>
+    <div class="hero-grid"></div>
+  </section>
+
+  <!-- ── SECTION 00: INTRO ──────────────────────── -->
+  <section class="section" id="intro">
+    <div class="section-header">
+      <span class="section-num">00</span>
+      <h2>Introduction &amp; Architecture</h2>
+      <span class="badge">Overview</span>
+    </div>
+    <p>
+      The <strong>Australia Leadplanning App</strong> is a mobile-first field CRM built
+      for Enlighten Press sales reps operating across Australian states. The app's core
+      design principle is to surface <em>only actionable leads</em> — using complex slice
+      formulas, dynamic map filtering, and cool-down period enforcement so reps never
+      waste time on leads they shouldn't contact yet.
+    </p>
+
+    <div class="subsection">
+      <div class="subsection-title">Core Architecture Loop</div>
+      <div class="arch-loop">
+        <div class="arch-node">
+          <div class="arch-node-label">Core Data</div>
+          <div class="arch-node-name">Leads Table</div>
+          <div class="arch-node-desc">Single master table. Schools, childcares, sales history.</div>
+        </div>
+        <div class="arch-node">
+          <div class="arch-node-label">Control Panel</div>
+          <div class="arch-node-name">Map Filter Table</div>
+          <div class="arch-node-desc">User toggles live here. Slices read these values.</div>
+        </div>
+        <div class="arch-node">
+          <div class="arch-node-label">Output</div>
+          <div class="arch-node-name">Dynamic Maps</div>
+          <div class="arch-node-desc">Pins re-render instantly when filters change.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notice info">
+      <strong>Design Philosophy</strong>
+      Rather than building dozens of static views, the app uses a single-row
+      <code>Map Filter</code> state table as a "control panel." All complex slices
+      cross-reference this table using <code>ANY(Map Filter[Column])</code>, so
+      one user input instantly re-filters every downstream view.
+    </div>
+  </section>
+
+  <hr />
+
+  <!-- ══════════════════════════════════
+       PART I — DATA ARCHITECTURE
+  ══════════════════════════════════ -->
+
+  <!-- ── SECTION 01: LEADS ─────────────────────── -->
+  <section class="section" id="tbl-leads">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2>Table: Leads</h2>
+      <span class="badge">Core Table</span>
+    </div>
+    <p>
+      The single master table. Every row is a School or Childcare Centre.
+      Permissions: <code>ADDS_AND_UPDATES</code>. Source: Google Sheets worksheet
+      <code>Complete AU</code>.
+    </p>
+
+    <div class="subsection">
+      <div class="subsection-title">Identity &amp; Classification Columns</div>
+      <ul class="field-list">
+        <li>
+          <span class="fname">ID</span>
+          <span class="ftype">Text · PK</span>
+          <span class="fdesc">Unique identifier. Prefix system: <code>S#</code> = School, <code>C#</code> = Childcare, <code>H#</code> = Homebase. Drives all type-detection format rules and categorization slices.</span>
+        </li>
+        <li>
+          <span class="fname">Type</span>
+          <span class="ftype">Enum</span>
+          <span class="fdesc">Values: <code>Schools</code> or <code>Childcares</code>. "Allow other values" is enabled. Used in cool-down slice filtering.</span>
+        </li>
+        <li>
+          <span class="fname">LatLong</span>
+          <span class="ftype">LatLong</span>
+          <span class="fdesc">GPS coordinates. The primary column for all Map views. Format rules targeting this column change the map pin's icon and color.</span>
+        </li>
+        <li>
+          <span class="fname">Details Centre AS</span>
+          <span class="ftype">LongText · Sensitive</span>
+          <span class="fdesc">Name and address. Marked as sensitive data. Used as the large header in Detail card views.</span>
+        </li>
+        <li>
+          <span class="fname">Primary Phone</span>
+          <span class="ftype">Number · Sensitive</span>
+          <span class="fdesc">Main contact number. Marked as sensitive.</span>
+        </li>
+        <li>
+          <span class="fname">Primary Email</span>
+          <span class="ftype">Email · Sensitive</span>
+          <span class="fdesc">Main email. Marked as sensitive. Drives the Compose Email action.</span>
+        </li>
+        <li>
+          <span class="fname">Comments from AS</span>
+          <span class="ftype">LongText</span>
+          <span class="fdesc">Historical notes from the master database. Presence or absence of this field drives the "Uncalled" toggle logic in slices — a blank value means the lead has never been contacted.</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Visit &amp; Interaction Columns</div>
+      <ul class="field-list">
+        <li>
+          <span class="fname">Results</span>
+          <span class="ftype">Enum</span>
+          <span class="fdesc">Most important field. Last interaction outcome. Drives all filtering, map pin colors, and slice conditions. See status values below.</span>
+        </li>
+        <li>
+          <span class="fname">1st visit RC</span>
+          <span class="ftype">Date</span>
+          <span class="fdesc">Display name: <em>Last Visit Date</em>. Initial value: <code>TODAY()</code>. Key column for cool-down period math and the "Last Week Results" rolling-7-day slice.</span>
+        </li>
+        <li>
+          <span class="fname">Follow Up RC</span>
+          <span class="ftype">Date</span>
+          <span class="fdesc">Scheduled follow-up date. Initial value: <code>TODAY()</code>. Drives the Calendar view and "Follow Ups" slice.</span>
+        </li>
+        <li>
+          <span class="fname">Notes RC</span>
+          <span class="ftype">LongText</span>
+          <span class="fdesc">Rep's personal notes. Used in cool-down slices to detect "said no over phone" string.</span>
+        </li>
+        <li>
+          <span class="fname">Qualifiers</span>
+          <span class="ftype">Enum · Read-only</span>
+          <span class="fdesc">Lead priority ranking. Values: Low, Medium, New, High, Dead, Best, Potential, Bottom. Drives qualifier-based format rules and the Qualifiers filter on the dashboard.</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Sales History Columns</div>
+      <ul class="field-list">
+        <li><span class="fname"># Books Purchased</span><span class="ftype">Number</span><span class="fdesc">Display name: <em>Total Books Purchased</em>. Drives the numeric-bin filter in dynamic map slices.</span></li>
+        <li><span class="fname"># Successful Sales</span><span class="ftype">Number</span><span class="fdesc">Lifetime successful sale count. The <code>Repeat Buyers</code> slice requires this to be ≥ 2.</span></li>
+        <li><span class="fname"># No Sales</span><span class="ftype">Number</span><span class="fdesc">Count of no-sale outcomes.</span></li>
+        <li><span class="fname">Date Last Successful Sale</span><span class="ftype">Date</span><span class="fdesc">Drives the <code>Books Sold to before date filter</code> slice — filters who hasn't bought since a chosen cutoff date.</span></li>
+        <li><span class="fname">Date Last No Sale</span><span class="ftype">Date</span><span class="fdesc">Date of the most recent rejection outcome.</span></li>
+        <li><span class="fname">Visits Since Last Sale</span><span class="ftype">Number</span><span class="fdesc">Running counter of visits without a purchase.</span></li>
+        <li><span class="fname">Bought in Last 3 Visits</span><span class="ftype">Yes/No</span><span class="fdesc">Convenience flag for recent purchase history.</span></li>
+      </ul>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Results Enum Values</div>
+      <div class="status-grid">
+        <div class="status-item"><div class="status-dot s-green"></div><span class="slabel">Successful sale</span></div>
+        <div class="status-item"><div class="status-dot s-green"></div><span class="slabel">Visit today</span></div>
+        <div class="status-item"><div class="status-dot s-red"></div><span class="slabel">No sale</span></div>
+        <div class="status-item"><div class="status-dot s-orange"></div><span class="slabel">Call back</span></div>
+        <div class="status-item"><div class="status-dot s-orange"></div><span class="slabel">To be called</span></div>
+        <div class="status-item"><div class="status-dot s-yellow"></div><span class="slabel">Follow up</span></div>
+        <div class="status-item"><div class="status-dot s-pink"></div><span class="slabel">Books left</span></div>
+        <div class="status-item"><div class="status-dot s-pink"></div><span class="slabel">Books left - go back</span></div>
+        <div class="status-item"><div class="status-dot s-theme"></div><span class="slabel">Quote sent - call back</span></div>
+        <div class="status-item"><div class="status-dot s-blue"></div><span class="slabel">Too soon to visit</span></div>
+        <div class="status-item"><div class="status-dot s-cyan"></div><span class="slabel">(blank)</span></div>
+        <div class="status-item"><div class="status-dot s-red"></div><span class="slabel">Said no over phone</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 02: MAP FILTER ────────────────── -->
+  <section class="section" id="tbl-mapfilter">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2>Table: Map Filter</h2>
+      <span class="badge">State Table</span>
+    </div>
+    <p>
+      Single-row control table. Permissions: <code>UPDATES_ONLY</code>.
+      Source: Google Sheets worksheet <code>Map Filter</code>. Users never directly
+      see this as a table — they interact with it through Quick Edit controls on
+      the Dashboard view.
+    </p>
+    <ul class="field-list">
+      <li>
+        <span class="fname">_RowNumber</span>
+        <span class="ftype">Number · PK</span>
+        <span class="fdesc">Always row 1. The row number serves as the key for this utility table.</span>
+      </li>
+      <li>
+        <span class="fname">Location</span>
+        <span class="ftype">LatLong · Virtual</span>
+        <span class="fdesc">App formula: <code>=HERE()</code>. Dynamically stores the user's current GPS location. Used to center maps or reference the rep's position.</span>
+      </li>
+      <li>
+        <span class="fname">Show Schools / Show Childcares</span>
+        <span class="ftype">Enum</span>
+        <span class="fdesc">Dropdowns: <code>"Schools" / "None"</code> and <code>"Childcares" / "None"</code>. Controls which location type renders on the map. Read in slices via <code>ANY(Map Filter[Show Schools])</code>.</span>
+      </li>
+      <li>
+        <span class="fname">Show Uncalled</span>
+        <span class="ftype">Yes/No</span>
+        <span class="fdesc">When FALSE, the <code>Unfinished Results</code> slice hides leads with blank <code>Comments from AS</code> (never contacted leads).</span>
+      </li>
+      <li>
+        <span class="fname">Last Visit Before</span>
+        <span class="ftype">Date</span>
+        <span class="fdesc">Initial value: <code>TODAY()</code>. The <code>Unfinished Results</code> slice uses this as a date ceiling: only shows leads visited before this date.</span>
+      </li>
+      <li>
+        <span class="fname">Last Sold Date Before</span>
+        <span class="ftype">Date</span>
+        <span class="fdesc">Initial value: <code>TODAY()</code>. Used by the <code>Books Sold to before date filter</code> slice to show customers who haven't bought since this cutoff.</span>
+      </li>
+      <li>
+        <span class="fname">Qualifiers</span>
+        <span class="ftype">EnumList</span>
+        <span class="fdesc">Multi-select. Values: Low, Medium, New, High, Dead, Best, Potential, Bottom. If left blank, slices show all qualifiers.</span>
+      </li>
+      <li>
+        <span class="fname">States</span>
+        <span class="ftype">EnumList</span>
+        <span class="fdesc">Multi-select Australian states: VIC, NSW, WA, etc. Filters which geographic region of leads appears on the map.</span>
+      </li>
+      <li>
+        <span class="fname">Books Purchased Filter</span>
+        <span class="ftype">EnumList</span>
+        <span class="fdesc">Multi-select volume buckets: <code>0-5</code>, <code>5-10</code>, <code>10-20</code>, <code>20-40</code>, <code>40+</code>. Dynamic slices translate these string values into numeric boundary checks.</span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ── SECTION 03: LEGEND ────────────────────── -->
+  <section class="section" id="tbl-legend">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2>Table: Legend</h2>
+      <span class="badge">Reference</span>
+    </div>
+    <p>
+      Visual key table. Permissions: <code>ALL_CHANGES</code>. Source: Google Sheets
+      worksheet <code>Legend</code>. Displayed as a Gallery view so reps can see what
+      each map pin color and icon means.
+    </p>
+    <ul class="field-list">
+      <li><span class="fname">ID</span><span class="ftype">Text · PK</span><span class="fdesc">Unique identifier for the legend item.</span></li>
+      <li><span class="fname">Legend</span><span class="ftype">Image</span><span class="fdesc">Image of the map pin or color swatch shown to the rep as a reference.</span></li>
+    </ul>
+    <div class="notice warn">
+      <strong>Admin Note</strong>
+      The Delete action for this table requires confirmation
+      (<code>NeedsConfirmation: true</code>) and has visibility set to
+      <code>ADVANCED</code> — hidden from standard field reps to prevent
+      accidental deletion of legend keys.
+    </div>
+  </section>
+
+  <!-- ── SECTION 04: USER SETTINGS ────────────── -->
+  <section class="section" id="tbl-usersettings">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2>Table: _Per User Settings</h2>
+      <span class="badge">Native AppSheet</span>
+    </div>
+    <p>
+      AppSheet's native user-settings table. Permissions: <code>UPDATES_ONLY</code>.
+      Source: Native AppSheet (not Google Sheets). Stores localized preferences
+      per user session without affecting the backend database.
+    </p>
+    <ul class="field-list">
+      <li><span class="fname">_THISUSER</span><span class="ftype">Text · PK</span><span class="fdesc">Identifies the current app session and user.</span></li>
+      <li><span class="fname">_EMAIL</span><span class="ftype">Email</span><span class="fdesc">App formula: <code>USEREMAIL()</code>. Auto-captures the logged-in user's email.</span></li>
+      <li><span class="fname">_NAME</span><span class="ftype">Name</span><span class="fdesc">App formula: <code>USERNAME()</code>. Auto-captures the logged-in user's name.</span></li>
+      <li><span class="fname">Country Option</span><span class="ftype">Enum</span><span class="fdesc">Localization setting. Values: Australia, Brazil, Canada.</span></li>
+      <li><span class="fname">Language Option</span><span class="ftype">Enum</span><span class="fdesc">Localization setting. Values: English, French, Tamil.</span></li>
+    </ul>
+  </section>
+
+  <hr />
+
+  <!-- ══════════════════════════════════
+       PART II — SLICES
+  ══════════════════════════════════ -->
+
+  <!-- ── SECTION 05: SIMPLE SLICES ────────────── -->
+  <section class="section" id="slices-simple">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <h2>Categorization Slices</h2>
+      <span class="badge">Simple Filters</span>
+    </div>
+    <p>
+      These three slices use primary key patterns or direct column matches to
+      partition leads into fundamental groups.
+    </p>
+
+    <div class="slice-card">
+      <div class="slice-header">
+        <div class="slice-num">Slice 1</div>
+        <div class="slice-name">Schools</div>
+        <div class="slice-mode">UPDATES_ONLY</div>
+      </div>
+      <div class="slice-body">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">Row Filter Condition</span><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div></div>
+          <pre>=STARTSWITH([ID], "S#")</pre>
+        </div>
+        <p>Isolates leads whose ID begins with "S#". Updates only — reps cannot add new schools through this slice.</p>
+      </div>
+    </div>
+
+    <div class="slice-card">
+      <div class="slice-header">
+        <div class="slice-num">Slice 2</div>
+        <div class="slice-name">Childcare Centres</div>
+        <div class="slice-mode">ADDS_AND_UPDATES</div>
+      </div>
+      <div class="slice-body">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">Row Filter Condition</span><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div></div>
+          <pre>=STARTSWITH([ID], "C#")</pre>
+        </div>
+        <p>Identical logic to Schools but targets "C#". Unlike Schools, this slice permits adding new records — reps can register a new childcare they discover in the field.</p>
+      </div>
+    </div>
+
+    <div class="slice-card">
+      <div class="slice-header">
+        <div class="slice-num">Slice 3</div>
+        <div class="slice-name">Qualifiers Medium</div>
+        <div class="slice-mode">ADDS_AND_UPDATES</div>
+      </div>
+      <div class="slice-body">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">Row Filter Condition</span><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div></div>
+          <pre>=[Qualifiers] = "Medium"</pre>
+        </div>
+        <p>Dedicated subset for medium-priority leads. Provides a focused view without the noise of high/low priority records.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 06: ACTIONABLE SLICES ─────────── -->
+  <section class="section" id="slices-actionable">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <h2>Actionable &amp; Time-Based Slices</h2>
+      <span class="badge">Call Queues</span>
+    </div>
+    <p>
+      These slices define <em>who the rep should contact next</em>. They strip out
+      definitive outcomes and surface only leads requiring action.
+    </p>
+
+    <div class="slice-card">
+      <div class="slice-header">
+        <div class="slice-num">Slice 4</div>
+        <div class="slice-name">Last Week Results</div>
+        <div class="slice-mode">READ_ONLY</div>
+      </div>
+      <div class="slice-body">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">Row Filter Condition</span><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div></div>
+          <pre>=AND(
+    HOUR(TODAY() - [1st visit RC]) / 24 <= 7,
+    [1st visit RC] <= TODAY()
+)</pre>
+        </div>
+        <p>
+          Used for the weekly analytics histogram. The division <code>HOUR(...)/24</code>
+          converts an hour-based duration into days, checking if the first visit
+          happened within the last 7 rolling days. The <code>[1st visit RC] &lt;= TODAY()</code>
+          guard prevents future-dated records from appearing.
+        </p>
+      </div>
+    </div>
+
+    <div class="slice-card">
+      <div class="slice-header">
+        <div class="slice-num">Slice 5</div>
+        <div class="slice-name">Follow Ups</div>
+        <div class="slice-mode">ADDS_AND_UPDATES</div>
+      </div>
+      <div class="slice-body">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">Row Filter Condition</span><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div></div>
+          <pre>=AND(
+    NOT(ISBLANK([Follow Up RC])),
+    OR(
+        CONTAINS([Results], "Books left"),
+        [Results] = "Quote sent - call back",
+        [Results] = "Follow up"
+    )
+)</pre>
+        </div>
+        <p>
+          Drives the Calendar view. A lead must satisfy <strong>both</strong> conditions:
+          it must have a scheduled return date in <code>Follow Up RC</code> <em>and</em>
+          its result must be an actionable pending status.
+        </p>
+      </div>
+    </div>
+
+    <div class="slice-card">
+      <div class="slice-header">
+        <div class="slice-num">Slice 6</div>
+        <div class="slice-name">To be called</div>
+        <div class="slice-mode">ADDS_AND_UPDATES</div>
+      </div>
+      <div class="slice-body">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">Row Filter Condition</span><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div></div>
+          <pre>=AND(
+    NOT([Results] = "Successful sale"),
+    NOT([Results] = "No sale"),
+    NOT([Results] = "Said no over phone"),
+    NOT([Results] = "Too soon to visit"),
+    OR(
+        [Results] = "To be called",
+        [Results] = "Call back",
+        ISBLANK([Comments from AS])   <span class="comment">/* Never contacted */</span>
+    )
+)</pre>
+        </div>
+        <p>
+          Creates the fresh call queue. Exclusion logic removes any lead with a definitive
+          outcome. The <code>ISBLANK([Comments from AS])</code> condition captures
+          leads that have never been contacted at all — they have no history in the
+          database yet.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 07: COOL-DOWN SLICES ──────────── -->
+  <section class="section" id="slices-cooldown">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <h2>Cool-Down Slices</h2>
+      <span class="badge">Date Math</span>
+    </div>
+    <p>
+      Two slices enforce mandatory waiting periods before reps can see or contact
+      leads that previously rejected them over the phone. The math calculates exact
+      months elapsed since the first visit, including sub-month precision.
+    </p>
+
+    <div class="notice info">
+      <strong>The Month Calculation Formula</strong>
+      <code>(YEAR(TODAY()) - YEAR([1st visit RC])) * 12 + MONTH(TODAY()) - MONTH([1st visit RC])</code>
+      — multiplies the year difference by 12, then adds the month offset.
+      This avoids the pitfall of naive subtraction failing across year boundaries.
+    </div>
+
+    <div class="slice-card">
+      <div class="slice-header">
+        <div class="slice-num coral">Slice 7</div>
+        <div class="slice-name">Said no over phone CCs</div>
+        <div class="slice-mode">ADDS_AND_UPDATES</div>
+      </div>
+      <div class="slice-body">
+        <p>Cool-down period: <strong>4 months</strong> — for Childcares.</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">Row Filter Condition</span><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div></div>
+          <pre>=AND(
+    CONTAINS([Type], "Childcares"),
+    CONTAINS([Notes RC], "said no over phone"),
+
+    IF(
+        <span class="comment">/* Strictly MORE than 4 months ago → show immediately */</span>
+        (YEAR(TODAY()) - YEAR([1st visit RC])) * 12
+        + MONTH(TODAY()) - MONTH([1st visit RC]) > 4,
+
+        TRUE,
+
+        IF(
+            <span class="comment">/* Exactly 4 months ago → also check the day */</span>
+            (YEAR(TODAY()) - YEAR([1st visit RC])) * 12
+            + MONTH(TODAY()) - MONTH([1st visit RC]) = 4,
+
+            DAY(TODAY()) > DAY([1st visit RC]),
+
+            FALSE  <span class="comment">/* Less than 4 months → hide */</span>
+        )
+    )
+)</pre>
+        </div>
+        <p>
+          The nested <code>IF</code> handles the edge case where exactly 4 calendar months
+          have passed but the day hasn't been reached yet. E.g., if the 1st visit was
+          Jan 15 and today is May 14, the day check returns FALSE and keeps the lead hidden.
+          On May 15, it returns TRUE.
+        </p>
+      </div>
+    </div>
+
+    <div class="slice-card">
+      <div class="slice-header">
+        <div class="slice-num coral">Slice 8</div>
+        <div class="slice-name">Said no over phone Schools</div>
+        <div class="slice-mode">ADDS_AND_UPDATES</div>
+      </div>
+      <div class="slice-body">
+        <p>
+          Identical logic to Slice 7 but targets <code>CONTAINS([Type], "Schools")</code>
+          with a longer cool-down: <strong>5 months</strong>.
+        </p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">Row Filter Condition (Diff from Slice 7 shown)</span><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div></div>
+          <pre>=AND(
+    CONTAINS([Type], "Schools"),        <span class="comment">/* ← changed */</span>
+    CONTAINS([Notes RC], "said no over phone"),
+    IF(
+        ... > 5,    <span class="comment">/* ← threshold is 5 months (not 4) */</span>
+        TRUE,
+        IF( ... = 5, DAY(TODAY()) > DAY([1st visit RC]), FALSE)
+    )
+)</pre>
+        </div>
+        <div class="two-col">
+          <div class="card accent-teal">
+            <div class="card-label">Childcares (Slice 7)</div>
+            <p style="margin:0; font-size:13px;">Cool-down threshold: <strong>4 months</strong></p>
+          </div>
+          <div class="card accent-coral">
+            <div class="card-label">Schools (Slice 8)</div>
+            <p style="margin:0; font-size:13px;">Cool-down threshold: <strong>5 months</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 08: DYNAMIC MAP SLICES ────────── -->
+  <section class="section" id="slices-dynamic">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <h2>Dynamic Map Filter Slices</h2>
+      <span class="badge">Cross-Table Logic</span>
+    </div>
+    <p>
+      The three most complex slices in the app. They cross-reference
+      the <code>Leads</code> table against the user's live inputs stored in
+      <code>Map Filter</code> using <code>ANY(Map Filter[Column])</code> to read
+      the current single-row state.
+    </p>
+
+    <div class="slice-card">
+      <div class="slice-header">
+        <div class="slice-num gold">Slice 9</div>
+        <div class="slice-name">Unfinished Results</div>
+        <div class="slice-mode">UPDATES_ONLY</div>
+      </div>
+      <div class="slice-body">
+        <p>The primary map engine. Evaluates every lead against all active dashboard filters simultaneously.</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">Row Filter Condition (Annotated)</span><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div></div>
+          <pre>=AND(
+
+    <span class="comment">/* 1. Date filter: only leads visited before the chosen cutoff */</span>
+    ANY(Map Filter[Last Visit Before]) > [1st visit RC],
+
+    <span class="comment">/* 2. Exclusion: strip definitive "closed" outcomes */</span>
+    NOT([Results] = "Successful sale"),
+    NOT([Results] = "No sale"),
+    NOT([Results] = "Closed Due to Holidays"),
+
+    <span class="comment">/* 3. Uncalled toggle: if user hid uncalled, require prior history */</span>
+    IF(
+        CONTAINS(Map Filter[Show Uncalled], "FALSE"),
+        ISNOTBLANK([Comments from AS]),
+        TRUE
+    ),
+
+    <span class="comment">/* 4. Type toggle: show if type matches user's selected category */</span>
+    OR(
+        IN([Type], Map Filter[Show Childcares]),
+        IN([Type], Map Filter[Show Schools])
+    ),
+
+    <span class="comment">/* 5. Qualifiers multi-select: blank = show all */</span>
+    OR(
+        ISBLANK(ANY(Map Filter[Qualifiers])),
+        CONTAINS(TEXT(ANY(Map Filter[Qualifiers])), [Qualifiers])
+    ),
+
+    <span class="comment">/* 6. States multi-select: blank = show all states */</span>
+    OR(
+        ISBLANK(ANY(Map Filter[States])),
+        CONTAINS(TEXT(ANY(Map Filter[States])), [States])
+    ),
+
+    <span class="comment">/* 7. Books purchased numeric bin check */</span>
+    AND(
+        IN("0-5",   Map Filter[Books Purchased Filter]) AND [# Books Purchased] >= 0  AND [# Books Purchased] <= 5,
+        ...  <span class="comment">/* OR for each bucket: 5-10, 10-20, 20-40, 40+ */</span>
+    )
+)</pre>
+        </div>
+        <div class="notice info">
+          <strong>Multi-Select Pattern</strong>
+          <code>OR(ISBLANK(ANY(Map Filter[Qualifiers])), CONTAINS(...))</code> — if the
+          user leaves the filter blank, the <code>ISBLANK</code> short-circuits to TRUE
+          and shows everything. If they select specific values, the <code>CONTAINS</code>
+          check filters to only matching leads. This pattern repeats for both
+          Qualifiers and States.
+        </div>
+      </div>
+    </div>
+
+    <div class="slice-card">
+      <div class="slice-header">
+        <div class="slice-num gold">Slice 10</div>
+        <div class="slice-name">Repeat Buyers</div>
+        <div class="slice-mode">UPDATES_ONLY</div>
+      </div>
+      <div class="slice-body">
+        <p>
+          Identical to <code>Unfinished Results</code> with one additional condition
+          prepended at the top of the <code>AND()</code> block:
+        </p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">Additional Condition (Prepended)</span><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div></div>
+          <pre>[# Successful Sales] >= 2</pre>
+        </div>
+        <p>
+          Strictly isolates customers who have made at least two separate purchases.
+          All the same Map Filter controls (type, qualifier, state, books bin) still apply.
+        </p>
+      </div>
+    </div>
+
+    <div class="slice-card">
+      <div class="slice-header">
+        <div class="slice-num gold">Slice 11</div>
+        <div class="slice-name">Books Sold to before date filter</div>
+        <div class="slice-mode">ADDS_AND_UPDATES</div>
+      </div>
+      <div class="slice-body">
+        <p>
+          Same dynamic filtering block as <code>Unfinished Results</code> but replaces
+          the first-visit date check with a last-sale date check:
+        </p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">Modified Date Filter (vs. Slice 9)</span><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div></div>
+          <pre><span class="comment">/* Instead of: ANY(Map Filter[Last Visit Before]) > [1st visit RC] */</span>
+AND(
+    ISNOTBLANK([Date Last Successful Sale]),
+    ANY(Map Filter[Last Sold Date Before]) > [Date Last Successful Sale]
+)</pre>
+        </div>
+        <p>
+          Only shows customers who haven't bought anything since the rep's selected
+          date cutoff — a targeted re-engagement list for lapsed buyers.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <hr />
+
+  <!-- ══════════════════════════════════
+       PART III — UX VIEWS
+  ══════════════════════════════════ -->
+
+  <!-- ── SECTION 09: MAP VIEWS ─────────────────── -->
+  <section class="section" id="views-maps">
+    <div class="section-header">
+      <span class="section-num">09</span>
+      <h2>Map Views</h2>
+      <span class="badge">Primary Interface</span>
+    </div>
+    <p>
+      Map views are the primary interface for field reps. All use the <code>LatLong</code>
+      column to plot pins. <code>MinimumClusterSize: 0</code> is set on all maps —
+      pins never cluster regardless of zoom level.
+    </p>
+    <table class="data-table">
+      <thead>
+        <tr><th>View Name</th><th>Source Slice</th><th>MapType</th><th>Menu Location</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>All</td><td>Leads (full table)</td><td>Automatic</td><td>Bottom menu — far left</td></tr>
+        <tr><td>Repeat Buyers</td><td>Repeat Buyers slice</td><td>Road</td><td>Bottom menu — <code>fa-shopping-bag</code></td></tr>
+        <tr><td>Successful Sale Filter</td><td>Successful sale status</td><td>Road</td><td>Bottom menu</td></tr>
+        <tr><td>Uncalled Map</td><td>To be called slice</td><td>Road</td><td>Bottom menu — <code>fa-map-marker-slash</code></td></tr>
+        <tr><td>Said no over phone CCs</td><td>Slice 7</td><td>Road</td><td>Side menu</td></tr>
+        <tr><td>Said no over phone Schools</td><td>Slice 8</td><td>Road</td><td>Side menu</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ── SECTION 10: DASHBOARD ─────────────────── -->
+  <section class="section" id="views-dashboard">
+    <div class="section-header">
+      <span class="section-num">10</span>
+      <h2>Dashboard &amp; Interactive Filtering</h2>
+      <span class="badge">Control Panel</span>
+    </div>
+
+    <div class="two-col">
+      <div class="card accent-teal">
+        <div class="card-label">Dashboard View</div>
+        <p style="font-size:13px; margin-bottom:4px;">Type: Dashboard container</p>
+        <p style="font-size:13px; margin-bottom:4px;"><code>InteractiveMode: false</code>, hidden tabs</p>
+        <p style="font-size:13px; margin:0;">Container for the Filter Map control panel only.</p>
+      </div>
+      <div class="card accent-coral">
+        <div class="card-label">Filter Map (Detail View)</div>
+        <p style="font-size:13px; margin-bottom:4px;">Not a map — a Detail view on <code>Map Filter</code> table</p>
+        <p style="font-size:13px; margin:0;">Quick Edit controls drive all map filtering via slice cross-references.</p>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Quick Edit Controls (Filter Map)</div>
+      <ul class="field-list">
+        <li><span class="fname">Show Schools</span><span class="fdesc">Dropdown. Toggles School pins on/off on the map.</span></li>
+        <li><span class="fname">Show Childcares</span><span class="fdesc">Dropdown. Toggles Childcare pins on/off.</span></li>
+        <li><span class="fname">Qualifiers</span><span class="fdesc">Multi-select. Filter map to specific priority tiers.</span></li>
+        <li><span class="fname">States</span><span class="fdesc">Multi-select. Filter map to specific Australian states.</span></li>
+        <li><span class="fname">Last Visit Before</span><span class="fdesc">Date picker. Show only leads visited before this date.</span></li>
+        <li><span class="fname">Books Purchased Filter</span><span class="fdesc">Multi-select buckets. Filter by historical volume.</span></li>
+      </ul>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Analytics &amp; Calendar Views</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>View</th><th>Type</th><th>Source</th><th>Configuration</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Follow Ups</td>
+            <td>Calendar</td>
+            <td>Follow Ups slice</td>
+            <td>Start date: <code>Follow Up RC</code>. Monthly calendar of scheduled callbacks.</td>
+          </tr>
+          <tr>
+            <td>Last Week Visits</td>
+            <td>Histogram (Chart)</td>
+            <td>Last Week Results slice</td>
+            <td>Count records by <code>1st visit RC</code>. Visual weekly KPI tracker.</td>
+          </tr>
+          <tr>
+            <td>Legend</td>
+            <td>Gallery</td>
+            <td>Legend table</td>
+            <td>Displays map pin images as a reference sheet for reps.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ── SECTION 11: DETAIL VIEWS ──────────────── -->
+  <section class="section" id="views-detail">
+    <div class="section-header">
+      <span class="section-num">11</span>
+      <h2>Detail &amp; Form Views</h2>
+      <span class="badge">Data Entry</span>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Custom Card Layout (Detail Views)</div>
+      <p>
+        Detail views for <code>Childcare Centres</code>, <code>Schools</code>,
+        <code>Sydney Schools</code>, and <code>Filter Map</code> use
+        <strong>custom JSON card layouts</strong> rather than standard AppSheet lists.
+      </p>
+      <div class="card accent-gold">
+        <div class="card-label">Card Layout Structure</div>
+        <ul class="field-list" style="margin:0;">
+          <li><span class="fname">Header Container</span><span class="fdesc">Renders the <code>LatLong</code> column as a static mini-map (<code>objectFit: cover</code>, <code>height: 194px</code>).</span></li>
+          <li><span class="fname">Title Block</span><span class="fdesc"><code>Details Centre AS</code> as large header (21px font). <code>ID</code> or street address as subtitle with 0.6 opacity.</span></li>
+          <li><span class="fname">Actions Row</span><span class="fdesc">Inline buttons: Edit, View Map (<code>LatLong</code>), Chart Data (<code>fa-table</code>), Compose Email (<code>fa-envelope</code>).</span></li>
+        </ul>
+      </div>
+      <p>
+        <code>SlideshowMode: true</code> and <code>DesktopSplitMode: Split view</code>
+        are applied to all detail views.
+      </p>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Form View Configuration</div>
+      <p>
+        Form views (<code>Sydney Schools_Form</code>, <code>To be called_Form</code>,
+        <code>Unfinished Results_Form</code>, etc.) share a standardized configuration
+        to minimize friction for reps entering data in the field.
+      </p>
+      <div class="kv-table">
+        <div class="kv-row"><span class="kv-key">Column Order</span><span class="kv-val">Results → Centre Details AS → all other columns</span></div>
+        <div class="kv-row"><span class="kv-key">AutoSave</span><span class="kv-val">false</span></div>
+        <div class="kv-row"><span class="kv-key">AutoReopen</span><span class="kv-val">false</span></div>
+        <div class="kv-row"><span class="kv-key">FinishView</span><span class="kv-val">Automatic (returns to underlying detail or map)</span></div>
+      </div>
+    </div>
+  </section>
+
+  <hr />
+
+  <!-- ══════════════════════════════════
+       PART IV — FORMAT RULES
+  ══════════════════════════════════ -->
+
+  <!-- ── SECTION 12: STATUS COLORS ────────────── -->
+  <section class="section" id="fmt-status">
+    <div class="section-header">
+      <span class="section-num">12</span>
+      <h2>Format Rules — Status Pin Colors</h2>
+      <span class="badge">Triggered by [Results]</span>
+    </div>
+    <p>
+      When a Format Rule targets a <code>LatLong</code> column, it changes the
+      <strong>color and icon of the map pin</strong> for that record. All rules
+      below target both <code>LatLong</code> and the relevant text column.
+    </p>
+
+    <div class="rule-row" style="background:var(--bg-card);">
+      <span class="rule-name">Visit Today</span>
+      <span class="rule-cond"><code>[Results] = "Visit today"</code></span>
+      <div class="rule-color"><div class="color-swatch" style="background:#22c55e"></div>Green</div>
+    </div>
+    <div class="rule-row" style="background:var(--bg-card);">
+      <span class="rule-name">Call Back Rule</span>
+      <span class="rule-cond"><code>=OR([Results]="Call back", [Results]="To be called")</code></span>
+      <div class="rule-color"><div class="color-swatch" style="background:#f97316"></div>Orange</div>
+    </div>
+    <div class="rule-row" style="background:var(--bg-card);">
+      <span class="rule-name">Follow up</span>
+      <span class="rule-cond"><code>[Results] = "Follow up"</code></span>
+      <div class="rule-color"><div class="color-swatch" style="background:#eab308"></div>Yellow</div>
+    </div>
+    <div class="rule-row" style="background:var(--bg-card);">
+      <span class="rule-name">Books left</span>
+      <span class="rule-cond"><code>[Results] = "Books left"</code> (+ "Books left - go back" text highlight)</span>
+      <div class="rule-color"><div class="color-swatch" style="background:#ec4899"></div>Pink</div>
+    </div>
+    <div class="rule-row" style="background:var(--bg-card);">
+      <span class="rule-name">Quote sent</span>
+      <span class="rule-cond"><code>[Results] = "Quote sent - call back"</code> (also targets Follow Up RC)</span>
+      <div class="rule-color"><div class="color-swatch" style="background:var(--teal)"></div>Theme Main Color</div>
+    </div>
+    <div class="rule-row" style="background:var(--bg-card);">
+      <span class="rule-name">Uncalled Format Rule</span>
+      <span class="rule-cond"><code>=AND(ISBLANK([Comments from AS]), ISBLANK([Results]))</code></span>
+      <div class="rule-color"><div class="color-swatch" style="background:#ef4444"></div>Red</div>
+    </div>
+    <div class="rule-row" style="background:var(--bg-card);">
+      <span class="rule-name">Blank Rule</span>
+      <span class="rule-cond"><code>=ISBLANK([Results])</code></span>
+      <div class="rule-color"><div class="color-swatch" style="background:#06b6d4"></div>Cyan</div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 13: TYPE ICONS ────────────────── -->
+  <section class="section" id="fmt-type">
+    <div class="section-header">
+      <span class="section-num">13</span>
+      <h2>Format Rules — Type Pin Icons</h2>
+      <span class="badge">Triggered by [ID]</span>
+    </div>
+    <p>
+      These rules apply FontAwesome icons to map pins based on the ID prefix system,
+      targeting both the <code>Type</code> and <code>LatLong</code> columns.
+    </p>
+    <table class="data-table">
+      <thead>
+        <tr><th>Rule Name</th><th>Condition</th><th>Icon</th><th>Color</th><th>Columns</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Schools</td>
+          <td><code>=STARTSWITH([ID], "S#")</code></td>
+          <td><code>fas fa-star</code></td>
+          <td>Default</td>
+          <td>Type, LatLong</td>
+        </tr>
+        <tr>
+          <td>Childcares</td>
+          <td><code>=STARTSWITH([ID], "C#")</code></td>
+          <td><code>fas fa-baby</code></td>
+          <td>Default</td>
+          <td>Type, LatLong</td>
+        </tr>
+        <tr>
+          <td>Home</td>
+          <td><code>=STARTSWITH([ID], "H#")</code></td>
+          <td><code>fas fa-home</code></td>
+          <td><div class="rule-color"><div class="color-swatch" style="background:#9474e8"></div>#9474e8 (Purple)</div></td>
+          <td>Results, LatLong</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ── SECTION 14: QUALIFIER COLORS ──────────── -->
+  <section class="section" id="fmt-qualifier">
+    <div class="section-header">
+      <span class="section-num">14</span>
+      <h2>Format Rules — Qualifier Colors</h2>
+      <span class="badge">Triggered by [Qualifiers]</span>
+    </div>
+    <p>
+      Eight rules allow reps to visually prioritize leads on the map based on
+      internal quality rankings. These apply to the <code>Qualifiers</code> and
+      <code>LatLong</code> columns.
+    </p>
+    <div class="qual-grid">
+      <div class="qual-item"><div class="status-dot s-green"></div><span class="qual-rank">Best</span><span class="qual-name">Green</span></div>
+      <div class="qual-item"><div class="status-dot s-cyan"></div><span class="qual-rank">High</span><span class="qual-name">Cyan</span></div>
+      <div class="qual-item"><div class="status-dot s-blue"></div><span class="qual-rank">New</span><span class="qual-name">#1e3a8a Dark Blue</span></div>
+      <div class="qual-item"><div class="status-dot s-yellow"></div><span class="qual-rank">Medium</span><span class="qual-name">Yellow</span></div>
+      <div class="qual-item"><div class="status-dot s-orange"></div><span class="qual-rank">Potential</span><span class="qual-name">Orange</span></div>
+      <div class="qual-item"><div class="status-dot s-pink"></div><span class="qual-rank">Low</span><span class="qual-name">Pink</span></div>
+      <div class="qual-item"><div class="status-dot s-dkred"></div><span class="qual-rank">Bottom</span><span class="qual-name">#7f1d1d Dark Red</span></div>
+      <div class="qual-item"><div class="status-dot s-gray"></div><span class="qual-rank">Dead</span><span class="qual-name">Primary Text</span></div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 15: DISABLED RULES ────────────── -->
+  <section class="section" id="fmt-disabled">
+    <div class="section-header">
+      <span class="section-num">15</span>
+      <h2>Format Rules — Disabled</h2>
+      <span class="badge">Inactive</span>
+    </div>
+    <p>
+      Two rules are built into the app but explicitly disabled
+      (<code>Is this format rule disabled? Yes</code>). They can be enabled in
+      the AppSheet editor if tracking recent purchase history becomes a visual priority.
+    </p>
+    <table class="data-table">
+      <thead>
+        <tr><th>Rule Name</th><th>Condition</th><th>Color</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>No Sale Last 4 Visits</td>
+          <td><code>[Last 4 Visits Status] = "No sale in last 4 visits"</code></td>
+          <td><div class="rule-color"><div class="color-swatch" style="background:#811331"></div>#811331 Burgundy</div></td>
+          <td style="color: var(--coral); font-family: var(--mono); font-size: 11px;">DISABLED</td>
+        </tr>
+        <tr>
+          <td>Bought Last 4 Visits</td>
+          <td><code>[Last 4 Visits Status] = "Bought in last 4 visits"</code></td>
+          <td><div class="rule-color"><div class="color-swatch" style="background:#0981D1"></div>#0981D1 Bright Blue</div></td>
+          <td style="color: var(--coral); font-family: var(--mono); font-size: 11px;">DISABLED</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <hr />
+
+  <!-- ══════════════════════════════════
+       PART V — ACTIONS
+  ══════════════════════════════════ -->
+
+  <!-- ── SECTION 16: NAVIGATION ACTIONS ───────── -->
+  <section class="section" id="actions-nav">
+    <div class="section-header">
+      <span class="section-num">16</span>
+      <h2>Navigation Actions</h2>
+      <span class="badge">NAVIGATE_APP</span>
+    </div>
+
+    <div class="action-card">
+      <div class="action-header">
+        <div class="action-badge">Action 1</div>
+        <div class="action-name">View Map (LatLong)</div>
+        <div class="action-type">NAVIGATE_APP</div>
+      </div>
+      <div class="action-body">
+        <p>Drops the user directly onto a specific lead's map pin from the Detail View.</p>
+        <div class="kv-table">
+          <div class="kv-row"><span class="kv-key">Table</span><span class="kv-val">Leads</span></div>
+          <div class="kv-row"><span class="kv-key">Target</span><span class="kv-val">CONCATENATE("#page=map&table=Leads&mapcolumn=LatLong&row=", ENCODEURL([_THISROW]))</span></div>
+          <div class="kv-row"><span class="kv-key">Prominence</span><span class="kv-val">Display_Inline (attached to LatLong column)</span></div>
+          <div class="kv-row"><span class="kv-key">Condition</span><span class="kv-val">NOT(ISBLANK([LatLong])) — only shows if coordinates exist</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="action-card">
+      <div class="action-header">
+        <div class="action-badge">Action 2</div>
+        <div class="action-name">View Map (Location)</div>
+        <div class="action-type">NAVIGATE_APP</div>
+      </div>
+      <div class="action-body">
+        <p>Similar to Action 1 but applied to the user's current GPS position stored in <code>Map Filter[Location]</code>.</p>
+        <div class="kv-table">
+          <div class="kv-row"><span class="kv-key">Table</span><span class="kv-val">Map Filter</span></div>
+          <div class="kv-row"><span class="kv-key">Target</span><span class="kv-val">CONCATENATE("#page=map&table=Map%20Filter&mapcolumn=Location&row=", ENCODEURL([_THISROW]))</span></div>
+          <div class="kv-row"><span class="kv-key">Prominence</span><span class="kv-val">Display_Inline (attached to Location column)</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="action-card">
+      <div class="action-header">
+        <div class="action-badge">Action 3</div>
+        <div class="action-name">Chart Data for Last Week Visits</div>
+        <div class="action-type">NAVIGATE_APP</div>
+      </div>
+      <div class="action-body">
+        <p>Context-aware button that only appears on the "Last Week Visits" chart view. Switches to raw tabular data.</p>
+        <div class="kv-table">
+          <div class="kv-row"><span class="kv-key">Display Name</span><span class="kv-val">Data</span></div>
+          <div class="kv-row"><span class="kv-key">Target</span><span class="kv-val">="#page=fastTable&table=Last%20Week%20Results"</span></div>
+          <div class="kv-row"><span class="kv-key">Prominence</span><span class="kv-val">Display_Prominently</span></div>
+          <div class="kv-row"><span class="kv-key">Condition</span><span class="kv-val">=CONTEXT("View") = "Last Week Visits" — button vanishes on all other views</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 17: COMMUNICATION ACTIONS ─────── -->
+  <section class="section" id="actions-comms">
+    <div class="section-header">
+      <span class="section-num">17</span>
+      <h2>Communication Actions</h2>
+      <span class="badge">EMAIL</span>
+    </div>
+
+    <div class="action-card">
+      <div class="action-header">
+        <div class="action-badge">Action 4</div>
+        <div class="action-name">Compose Email (Primary Email)</div>
+        <div class="action-type">EMAIL</div>
+      </div>
+      <div class="action-body">
+        <p>Opens the device's default email client with the lead's email pre-populated in the "To:" field.</p>
+        <div class="kv-table">
+          <div class="kv-row"><span class="kv-key">Table</span><span class="kv-val">Leads</span></div>
+          <div class="kv-row"><span class="kv-key">Target</span><span class="kv-val">[Primary Email]</span></div>
+          <div class="kv-row"><span class="kv-key">Prominence</span><span class="kv-val">Display_Prominently (inline envelope icon on Primary Email column)</span></div>
+          <div class="kv-row"><span class="kv-key">Condition</span><span class="kv-val">NOT(ISBLANK([Primary Email])) — only appears if email address exists</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 18: DATA ACTIONS ──────────────── -->
+  <section class="section" id="actions-crud">
+    <div class="section-header">
+      <span class="section-num">18</span>
+      <h2>Data Actions (CRUD)</h2>
+      <span class="badge">Record Management</span>
+    </div>
+    <p>
+      The remaining 6 actions are standard CRUD operations with specific prominence
+      and confirmation settings tuned for field use.
+    </p>
+    <table class="data-table">
+      <thead>
+        <tr><th>Action</th><th>Table</th><th>Type</th><th>Prominence</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Edit</td>
+          <td>Leads</td>
+          <td class="type">EDIT_RECORD</td>
+          <td>Display_Overlay (FAB)</td>
+          <td>DesktopEditBehavior: Edit in place</td>
+        </tr>
+        <tr>
+          <td>Add</td>
+          <td>Leads</td>
+          <td class="type">ADD_RECORD</td>
+          <td>Display_Overlay (FAB)</td>
+          <td>Bulk Application enabled. Open a form on desktop.</td>
+        </tr>
+        <tr>
+          <td>Edit</td>
+          <td>Map Filter</td>
+          <td class="type">EDIT_RECORD</td>
+          <td>Display_Overlay</td>
+          <td>Allows rep to change filter toggles.</td>
+        </tr>
+        <tr>
+          <td>Add</td>
+          <td>Legend</td>
+          <td class="type">ADD_RECORD</td>
+          <td>Standard</td>
+          <td>Admin use — add new legend items.</td>
+        </tr>
+        <tr>
+          <td>Edit</td>
+          <td>Legend</td>
+          <td class="type">EDIT_RECORD</td>
+          <td>Standard</td>
+          <td>Admin use — update pin images.</td>
+        </tr>
+        <tr>
+          <td>Delete</td>
+          <td>Legend</td>
+          <td class="type">DELETE_RECORD</td>
+          <td>Visibility: ADVANCED</td>
+          <td>NeedsConfirmation: true. Hidden from standard reps.</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="notice warn">
+      <strong>No Automated Workflows</strong>
+      The Australia Leadplanning App contains <strong>0 automated bots or triggers</strong>.
+      All data changes and actions are manually initiated by the user. Compare this to
+      the Martin Soucek v2 app which uses a bot to auto-append every Leads edit
+      to the Rep Visits audit trail table.
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer id="footer">
+  <span class="footer-text">ENLIGHTEN PRESS · AUSTRALIA LEADPLANNING · V1.000017</span>
+  <span class="footer-text">PLATFORM: APPSHEET · REGION: AU</span>
+</footer>
+
+<script>
+  const sections = document.querySelectorAll('[id]');
+  const navLinks = document.querySelectorAll('.nav-item');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(link => {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === '#' + entry.target.id) {
+            link.classList.add('active');
+          }
+        });
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+<script>
+  (function() {
+    const btn = document.getElementById('themeToggle');
+    const html = document.documentElement;
+    const saved = localStorage.getItem('epDocsTheme');
+    if (saved === 'light') { html.classList.add('light'); btn.textContent = 'DARK'; }
+    btn.addEventListener('click', function() {
+      const isLight = html.classList.toggle('light');
+      btn.textContent = isLight ? 'DARK' : 'LIGHT';
+      localStorage.setItem('epDocsTheme', isLight ? 'light' : 'dark');
+    });
+  })();
+</script>
+</body>
+</html>
