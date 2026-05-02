@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Universal Planning Cleaner, Technical Documentation</title>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<style>
+  :root {
+    --base3:  #fdf6e3;
+    --base2:  #eee8d5;
+    --base1:  #93a1a1;
+    --base0:  #839496;
+    --base00: #657b83;
+    --base01: #586e75;
+    --base02: #073642;
+    --base03: #002b36;
+    --yellow: #b58900;
+    --orange: #cb4b16;
+    --red:    #dc322f;
+    --magenta:#d33682;
+    --violet: #6c71c4;
+    --blue:   #268bd2;
+    --cyan:   #2aa198;
+    --green:  #859900;
+
+    /* Enlighten Press brand accents */
+    --ep-coral:       #e27c6e;
+    --ep-coral-soft:  #f5d8d3;
+    --ep-teal:        #3f8b8e;
+    --ep-teal-soft:   #d6e8e7;
+    --ep-mint:        #a8d5d2;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--base3);
+    color: var(--base01);
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-size: 15.5px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Layout: sidebar + content ─────────────────────────────────── */
+  .layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    max-width: 1180px;
+    margin: 0 auto;
+    min-height: 100vh;
+  }
+
+  aside.sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 36px 24px 36px 32px;
+    border-right: 1px solid var(--base2);
+    background: var(--base3);
+  }
+
+  aside.sidebar .brand {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ep-teal);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  aside.sidebar .title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ep-coral);
+    line-height: 1.35;
+    margin-bottom: 24px;
+    padding-bottom: 18px;
+    border-bottom: 2px solid var(--ep-coral-soft);
+  }
+
+  aside.sidebar nav ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    counter-reset: secnum;
+  }
+
+  aside.sidebar nav li {
+    counter-increment: secnum;
+    margin: 1px 0;
+  }
+
+  aside.sidebar nav a {
+    display: block;
+    padding: 7px 10px 7px 36px;
+    color: var(--base00);
+    text-decoration: none;
+    font-size: 13.5px;
+    border-radius: 4px;
+    position: relative;
+    transition: background 0.12s, color 0.12s;
+  }
+
+  aside.sidebar nav a::before {
+    content: counter(secnum, decimal-leading-zero);
+    position: absolute;
+    left: 10px;
+    top: 7px;
+    color: var(--base1);
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+  }
+
+  aside.sidebar nav a:hover {
+    background: var(--ep-teal-soft);
+    color: var(--ep-teal);
+  }
+
+  aside.sidebar nav a.active {
+    background: var(--ep-coral-soft);
+    color: var(--ep-coral);
+    font-weight: 600;
+  }
+  aside.sidebar nav a.active::before {
+    color: var(--ep-coral);
+  }
+
+  aside.sidebar .footnote {
+    margin-top: 28px;
+    padding-top: 18px;
+    border-top: 1px solid var(--base2);
+    font-size: 11.5px;
+    color: var(--base1);
+    line-height: 1.5;
+  }
+
+  aside.sidebar .footnote code {
+    background: var(--base2);
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: var(--base01);
+    font-size: 11px;
+  }
+
+  /* ── Main content ──────────────────────────────────────────────── */
+  main.content {
+    padding: 56px 56px 96px;
+    max-width: 880px;
+  }
+
+  header.doc {
+    border-bottom: 1px solid var(--base2);
+    padding-bottom: 32px;
+    margin-bottom: 48px;
+    position: relative;
+  }
+  header.doc::after {
+    content: "";
+    position: absolute;
+    left: 0; bottom: -1px;
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--ep-coral), var(--ep-teal));
+    border-radius: 2px;
+  }
+
+  header.doc .eyebrow {
+    color: var(--ep-teal);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  header.doc h1 {
+    margin: 0 0 10px;
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--ep-coral);
+    letter-spacing: -0.01em;
+  }
+
+  header.doc .sub {
+    color: var(--base00);
+    font-size: 15.5px;
+    max-width: 640px;
+  }
+
+  section {
+    margin-bottom: 60px;
+    scroll-margin-top: 24px;
+  }
+
+  h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--base02);
+    margin: 0 0 6px;
+    letter-spacing: -0.005em;
+  }
+
+  h2 .num {
+    color: var(--ep-teal);
+    font-weight: 600;
+    margin-right: 12px;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 16px;
+  }
+
+  h2 + .lede {
+    color: var(--base00);
+    font-size: 15px;
+    margin: 0 0 26px;
+    max-width: 660px;
+  }
+
+  h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--base02);
+    margin: 30px 0 10px;
+  }
+
+  p { margin: 0 0 14px; max-width: 720px; }
+
+  a { color: var(--ep-teal); text-decoration: none; }
+  a:hover { text-decoration: underline; text-decoration-color: var(--ep-coral); }
+
+  code, kbd, samp, .mono {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.88em;
+  }
+
+  p code, li code, td code {
+    background: var(--base2);
+    color: var(--base02);
+    padding: 1px 6px;
+    border-radius: 3px;
+  }
+
+  pre {
+    background: var(--base2);
+    color: var(--base02);
+    padding: 16px 20px;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.55;
+    border-left: 3px solid var(--ep-teal);
+    margin: 14px 0 20px;
+  }
+
+  pre .cm  { color: var(--base1); font-style: italic; }
+  pre .kw  { color: var(--green); }
+  pre .fn  { color: var(--blue); }
+  pre .str { color: var(--cyan); }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0 20px;
+    font-size: 14px;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--base2);
+    vertical-align: top;
+  }
+
+  th {
+    color: var(--ep-teal);
+    font-weight: 600;
+    background: var(--base2);
+    border-bottom: 2px solid var(--ep-mint);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  tr:hover td { background: rgba(238, 232, 213, 0.4); }
+
+  ul, ol { margin: 0 0 16px; padding-left: 22px; max-width: 720px; }
+  li { margin: 5px 0; }
+
+  .callout {
+    background: var(--base2);
+    border-left: 3px solid var(--ep-coral);
+    padding: 14px 18px;
+    border-radius: 0 4px 4px 0;
+    margin: 18px 0;
+    font-size: 14.5px;
+    max-width: 720px;
+  }
+
+  .callout.why {
+    border-left-color: var(--ep-teal);
+  }
+
+  .callout strong {
+    color: var(--ep-teal);
+    display: block;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
+  .callout:not(.why) strong {
+    color: var(--ep-coral);
+  }
+
+  .pill {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 10px;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    background: var(--base2);
+    color: var(--base01);
+    margin-right: 4px;
+  }
+  .pill.new       { background: #d6e7f5; color: var(--blue); }
+  .pill.best      { background: #d8e9c4; color: var(--green); }
+  .pill.high      { background: #f3e0b6; color: var(--yellow); }
+  .pill.medium    { background: #f5d7c2; color: var(--orange); }
+  .pill.potential { background: #e6e1d4; color: var(--base01); }
+  .pill.low       { background: #e0e0e0; color: var(--base00); }
+  .pill.bottom    { background: #d5d3cd; color: var(--base01); }
+  .pill.dead      { background: #f3cfcf; color: var(--red); }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    max-width: 720px;
+  }
+
+  .card {
+    background: var(--base2);
+    padding: 16px 18px;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+
+  .card h4 {
+    margin: 0 0 8px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--base02);
+    font-weight: 600;
+  }
+
+  .flow {
+    background: var(--base2);
+    padding: 22px;
+    border-radius: 6px;
+    margin: 18px 0;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12.5px;
+    color: var(--base01);
+    white-space: pre;
+    overflow-x: auto;
+    line-height: 1.5;
+    max-width: 720px;
+  }
+
+  footer {
+    margin-top: 80px;
+    padding-top: 24px;
+    border-top: 1px solid var(--base2);
+    color: var(--base1);
+    font-size: 12.5px;
+  }
+
+  /* ── Mobile: collapse sidebar above content ────────────────────── */
+  @media (max-width: 880px) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+    aside.sidebar {
+      position: static;
+      height: auto;
+      border-right: none;
+      border-bottom: 1px solid var(--base2);
+      padding: 24px 22px;
+    }
+    aside.sidebar nav ol {
+      columns: 2;
+      column-gap: 16px;
+    }
+    main.content {
+      padding: 32px 22px 64px;
+    }
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<div class="brand">Internal Documentation</div>
+<div class="title">Universal Planning Cleaner</div>
+<nav>
+<ol id="toc">
+<li><a href="#overview">What it does</a></li>
+<li><a href="#architecture">How it's built</a></li>
+<li><a href="#sources">Reference files</a></li>
+<li><a href="#modes">The three jobs</a></li>
+<li><a href="#id">Fixing broken IDs</a></li>
+<li><a href="#dedup">Removing duplicates</a></li>
+<li><a href="#visits">Counting visits</a></li>
+<li><a href="#myob">Matching to MYOB</a></li>
+<li><a href="#priority">The priority rules</a></li>
+<li><a href="#output">Output columns</a></li>
+<li><a href="#edge">Tricky cases</a></li>
+</ol>
+</nav>
+<div class="footnote">
+      Source: <code>app.py</code><br/>
+      Config: <code>config.json</code><br/>
+      UI: <code>index.html</code>
+</div>
+</aside>
+<main class="content">
+<header class="doc">
+<div class="eyebrow">Internal, Technical Documentation</div>
+<h1>Universal Planning Cleaner</h1>
+<div class="sub">A self-contained app that pulls together messy CSV data from four different systems, untangles the IDs, joins everything to the right centre, and produces a single prioritised call sheet.</div>
+</header>
+<section id="overview">
+<h2><span class="num">01</span>What it does</h2>
+<p class="lede">Takes a list of leads in a territory and enriches every row with its full visit history, purchase record, and a priority tag the reps use to decide who to call.</p>
+<p>The input is a <em>masterlist</em>, the authoritative list of every centre in a territory. The job is to join that list against several other files: visit logs from the field, accounting exports from MYOB, and other masterlists that act as the source of truth for centre IDs. The output is one CSV where every lead has been annotated with everything the rep needs to know about it.</p>
+<p>The work that's hard to see is in the joining. Centre IDs in the source data are unreliable, the same physical centre can appear under three different IDs across two visit logs and a masterlist. Centre names drift as places get renamed or rebranded. Apostrophes, hyphens and suburb suffixes don't match across systems. A lot of the code exists to make the join actually correct.</p>
+<div class="callout why">
+<strong>Why this exists</strong>
+        The data lives across four upstream systems with no shared key. Every UID is hand-typed by reps in the field, so the same centre appears under different IDs in different files. Reconciling this by hand is what this app replaces.
+      </div>
+</section>
+<section id="architecture">
+<h2><span class="num">02</span>How it's built</h2>
+<p class="lede">Pure Python, no installs needed. The web server, file parser, CSV reader and job runner are all built from the standard library so anyone can run it without setting up dependencies.</p>
+<div class="grid-2">
+<div class="card">
+<h4>Web layer</h4>
+<p>Built-in <code>http.server</code> with one request handler. The UI is served from <code>index.html</code>; everything else goes through JSON endpoints under <code>/api/</code>.</p>
+</div>
+<div class="card">
+<h4>File upload parser</h4>
+<p>A custom multipart parser, because the standard library version was removed in Python 3.13. It splits the upload on the boundary marker and returns a clean dict of fields and files.</p>
+</div>
+<div class="card">
+<h4>Background jobs</h4>
+<p>Each job runs in its own thread. A shared dictionary (with a lock) holds the live state, so the UI can poll <code>/api/jobs/&lt;id&gt;</code> for log lines and progress.</p>
+</div>
+<div class="card">
+<h4>Storage</h4>
+<p>One <code>config.json</code> stores the registered references. Outputs land in a fixed directory outside the app folder so they survive restarts. Modified masterlists are backed up before any change is written.</p>
+</div>
+</div>
+<div class="flow">┌──────────────┐    upload CSV          ┌────────────────────┐
+│   Browser    │ ─────────────────────► │  HTTP Handler      │
+└──────────────┘                        └─────────┬──────────┘
+       ▲                                          │ spawn
+       │ poll for progress                        ▼
+       │                                ┌────────────────────┐
+       └────────────────────────────────┤  Worker thread     │
+                                        └─────────┬──────────┘
+                                                  │ joins
+                          ┌───────────────────────┼───────────────────────┐
+                          ▼                       ▼                       ▼
+                  ┌───────────────┐       ┌───────────────┐       ┌──────────────┐
+                  │ Masterlist(s) │       │ Visit logs    │       │ MYOB exports │
+                  └───────────────┘       └───────────────┘       └──────────────┘</div>
+</section>
+<section id="sources">
+<h2><span class="num">03</span>Reference files</h2>
+<p class="lede">Every file registered with the app is tagged with a <em>type</em>. The pipeline uses the type to decide what role each file plays.</p>
+<table>
+<thead><tr><th>Type</th><th>What it provides</th></tr></thead>
+<tbody>
+<tr>
+<td><code>masterlist</code></td>
+<td>The source of truth for centre IDs. Used to fix wrong IDs everywhere else, and as the universe of "all centres in this territory."</td>
+</tr>
+<tr>
+<td><code>archive</code></td>
+<td>The historical visit log. One row per rep visit, with the result, comment, and notes.</td>
+</tr>
+<tr>
+<td><code>transaction_log</code></td>
+<td>Same shape as <code>archive</code>, used for more recent visits. Treated identically by the pipeline.</td>
+</tr>
+<tr>
+<td><code>myob</code></td>
+<td>The accounting export. Tells us which centres have actually paid for something, and what they bought.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="modes">
+<h2><span class="num">04</span>The three jobs</h2>
+<p class="lede">The same upload form runs one of three jobs depending on what the user picks.</p>
+<h3>Enrich a call sheet</h3>
+<p>Takes a masterlist, pulls in every visit and every MYOB book on file, computes a priority, and writes one enriched row per lead. This is what reps work from day to day.</p>
+<h3>Find unassigned leads</h3>
+<p>Takes the combined sheet of every rep's current leads, compares it against the full masterlist, and produces a CSV of every lead that <em>nobody is currently working</em>. The enrichment is the same as above — the difference is only in which leads are included.</p>
+<h3>Update masterlist names</h3>
+<p>The opposite direction. Takes a leadsheet, looks up each centre by UID in the masterlist, and writes the leadsheet's name back into the masterlist whenever it differs. The original masterlist is backed up first, and a CSV report of every change is written.</p>
+</section>
+<section id="id">
+<h2><span class="num">05</span>Fixing broken IDs</h2>
+<p class="lede">The hardest part of the pipeline. Centre IDs are unreliable in three ways: typos, drift after a centre changes name, and outright theft (a rep accidentally pastes another centre's UID into the wrong row).</p>
+<h3>Two-way matching</h3>
+<p>From the masterlist references, we build two lookups:</p>
+<ul>
+<li><code>name → correct UID</code></li>
+<li><code>UID → centre name</code></li>
+</ul>
+<p><strong>Forward match.</strong> For every row, normalise the centre name and look up the correct UID. If it differs from the UID on the row, replace it and log the change.</p>
+<p><strong>Reverse check.</strong> If the name isn't in the reference at all, take the UID from the row and look up which centre it actually belongs to. If that centre has a different name, the UID was stolen — strip it from the row and log it.</p>
+<div class="callout">
+<strong>Subtlety</strong>
+        Reference names often have the suburb appended (<code>"Sunny Days Tarragindi"</code>) while the visit log just has the bare name (<code>"Sunny Days"</code>). A naive comparison would flag every one of these as theft. The check ignores the difference if either name is a prefix of the other.
+      </div>
+<h3>Why two normalisers</h3>
+<p>Different upstream systems handle apostrophes and hyphens differently, so the same name has to be normalised two different ways:</p>
+<pre><span class="cm"># For ID lookup apostrophes &amp; hyphens become spaces</span>
+<span class="kw">def</span> <span class="fn">normalize_for_id</span>(name):
+    s = re.sub(r<span class="str">"['‘’\-]"</span>, <span class="str">' '</span>, name)
+    s = re.sub(r<span class="str">'\s+'</span>, <span class="str">' '</span>, s)
+    <span class="kw">return</span> s.lower().strip()
+
+<span class="cm"># For MYOB lookup, apostrophes are removed entirely</span>
+<span class="kw">def</span> <span class="fn">normalize_for_myob</span>(name):
+    <span class="kw">return</span> re.sub(r<span class="str">"['‘’ʼ]"</span>, <span class="str">''</span>, name).lower().strip()</pre>
+<p>MYOB exports strip apostrophes (<code>"O'Hara's"</code> → <code>"oharas"</code>), so the MYOB normaliser has to do the same. The ID normaliser keeps a space in the same position, so <code>"O'Hara"</code>, <code>"O Hara"</code>, and <code>"O-Hara"</code> all collide on lookup.</p>
+<h3>Side reports</h3>
+<p>Every run that touches IDs writes two extra CSVs alongside the main output:</p>
+<ul>
+<li><code>id_corrections</code>, every change made (where, what was, what is now).</li>
+<li><code>id_unmatched</code>, every centre that couldn't be matched to any reference.</li>
+</ul>
+</section>
+<section id="dedup">
+<h2><span class="num">06</span>Removing duplicates</h2>
+<p class="lede">"Duplicate" means different things depending on whether the row carries notes.</p>
+<pre>key = (<span class="str">'notes'</span>, uid, notes)  <span class="kw">if</span> notes <span class="kw">else</span> (<span class="str">'blank'</span>, uid, visit)</pre>
+<p>If a row <em>has notes</em>, the notes themselves are what makes the row distinct, two visits to the same centre on the same day with different notes are two different events. If a row has <em>no notes</em>, the visit date is what makes the row distinct. We don't want three blank copies of the same visit just because it appears in three log files.</p>
+<p>The masterlist gets its own dedup pass after IDs are corrected, keeping the first row for each UID. This matters because once duplicate IDs are unified to a single canonical UID, the rows themselves become exact duplicates.</p>
+</section>
+<section id="visits">
+<h2><span class="num">07</span>Counting visits</h2>
+<p class="lede">For each centre, roll up the deduplicated visit history into the numbers that drive the priority decision.</p>
+<p>A row only counts as a "visit" if all of these are true:</p>
+<ol>
+<li>The UID belongs to a centre on the masterlist.</li>
+<li>The result is one of the in-person outcomes, <code>Successful sale</code>, <code>No sale</code>, or <code>DM absent on initial visit</code>. Phone calls and emails are not counted as visits.</li>
+<li>The visit date can be parsed (six date formats are accepted).</li>
+</ol>
+<p>For every centre, the rollup produces:</p>
+<table>
+<thead><tr><th>Field</th><th>What it means</th></tr></thead>
+<tbody>
+<tr><td>Successful sales count</td><td>How many visits ended in a sale</td></tr>
+<tr><td>No-sale count</td><td>How many visits ended without a sale</td></tr>
+<tr><td>Last sale date</td><td>The most recent successful visit</td></tr>
+<tr><td>Last no-sale date</td><td>The most recent unsuccessful visit</td></tr>
+<tr><td>Visit history</td><td>Every visit, sorted newest first, with date, result and notes</td></tr>
+<tr><td>Last comment</td><td>The most recent comment from <em>any</em> touchpoint, phone and email comments are kept here even though they don't count as visits</td></tr>
+</tbody>
+</table>
+<p>If the same centre is visited on the same day in two different log files, it counts once.</p>
+</section>
+<section id="myob">
+<h2><span class="num">08</span>Matching to MYOB</h2>
+<p class="lede">A name-based join between the masterlist and the accounting system. The matcher has to bridge two systems that store the same centre under cosmetically different names, different punctuation, different case, sometimes the address blob jammed into the same field.</p>
+<p>The accounting system has no shared key with the masterlist, there's no UID column to join on, just the customer name. And the customer name in MYOB is whatever the bookkeeper typed in: <code>"OHaras"</code> in MYOB might be <code>"O'Hara's Early Learning"</code> in the masterlist. The matcher has to make those collide.</p>
+<h3>What a MYOB export looks like</h3>
+<p>The matcher reads two columns from each MYOB CSV. Everything else is ignored.</p>
+<table>
+<thead><tr><th>Column</th><th>Index</th><th>What it holds</th></tr></thead>
+<tbody>
+<tr><td>Customer</td><td><code>3</code></td><td>The centre name as the bookkeeper typed it</td></tr>
+<tr><td>Book</td><td><code>4</code></td><td>One line item, the title of a book the centre purchased</td></tr>
+</tbody>
+</table>
+<p>One centre usually appears across many rows (one per book purchased). The matcher accumulates them all, then deduplicates within each centre while preserving the order they appeared.</p>
+<h3>The normalization pipeline</h3>
+<p>Every centre name, both sides of the join, runs through the same three-step normalizer before it's used as a lookup key:</p>
+<pre><span class="kw">def</span> <span class="fn">normalize_for_myob</span>(name):
+    <span class="kw">return</span> re.sub(r<span class="str">"['‘’ʼ]"</span>, <span class="str">''</span>, name).lower().strip()</pre>
+<ol>
+<li><strong>Strip apostrophes.</strong> Four characters get removed: the straight ASCII apostrophe (<code>'</code>), the curly left and right single quotes (<code>'</code> <code>'</code>), and the modifier letter apostrophe (<code>ʼ</code>). MYOB stores names without apostrophes; the masterlist keeps them. Removing all four variants on both sides makes them collide.</li>
+<li><strong>lowercase everything.</strong> trivial but essential, the same name capitalised differently in two systems would otherwise miss.</li>
+<li><strong>Strip surrounding whitespace.</strong> Catches stray leading or trailing spaces from sloppy data entry or from the Excel export pipeline.</li>
+</ol>
+<h3>Worked examples</h3>
+<p>Three pairs of names that look different to a human but converge to the same key:</p>
+<table>
+<thead><tr><th>Source</th><th>Original value</th><th>After normalize</th></tr></thead>
+<tbody>
+<tr><td>MYOB</td><td><code>OHaras Early Learning</code></td><td><code>oharas early learning</code></td></tr>
+<tr><td>Masterlist</td><td><code>O'Hara's Early Learning</code></td><td><code>oharas early learning</code> ✓</td></tr>
+<tr><td>Masterlist</td><td><code>O’Hara’s Early Learning</code> <em>(smart quotes from Word)</em></td><td><code>oharas early learning</code> ✓</td></tr>
+<tr><td>MYOB</td><td><code>St Johns Childcare</code></td><td><code>st johns childcare</code></td></tr>
+<tr><td>Masterlist</td><td><code>St John's Childcare </code> <em>(trailing space)</em></td><td><code>st johns childcare</code> ✓</td></tr>
+<tr><td>MYOB</td><td><code>kids first kindy</code> <em>(lowercase entry)</em></td><td><code>kids first kindy</code></td></tr>
+<tr><td>Masterlist</td><td><code>Kids First Kindy</code></td><td><code>kids first kindy</code> ✓</td></tr>
+</tbody>
+</table>
+<h3>Building the lookup index</h3>
+<p>The MYOB side is loaded into a dictionary keyed by the normalised customer name, with the value being the list of every book that customer has bought:</p>
+<pre>myob_books = defaultdict(list)
+
+<span class="kw">for</span> row <span class="kw">in</span> myob_csv:
+    cust = normalize_for_myob(row[<span class="str">3</span>])   <span class="cm"># customer column</span>
+    book = row[<span class="str">4</span>].strip()              <span class="cm"># book line item</span>
+    <span class="kw">if</span> cust <span class="kw">and</span> book:
+        myob_books[cust].append(book)
+
+<span class="cm"># Deduplicate within each customer, preserving order:</span>
+<span class="kw">for</span> k <span class="kw">in</span> myob_books:
+    myob_books[k] = list(dict.fromkeys(myob_books[k]))</pre>
+<p>The <code>dict.fromkeys</code> trick is how Python deduplicates a list while preserving insertion order, newer Python guarantees dict ordering, so the first occurrence of each book stays first.</p>
+<h3>The masterlist side: extracting the centre name</h3>
+<p>The masterlist's <em>Details</em> column is messy, it often holds a multi-line blob with the centre name on the first line, then address, phone, and contact details on subsequent lines:</p>
+<pre>Sunny Days Early Learning
+123 Stanley St
+Tarragindi QLD 4121
+07 3892 0000</pre>
+<p>Before the row can be matched against MYOB, the centre name has to be pulled out of that blob. A small helper does it:</p>
+<pre><span class="kw">def</span> <span class="fn">extract_centre_name</span>(cell):
+    <span class="kw">return</span> cell.split(<span class="str">'\n'</span>)[<span class="str">0</span>].strip()</pre>
+<p>Split on newline, take the first line, strip whitespace. The result then goes through the same <code>normalize_for_myob</code> as the MYOB side, and the keys are now directly comparable.</p>
+<h3>The match itself</h3>
+<p>Once both sides are normalised, the actual lookup is a single dictionary access, no fuzzy matching, no Levenshtein distance, just a hash hit or miss:</p>
+<pre>centre_name = normalize_for_myob(extract_centre_name(details))
+books = myob_books.get(centre_name, [])
+
+<span class="kw">if</span> books:
+    books_str = <span class="str">'\n'</span>.join(<span class="str">f'• {b}'</span> <span class="kw">for</span> b <span class="kw">in</span> books)
+    book_count = len(books)
+    matched_myob += <span class="str">1</span>
+<span class="kw">else</span>:
+    books_str = <span class="str">'needs manual verification'</span>
+    book_count = <span class="str">''</span></pre>
+<p>A hit writes a bullet list of every book the centre has bought into the <code>Books Purchased (MYOB)</code> output column, and the count into <code># Books Purchased</code>. A miss writes the literal string <code>needs manual verification</code> — that's the signal to ops that this row needs a human-eye match (the centre might genuinely not be a customer, or the names may differ in a way the normaliser can't bridge).</p>
+<h3>The DEAD → BOTTOM override</h3>
+<p>The MYOB result also feeds back into the priority logic. After the priority tag is computed from the visit history, one final check runs:</p>
+<pre><span class="kw">if</span> priority == <span class="str">'DEAD'</span> <span class="kw">and</span> books:
+    priority = <span class="str">'BOTTOM'</span></pre>
+<div class="callout why"><strong>Why this override exists</strong>
+        A centre flagged <code>DEAD</code> by the visit log alone (six or more no-sales, never a yes) gets bumped down to <code>BOTTOM</code> if MYOB shows them as a paying customer. A "no sale" history doesn't always mean the centre never bought — the sale might have happened outside the rep flow (an online order) or it just wasn't logged against the lead at the time. MYOB is the system of record for what was actually purchased, so if it shows books on file the centre is a real customer and shouldn't be marked dead.</div>
+</section>
+<section id="priority">
+<h2><span class="num">09</span>The priority rules</h2>
+<p class="lede">Each lead gets one tag based on three things: how many times it's been visited, whether it's ever bought, and how recently. The same logic applies to both Australia and New Zealand.</p>
+<table>
+<thead><tr><th>Situation</th><th>Tag</th></tr></thead>
+<tbody>
+<tr>
+<td>This centre has never been visited by a rep</td>
+<td><span class="pill new">NEW</span></td>
+</tr>
+<tr>
+<td>The most recent visit ended in a sale</td>
+<td><span class="pill best">BEST</span></td>
+</tr>
+<tr>
+<td>Has bought before, and the last sale was 2–3 visits ago</td>
+<td><span class="pill high">HIGH</span></td>
+</tr>
+<tr>
+<td>Has bought before, but the last sale was 4–5 visits ago</td>
+<td><span class="pill medium">MEDIUM</span></td>
+</tr>
+<tr>
+<td>Visited 1-3 times, never bought, still worth chasing</td>
+<td><span class="pill potential">POTENTIAL</span></td>
+</tr>
+<tr>
+<td>Visited 4-5 times, never bought, odds are getting low</td>
+<td><span class="pill low">LOW</span></td>
+</tr>
+<tr>
+<td>Has bought before, but the last sale was a long time ago</td>
+<td><span class="pill bottom">BOTTOM</span></td>
+</tr>
+<tr>
+<td>Visited 6+ times, never bought, give up unless MYOB says otherwise</td>
+<td><span class="pill dead">DEAD</span></td>
+</tr>
+</tbody>
+</table>
+<h3>The MYOB override</h3>
+<p>Applied after the rule lookup: if the tag came out as <code>DEAD</code> but MYOB shows books on file, the tag is downgraded to <code>BOTTOM</code>. This is the only cross-system override in the priority logic.</p>
+</section>
+<section id="output">
+<h2><span class="num">10</span>Output columns</h2>
+<p class="lede">The output CSV keeps the masterlist's original columns A–L exactly as they were, then adds thirteen new columns. Downstream tools depend on this column order.</p>
+<table>
+<thead><tr><th>#</th><th>Column</th><th>What's in it</th></tr></thead>
+<tbody>
+<tr><td>13</td><td>Previous Phoner Notes</td><td>The most recent comment from any touchpoint</td></tr>
+<tr><td>14</td><td>Books Purchased (MYOB)</td><td>Bullet list of books, or <em>needs manual verification</em></td></tr>
+<tr><td>15</td><td># Books Purchased</td><td>Count of MYOB line items</td></tr>
+<tr><td>16</td><td>Total Visit Count</td><td>Total number of in-person visits, deduplicated</td></tr>
+<tr><td>17</td><td># Successful Sales</td><td>Count of visits that ended in a sale</td></tr>
+<tr><td>18</td><td># No Sales</td><td>Count of visits that ended without a sale</td></tr>
+<tr><td>19</td><td>Date Last Successful Sale</td><td>Most recent sale date</td></tr>
+<tr><td>20</td><td>Date Last No Sale</td><td>Most recent no-sale date</td></tr>
+<tr><td>21</td><td>Visits Since Last Sale</td><td>How many visits have happened since the last sale</td></tr>
+<tr><td>22</td><td>Bought in Last 3 Visits</td><td>Yes / No</td></tr>
+<tr><td>23</td><td>Last 4 Visits Status</td><td>A short summary of the last four visits</td></tr>
+<tr><td>24</td><td>Visit History</td><td>Every visit on its own line: date, result, notes</td></tr>
+<tr><td>25</td><td>Priority</td><td>The final tag, after the MYOB override</td></tr>
+</tbody>
+</table>
+<p>The masterlist's <em>1st Visit</em> column gets rewritten with the most recent visit date observed in the archives. The column name is kept for backward compatibility, but its meaning shifts from "first visit" to "most recent visit" once the row is enriched.</p>
+</section>
+<section id="edge">
+<h2><span class="num">11</span>Tricky cases</h2>
+<p class="lede">Each item below is a real problem in the source data with a deliberate fix in the code.</p>
+<ul>
+<li><strong>Missing header row.</strong> If the first row of a masterlist looks like data (its first cell is a UID), a synthetic header is added and the row is treated as data.</li>
+<li><strong>Junk columns past column L.</strong> Input is hard-capped at the first 12 columns; anything beyond is dropped before processing so output rows stay clean.</li>
+<li><strong>Excel BOM characters.</strong> All readers use <code>utf-8-sig</code> so files exported from Excel don't poison the first column header.</li>
+<li><strong>Six date formats.</strong> The date parser tries six common formats in order. A row with an unparseable date still goes through the pipeline — it just doesn't contribute to date-based aggregates.</li>
+<li><strong>Stolen IDs that are actually fine.</strong> When the reference name is the leadsheet name plus a suburb, the prefix-match guard prevents a false theft alarm.</li>
+<li><strong>Manually-touched leads in the unassigned pass.</strong> Leads with a non-empty <code>Contact Status</code> are excluded from the unassigned check, so anything a rep has already touched isn't re-surfaced.</li>
+<li><strong>Backups before any masterlist write.</strong> The "update names" job copies every modified masterlist into <code>backups/</code> with a timestamp before writing, so a bad update can be rolled back.</li>
+<li><strong>Local file or upload.</strong> References can be registered either by upload (the file gets copied into the app's data folder) or by absolute local path (the file is read in place). Both modes share the same processing code.</li>
+<li><strong>Trimmed columns in the unassigned output.</strong> Five legacy columns are dropped from the unassigned CSV (<code>Last Visit Notes</code>, <code>Last Location Update</code>, etc.) to keep the call sheet narrow.</li>
+</ul>
+</section>
+<footer>Universal Planning Cleaner, internal tooling.</footer>
+</main>
+</div>
+<script>
+  // Highlight the active section in the sidebar as you scroll.
+  (function () {
+    const links = document.querySelectorAll('aside.sidebar nav a');
+    const map = {};
+    links.forEach(a => {
+      const id = a.getAttribute('href').slice(1);
+      const target = document.getElementById(id);
+      if (target) map[id] = { link: a, target };
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const id = entry.target.id;
+        if (!map[id]) return;
+        if (entry.isIntersecting) {
+          links.forEach(l => l.classList.remove('active'));
+          map[id].link.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+
+    Object.values(map).forEach(({ target }) => observer.observe(target));
+  })();
+</script>
+</body>
+</html>
