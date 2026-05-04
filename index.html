@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Enlighten Press, Internal Documentation</title>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<style>
+  :root {
+    --base3:  #fdf6e3;
+    --base2:  #eee8d5;
+    --base1:  #93a1a1;
+    --base0:  #839496;
+    --base00: #657b83;
+    --base01: #586e75;
+    --base02: #073642;
+    --base03: #002b36;
+    --yellow: #b58900;
+    --orange: #cb4b16;
+    --red:    #dc322f;
+    --magenta:#d33682;
+    --violet: #6c71c4;
+    --blue:   #268bd2;
+    --cyan:   #2aa198;
+    --green:  #859900;
+
+    /* Enlighten Press brand accents */
+    --ep-coral:       #e27c6e;
+    --ep-coral-soft:  #f5d8d3;
+    --ep-teal:        #3f8b8e;
+    --ep-teal-soft:   #d6e8e7;
+    --ep-mint:        #a8d5d2;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--base3);
+    color: var(--base01);
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-size: 15.5px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 64px 56px 96px;
+  }
+
+  header.doc {
+    border-bottom: 1px solid var(--base2);
+    padding-bottom: 36px;
+    margin-bottom: 56px;
+    position: relative;
+  }
+  header.doc::after {
+    content: "";
+    position: absolute;
+    left: 0; bottom: -1px;
+    width: 96px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--ep-coral), var(--ep-teal));
+    border-radius: 2px;
+  }
+  header.doc .eyebrow {
+    color: var(--ep-teal);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  header.doc h1 {
+    margin: 0 0 12px;
+    font-size: 34px;
+    font-weight: 600;
+    color: var(--ep-coral);
+    letter-spacing: -0.01em;
+  }
+  header.doc .sub {
+    color: var(--base00);
+    font-size: 16px;
+    max-width: 720px;
+  }
+
+  section { margin-bottom: 64px; scroll-margin-top: 24px; }
+
+  h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--base02);
+    margin: 0 0 6px;
+    letter-spacing: -0.005em;
+  }
+  h2 .num {
+    color: var(--ep-teal);
+    font-weight: 600;
+    margin-right: 12px;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 16px;
+  }
+  h2 + .lede {
+    color: var(--base00);
+    font-size: 15px;
+    margin: 0 0 28px;
+    max-width: 720px;
+  }
+
+  p { margin: 0 0 14px; max-width: 720px; }
+
+  a { color: var(--ep-teal); text-decoration: none; }
+  a:hover { text-decoration: underline; text-decoration-color: var(--ep-coral); }
+
+  /* ── Doc grid ─────────────────────────────────────────────────── */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .doc-card {
+    background: #fff;
+    border: 1px solid var(--base2);
+    border-radius: 8px;
+    padding: 24px 26px 22px;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+    overflow: hidden;
+  }
+  .doc-card::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--ep-teal);
+    opacity: 0.5;
+    transition: opacity 0.15s, background 0.15s;
+  }
+  .doc-card:hover {
+    border-color: var(--ep-mint);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px -8px rgba(63, 139, 142, 0.25);
+    text-decoration: none;
+  }
+  .doc-card:hover::before {
+    background: var(--ep-coral);
+    opacity: 1;
+  }
+
+  .doc-card .meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .doc-card .num {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 11.5px;
+    color: var(--base1);
+    letter-spacing: 0.04em;
+  }
+  .doc-card h3 {
+    margin: 0 0 6px;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--ep-coral);
+    letter-spacing: -0.005em;
+  }
+  .doc-card .stack {
+    color: var(--base00);
+    font-size: 12.5px;
+    margin-bottom: 12px;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  .doc-card p {
+    margin: 0 0 16px;
+    font-size: 14.5px;
+    color: var(--base01);
+    flex: 1;
+  }
+  .doc-card .open {
+    color: var(--ep-teal);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .doc-card .open::after {
+    content: "→";
+    transition: transform 0.15s;
+  }
+  .doc-card:hover .open::after {
+    transform: translateX(3px);
+  }
+
+  /* ── Pills (audience tags) ───────────────────────────────────── */
+  .pill {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .pill.tech    { background: var(--ep-teal-soft); color: var(--ep-teal); }
+  .pill.ops     { background: #f3e0b6; color: var(--yellow); }
+  .pill.field   { background: var(--ep-coral-soft); color: var(--ep-coral); }
+  .pill.hybrid  { background: #e6e1d4; color: var(--base01); }
+
+  /* ── Ecosystem flow ──────────────────────────────────────────── */
+  .ecosystem {
+    background: #fff;
+    border: 1px solid var(--base2);
+    border-radius: 8px;
+    padding: 28px 32px;
+  }
+  .stage {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 24px;
+    padding: 18px 0;
+    border-bottom: 1px dashed var(--base2);
+  }
+  .stage:last-child { border-bottom: none; }
+  .stage .step {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 11.5px;
+    color: var(--ep-teal);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    padding-top: 2px;
+  }
+  .stage h4 {
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--base02);
+  }
+  .stage p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--base01);
+  }
+  .stage a { font-weight: 500; }
+
+  /* ── Footer ──────────────────────────────────────────────────── */
+  footer {
+    margin-top: 80px;
+    padding-top: 24px;
+    border-top: 1px solid var(--base2);
+    color: var(--base1);
+    font-size: 12.5px;
+  }
+
+  /* ── Mobile ──────────────────────────────────────────────────── */
+  @media (max-width: 760px) {
+    .wrap { padding: 36px 22px 64px; }
+    header.doc h1 { font-size: 26px; }
+    .grid { grid-template-columns: 1fr; }
+    .stage { grid-template-columns: 1fr; gap: 6px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="doc">
+  <div class="eyebrow">Internal Documentation</div>
+  <h1>Enlighten Press, Field Operations Tooling</h1>
+  <div class="sub">A connected suite of tools that prepares the data, runs the field, and audits the outcome. Five documents cover the systems involved, who uses them, and how they hand off to each other.</div>
+</header>
+
+<section id="docs">
+  <h2><span class="num">01</span>The documents</h2>
+  <p class="lede">Each tool has its own document. The first three are technical references; the fourth blends technical and operational; the last is a step-by-step guide written for sales reps.</p>
+
+  <div class="grid">
+
+    <a class="doc-card" href="https://enlightenpress.github.io/enlightenpress/leadplanning.html">
+      <div class="meta">
+        <span class="num">01</span>
+        <span class="pill tech">Technical</span>
+      </div>
+      <h3>Australia Leadplanning App</h3>
+      <div class="stack">AppSheet · Slices · Map Filter table</div>
+      <p>Mobile-first field CRM that surfaces only actionable leads (Schools and Childcares) to AU sales reps. Slices drive a dynamic map; a single-row "Map Filter" table acts as a remote control. Includes 4–5 month cool-down logic that hides leads after a "no over the phone" so reps don't burn the relationship.</p>
+      <span class="open">Open document</span>
+    </a>
+
+    <a class="doc-card" href="https://enlightenpress.github.io/enlightenpress/checkin_system/odometer.html">
+      <div class="meta">
+        <span class="num">02</span>
+        <span class="pill tech">Technical</span>
+      </div>
+      <h3>Odometer Tracker</h3>
+      <div class="stack">Google Apps Script · Google Sheets · Drive</div>
+      <p>Web app for tracking driving mileage for reimbursement. Reps submit check-in and check-out odometer readings with photo evidence; the system computes daily kilometres. Manager view groups data into Mon–Fri working weeks with running totals, averages, and inline odometer photos pulled from Drive.</p>
+      <span class="open">Open document</span>
+    </a>
+
+    <a class="doc-card" href="https://enlightenpress.github.io/enlightenpress/processing_leads.html">
+      <div class="meta">
+        <span class="num">03</span>
+        <span class="pill tech">Technical</span>
+      </div>
+      <h3>Universal Planning Cleaner</h3>
+      <div class="stack">Python · stdlib only · CSV pipeline</div>
+      <p>Self-contained app used by ops to clean and merge messy data before it reaches reps. Joins manual visit logs, the master database, and MYOB exports; normalisation algorithms fix broken IDs and de-duplicate. Computes a Priority tag (BEST, HIGH, DEAD, …) and overrides DEAD to BOTTOM if MYOB shows the centre recently paid.</p>
+      <span class="open">Open document</span>
+    </a>
+
+    <a class="doc-card" href="https://enlightenpress.github.io/enlightenpress/salesrep.html">
+      <div class="meta">
+        <span class="num">04</span>
+        <span class="pill hybrid">Technical + Operations</span>
+      </div>
+      <h3>Sales Representative App</h3>
+      <div class="stack">AppSheet · Bots · Hidden audit columns</div>
+      <p>Field operations manual covering the broader CRM workflows, with emphasis on automation, audits, and fraud prevention. An AppSheet bot snapshots every lead edit into a hidden Rep Visits table; the check-in flow locks GPS coordinates and millisecond timestamps the moment the odometer photo is taken, blocking retroactive or spoofed entries.</p>
+      <span class="open">Open document</span>
+    </a>
+
+    <a class="doc-card" href="https://enlightenpress.github.io/enlightenpress/checkin_system/checkin_system.html">
+      <div class="meta">
+        <span class="num">05</span>
+        <span class="pill field">End-user guide</span>
+      </div>
+      <h3>AppSheet Check-In/Out System Manual</h3>
+      <div class="stack">For sales reps · Mobile only</div>
+      <p>Visual, step-by-step walkthrough for reps using the Check-In/Out buttons on their phones. Covers prerequisites (GPS on, mobile only), the daily sales form at check-out, and the Weekly Dashboard that shows check-in status, location, totals and visits at a glance.</p>
+      <span class="open">Open document</span>
+    </a>
+
+  </div>
+</section>
+
+<section id="ecosystem">
+  <h2><span class="num">02</span>How it all fits together</h2>
+  <p class="lede">The five tools form one pipeline: ops cleans the data, the field acts on it, and the system audits the outcome end-to-end.</p>
+
+  <div class="ecosystem">
+
+    <div class="stage">
+      <div class="step">Stage 1 · Data prep</div>
+      <div>
+        <h4>Operations cleans the inputs</h4>
+        <p>Ops runs the <a href="https://enlightenpress.github.io/enlightenpress/processing_leads.html">Universal Planning Cleaner</a> to untangle sales and accounting data, producing a clean, prioritised call list with reliable IDs and MYOB-aware priority tags.</p>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="step">Stage 2 · Field execution</div>
+      <div>
+        <h4>Reps work the prioritised leads</h4>
+        <p>Reps open the <a href="https://enlightenpress.github.io/enlightenpress/checkin_system/leadplanning.html">Leadplanning App</a> to navigate a dynamic map of those leads, with cool-down rules hiding any centre that recently said "no over the phone."</p>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="step">Stage 3 · Day in / day out</div>
+      <div>
+        <h4>Hours, sales, and visits get logged</h4>
+        <p>Reps follow the <a href="https://enlightenpress.github.io/enlightenpress/checkin_system/checkin_system.html">Check-In/Out manual</a> to log their day through the <a href="https://enlightenpress.github.io/enlightenpress/salesrep.html">Sales Representative App</a>. The app captures GPS and timestamps at the moment of action, and a bot snapshots every lead edit for the audit trail.</p>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="step">Stage 4 · Reimbursement</div>
+      <div>
+        <h4>Managers verify and pay</h4>
+        <p>Mileage flows into the <a href="https://enlightenpress.github.io/enlightenpress/odometer.html">Odometer Tracker</a>, where managers see weekly running totals, averages, and the underlying odometer photos — so reimbursements are tied to verifiable evidence.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer>Enlighten Press, internal tooling.</footer>
+
+</div>
+</body>
+</html>
